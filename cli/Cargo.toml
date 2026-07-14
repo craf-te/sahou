@@ -9,6 +9,14 @@ homepage = "https://github.com/craf-te/sahou"
 readme = "README.md"
 keywords = ["schema", "cli", "messaging", "zenoh", "lan"]
 categories = ["command-line-utilities", "network-programming"]
+include = [
+    "src/**/*",
+    "gui-dist/**/*",
+    "about.hbs",
+    "about.toml",
+    "licenses/**/*",
+    "README.md",
+]
 
 [[bin]]
 name = "sahou"
