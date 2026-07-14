@@ -1,4 +1,4 @@
-# Sahou
+# Sahou　(Alpha version)
 
 Sahou is a **schema-first tool for building the interface layer between systems**.
 You describe your messages and wiring once, in a schema. Sahou then lets your apps
