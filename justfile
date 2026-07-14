@@ -42,6 +42,8 @@ install-full: gui-build gui-embed install
 gen-demo:
     cargo run -p sahou-cli -- gen examples/demo/schema.sahou.yaml --out-dir examples/demo/runtime/gen --lang python --node sensor
     cargo run -p sahou-cli -- gen examples/demo/schema.sahou.yaml --out-dir examples/demo/runtime/gen --lang ts --node visuals
+    cargo run -p sahou-cli -- gen examples/demo/schema.sahou.yaml --out-dir examples/demo/runtime/gen --lang ts
+    cargo run -p sahou-cli -- gen examples/demo/schema.sahou.yaml --out-dir examples/demo/runtime/gen --lang python
 
 # Regenerate the third-party license notice embedded in the cli (needs `cargo install cargo-about --features cli`).
 licenses:
