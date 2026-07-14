@@ -1,0 +1,13 @@
+[package]
+name = "sahou"
+version = "0.0.0"
+edition = "2021"
+license = "Apache-2.0"
+description = "Sahou runtime for Rust — placeholder reserving the crate name for the upcoming schema-first runtime."
+repository = "https://github.com/craf-te/sahou"
+homepage = "https://github.com/craf-te/sahou"
+readme = "README.md"
+keywords = ["schema", "messaging", "zenoh", "lan", "runtime"]
+categories = ["network-programming"]
+
+[dependencies]
