@@ -22,6 +22,27 @@ await node.answer("get_state", async (req) => ({ level: 3 }));
 await node.close();
 ```
 
+## Typed connect (opt-in, generated)
+
+The base `connect` above is untyped (`node`/`conn` are strings, payloads are `unknown`). To get editor
+completion for **node names**, per-node **connection names**, and **payload types** from the contract, generate
+a whole-descriptor typed layer and import its `connect` instead:
+
+```sh
+sahou gen schema.sahou.yaml --out-dir gen --lang ts            # node target (default)
+sahou gen schema.sahou.yaml --out-dir gen --lang ts --target browser
+```
+
+```ts
+import { connect } from "./gen/sahou.gen.mjs";           // browser: generate with --target browser
+const node = await connect("gen/descriptor.json", { node: "visuals" }); // node name completes
+await node.subscribe("touch", (p) => { p.phase; });      // conn completes; p is typed (Touch)
+```
+
+`sahou.gen.mjs` re-exports the real `connect` (zero runtime cost); `sahou.gen.d.mts` supplies the types (one
+`connect` overload per node → the correct facade). The engine behaves identically without it. `sahou check`
+detects stub↔IR drift. A per-node stub (`sahou gen --lang ts --node <name>` → `typedNode()`) is also available.
+
 ## Environment variables
 - `SAHOU_LINK_CMD`: the executable to spawn as the link (default: `sahou` on PATH)
 - `SAHOU_LINK_ARGS`: extra arguments when spawning (e.g. `--no-multicast --grace 4`)

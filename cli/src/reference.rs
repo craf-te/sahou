@@ -210,13 +210,22 @@ the generated stub — never hand-roll transport or validation (the core returns
 - **TypeScript** — `sahou` (`npm i sahou`; browser entry `sahou/browser`).
 - **Python** — `sahou` (`pip install sahou`).
 
-Steps:
-1. `sahou gen --lang <ts|python> --node <name>` writes a typed stub under `gen/<name>/` (types only; the engine never reads it).
-2. Connect with the runtime, then wrap it with the stub's `typedNode` / `typed_node` for typed calls:
-   - TS: `const node = typedNode(await connect("gen/descriptor.json", {{ node: "<name>" }}));`
-   - Python: `node = typed_node(sahou.connect("gen/descriptor.json", node="<name>"))`
-3. API: `publish` / `subscribe` / `queryConfirmed` (TS) or `query_confirmed` (py) / `answer` / `close`.
-   A send-boundary NO throws `SahouRejected`; a subscribe-boundary NO goes to `onReject` (never the handler).
+Two stub modes (both opt-in; types only, the engine never reads them):
+
+- **Whole-descriptor (recommended)** — `sahou gen --lang <ts|python>` (no `--node`) writes one typed module
+  covering every node: TS `gen/sahou.gen.mjs` + `.d.mts`, Python `gen/sahou_gen.py` + `.pyi`. Import its
+  `connect` and the node name completes, the returned facade exposes only that node's connections, and payloads
+  are typed — all from a single import. TS transport: `--target node` (default) or `--target browser`.
+  - TS: `import {{ connect }} from "./gen/sahou.gen.mjs"; const node = await connect("gen/descriptor.json", {{ node: "<name>" }});`
+  - Python: `from gen.sahou_gen import connect; node = connect("gen/descriptor.json", "<name>")`
+- **Per-node** — `sahou gen --lang <ts|python> --node <name>` writes a stub under `gen/<name>/`. Connect with the
+  runtime, then wrap it with the stub's `typedNode` / `typed_node`:
+  - TS: `const node = typedNode(await connect("gen/descriptor.json", {{ node: "<name>" }}));`
+  - Python: `node = typed_node(sahou.connect("gen/descriptor.json", node="<name>"))`
+
+API: `publish` / `subscribe` / `queryConfirmed` (TS) or `query_confirmed` (py) / `answer` / `close`.
+A send-boundary NO throws `SahouRejected`; a subscribe-boundary NO goes to `onReject` (never the handler).
+`sahou check` detects stub↔IR drift for both modes (a CLI/CI responsibility; design §8/§13).
 "#,
     )
 }

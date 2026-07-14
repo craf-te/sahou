@@ -46,6 +46,11 @@ runtime behavior is unchanged = it runs identically without the stub).
   and payload type checking on `node.publish("touch", {...})`.
 - Generate (TS): `... --lang ts --node visuals` → `gen/visuals/sahou_stub.mjs` + `.d.mts`.
   `const node = typedNode(await connect(...))` infers the handler argument types.
+- Generate (whole-descriptor, recommended): `... --lang ts` (no `--node`) → `gen/sahou.gen.mjs` + `.d.mts`
+  (Python: `... --lang python` → `gen/sahou_gen.py` + `.pyi`). One typed module covering every node:
+  `import { connect } from "./gen/sahou.gen.mjs"` completes the **node name**, and the returned facade
+  completes that node's **connections** and types the **payloads** — from a single import. TS transport:
+  `--target node` (default) or `--target browser`.
 - Drift detection (for CI): `sahou check examples/demo/runtime/gen/descriptor.json --gen-dir examples/demo/runtime/gen`
   → compares the stub's embedded hash against the IR. Changing the contract and regenerating only the IR produces a `stub_hash_drift` NO
   (= a sign that the stub should be regenerated). **The engine does not read the stub** (drift detection is a CLI/CI responsibility; design §8/§13).
