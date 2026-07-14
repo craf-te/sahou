@@ -21,6 +21,10 @@ fn regenerated_all(lang: StubLang) -> Vec<sahou_core::stub::StubFile> {
     gen_stub_all(&demo_desc(), lang, TsTarget::Node).unwrap()
 }
 
+fn regenerated_all_browser() -> Vec<sahou_core::stub::StubFile> {
+    gen_stub_all(&demo_desc(), StubLang::Ts, TsTarget::Browser).unwrap()
+}
+
 #[test]
 fn committed_python_sensor_stub_is_fresh() {
     let committed = [
@@ -83,6 +87,28 @@ fn committed_ts_all_stub_is_fresh() {
         assert_eq!(
             f.content, text,
             "{rel} is stale. Regenerate and commit with `sahou gen examples/demo/schema.sahou.yaml --out-dir examples/demo/runtime/gen --lang ts`"
+        );
+    }
+}
+
+#[test]
+fn committed_ts_all_browser_stub_is_fresh() {
+    let committed = [
+        (
+            "sahou.gen.mjs",
+            include_str!("../../examples/demo/runtime/browser/sahou.gen.mjs"),
+        ),
+        (
+            "sahou.gen.d.mts",
+            include_str!("../../examples/demo/runtime/browser/sahou.gen.d.mts"),
+        ),
+    ];
+    let fresh = regenerated_all_browser();
+    for (rel, text) in committed {
+        let f = fresh.iter().find(|f| f.rel_path == rel).unwrap();
+        assert_eq!(
+            f.content, text,
+            "{rel} is stale. Regenerate and commit with `sahou gen examples/demo/schema.sahou.yaml --out-dir examples/demo/runtime/browser --lang ts --target browser`"
         );
     }
 }

@@ -44,6 +44,10 @@ gen-demo:
     cargo run -p sahou-cli -- gen examples/demo/schema.sahou.yaml --out-dir examples/demo/runtime/gen --lang ts --node visuals
     cargo run -p sahou-cli -- gen examples/demo/schema.sahou.yaml --out-dir examples/demo/runtime/gen --lang ts
     cargo run -p sahou-cli -- gen examples/demo/schema.sahou.yaml --out-dir examples/demo/runtime/gen --lang python
+    # Browser demo needs the browser-target connect (re-exports "sahou/browser"). It only needs the two stub
+    # files; the descriptor it fetches at runtime is served from runtime/gen, so drop the redundant copy.
+    cargo run -p sahou-cli -- gen examples/demo/schema.sahou.yaml --out-dir examples/demo/runtime/browser --lang ts --target browser
+    rm -f examples/demo/runtime/browser/descriptor.json
 
 # Regenerate the third-party license notice embedded in the cli (needs `cargo install cargo-about --features cli`).
 licenses:
