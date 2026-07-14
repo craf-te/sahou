@@ -221,7 +221,7 @@ fn gen_refuses_invalid_schema() {
 #[test]
 fn gen_stub_header_shows_runtime_usage() {
     // The runtime-facing stub file (.mjs/.py) names the runtime library and shows how to wire it, so an
-    // AI/human implementing the app can discover @sahou/runtime / sahou from the stub itself (not only types).
+    // AI/human implementing the app can discover sahou / sahou from the stub itself (not only types).
     let dir = tempfile::tempdir().unwrap();
     let schema = write(&dir, "schema.sahou.yaml", DEMO);
     let out_dir = dir.path().join("gen");
@@ -241,7 +241,7 @@ fn gen_stub_header_shows_runtime_usage() {
         .success();
     let mjs = std::fs::read_to_string(out_dir.join("visuals").join("sahou_stub.mjs")).unwrap();
     assert!(
-        mjs.contains("@sahou/runtime"),
+        mjs.contains("npm i sahou"),
         "ts stub should name the runtime lib:\n{mjs}"
     );
     assert!(

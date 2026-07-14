@@ -1,7 +1,7 @@
 // Subscribes to touch as the demo contract's visuals (auto-spawns link if it isn't running).
 // Run: cd examples/demo/runtime && npm install && node --experimental-wasm-modules node_sub.mjs
 import { fileURLToPath } from "node:url";
-import { connect } from "@sahou/runtime";
+import { connect } from "sahou";
 
 const desc = fileURLToPath(new URL("./gen/descriptor.json", import.meta.url));
 const node = await connect(desc, { node: "visuals" });

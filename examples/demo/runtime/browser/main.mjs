@@ -1,4 +1,4 @@
-import { SahouRejected, connect } from "@sahou/runtime/browser";
+import { SahouRejected, connect } from "sahou/browser";
 
 const out = document.getElementById("out");
 const descriptor = await (await fetch("/gen/descriptor.json")).text();

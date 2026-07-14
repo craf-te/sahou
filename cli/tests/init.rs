@@ -129,11 +129,11 @@ fn init_does_not_touch_existing_gitignore_or_endpoints() {
 #[test]
 fn init_agents_md_points_to_runtime_libraries() {
     // AGENTS.md must guide AI beyond editing the contract: how to implement apps against the runtime
-    // libraries (@sahou/runtime for TS, sahou for Python) via connect(...).
+    // libraries (sahou for TS, sahou for Python) via connect(...).
     let tmp = tempfile::tempdir().unwrap();
     let dir = tmp.path().join("proj");
     init(&dir, &[]).success();
     let agents = std::fs::read_to_string(dir.join("AGENTS.md")).unwrap();
-    assert!(agents.contains("@sahou/runtime"), "{agents}");
+    assert!(agents.contains("npm i sahou"), "{agents}");
     assert!(agents.contains("connect"), "{agents}");
 }

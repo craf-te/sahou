@@ -88,7 +88,7 @@ sahou gui
 Thin, hand-written libraries that share the Rust core:
 
 - **Python** — package `sahou` (PyPI). See [`runtimes/py/README.md`](runtimes/py/README.md).
-- **Node.js / browser** — package `@sahou/runtime` (npm). See [`runtimes/ts/README.md`](runtimes/ts/README.md).
+- **Node.js / browser** — package `sahou` (npm). See [`runtimes/ts/README.md`](runtimes/ts/README.md).
 
 ## TouchDesigner (experimental)
 

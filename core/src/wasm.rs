@@ -133,7 +133,7 @@ pub fn wasm_serialize_endpoints(endpoints_json: &str) -> String {
     }
 }
 
-/// Runtime ABI for the TS runtime (@sahou/runtime).
+/// Runtime ABI for the TS runtime (sahou).
 /// Same method names and same JSON envelopes as PyO3 `SahouRuntime` (all via ffi = structural guarantee of byte-identical output).
 #[wasm_bindgen]
 pub struct WasmRuntime {

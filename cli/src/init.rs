@@ -25,10 +25,10 @@ at the location given by path. Repeat until there are zero rejections.
 - `endpoints.<env>.yaml` = deployment (separate from the contract; per environment). `layout.sahou.json` = GUI coordinates (separate from the contract). \
 `gen/` = generated artifacts (do not edit by hand).
 - If `sahou gui` is running, file edits are reflected in the GUI immediately.
-- **Implementing an app** (not editing the contract): use the runtime library — TS `@sahou/runtime` \
-(`npm i @sahou/runtime`; browser entry `@sahou/runtime/browser`) / Python `sahou` (`pip install sahou`). \
+- **Implementing an app** (not editing the contract): use the runtime library — TS `sahou` \
+(`npm i sahou`; browser entry `sahou/browser`) / Python `sahou` (`pip install sahou`). \
 Generate a typed stub with `sahou gen --lang <ts|python> --node <name>` (written under `gen/<node>/`), then wire it:
-  - TS: `import { connect } from \"@sahou/runtime\";` + `import { typedNode } from \"./gen/<name>/sahou_stub.mjs\";` \
+  - TS: `import { connect } from \"sahou\";` + `import { typedNode } from \"./gen/<name>/sahou_stub.mjs\";` \
 then `const node = typedNode(await connect(\"gen/descriptor.json\", { node: \"<name>\" }));`
   - Python: `import sahou` + `from gen.<name>.sahou_stub import typed_node;` \
 then `node = typed_node(sahou.connect(\"gen/descriptor.json\", node=\"<name>\"))`

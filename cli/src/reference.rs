@@ -207,7 +207,7 @@ Type notes:
 Editing the contract is only half the job. To write an app that speaks it, use the runtime library plus
 the generated stub — never hand-roll transport or validation (the core returns the boundary NO):
 
-- **TypeScript** — `@sahou/runtime` (`npm i @sahou/runtime`; browser entry `@sahou/runtime/browser`).
+- **TypeScript** — `sahou` (`npm i sahou`; browser entry `sahou/browser`).
 - **Python** — `sahou` (`pip install sahou`).
 
 Steps:
@@ -344,7 +344,7 @@ mod tests {
         // which runtime library to use and the connect/publish/subscribe API.
         let text = reference_text();
         for needle in [
-            "@sahou/runtime",
+            "sahou",
             "pip install sahou",
             "connect(",
             "publish",

@@ -24,7 +24,7 @@ rather than propagating. The transport is built on Zenoh.
   `licenses`). Embeds the built GUI via rust-embed.
 - `gui/` — the browser node editor (Vue + G6), running the core as wasm.
 - `runtimes/` — thin, hand-written language runtimes: `py` (`sahou`, PyPI) and `ts`
-  (`@sahou/runtime`, npm).
+  (`sahou`, npm).
 - `examples/` — a runnable demo.
 - `td/` — the TouchDesigner Sahou Out CHOP (C++/Rust). Experimental, macOS/arm64.
   `td/transport/` is the `sahou-transport` cdylib (a C ABI over Zenoh).

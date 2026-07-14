@@ -1,7 +1,7 @@
 // Responds to get_state as the demo contract's archive (a demo of the 4 query boundaries; also aggregates touch).
 // Run: cd examples/demo/runtime && node --experimental-wasm-modules node_state.mjs
 import { fileURLToPath } from "node:url";
-import { connect } from "@sahou/runtime";
+import { connect } from "sahou";
 
 const desc = fileURLToPath(new URL("./gen/descriptor.json", import.meta.url));
 const node = await connect(desc, { node: "archive" });

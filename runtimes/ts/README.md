@@ -1,4 +1,4 @@
-# @sahou/runtime
+# sahou
 
 The TypeScript runtime for Sahou (two entry points: node / browser). Validation, envelopes, and handshake
 verdicts are all delegated to the bundled Rust core (wasm), so diagnostics are **byte-identical** with Python / TD.
@@ -7,12 +7,12 @@ verdicts are all delegated to the bundled Rust core (wasm), so diagnostics are *
 
 ```ts
 // Node (auto-spawns a link if none is running)
-import { connect } from "@sahou/runtime";
+import { connect } from "sahou";
 const node = await connect("descriptor.json", { node: "visuals" });
 // (The path is up to you. To use the output of `sahou gen --out-dir gen`, pass "gen/descriptor.json".)
 
 // browser (cannot spawn; when not connected, returns a NO with startup steps)
-import { connect } from "@sahou/runtime/browser";
+import { connect } from "sahou/browser";
 const node = await connect(descriptorJson, { node: "visuals" });
 
 await node.subscribe("touch", (p) => { ... }, { onReject: (c, d) => { ... } });
