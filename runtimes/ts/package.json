@@ -13,7 +13,7 @@
   },
   "files": ["dist", "core"],
   "scripts": {
-    "build:core": "wasm-pack build ../../core --release --target nodejs --out-dir ../runtimes/ts/core/node -- --features wasm && wasm-pack build ../../core --release --target web --out-dir ../runtimes/ts/core/browser -- --features wasm",
+    "build:core": "wasm-pack build ../../core --release --target nodejs --out-dir ../runtimes/ts/core/node -- --features wasm && wasm-pack build ../../core --release --target web --out-dir ../runtimes/ts/core/browser -- --features wasm && rm -f core/node/.gitignore core/browser/.gitignore",
     "build": "tsc -p tsconfig.json",
     "test": "vitest run"
   },

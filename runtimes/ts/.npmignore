@@ -1,0 +1,9 @@
+# npm packaging allowlist is `files` in package.json (dist, core). This file exists so npm
+# does NOT fall back to .gitignore (which ignores the built core/ that the package needs).
+node_modules/
+src/
+tests/
+tsconfig.json
+tsconfig.test.json
+vitest.config.ts
+*.tsbuildinfo
