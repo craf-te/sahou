@@ -36,8 +36,8 @@ install-full: gui-build install
 
 # Regenerate the committed demo IR + type stubs (keep them fresh; stub_freshness test guards this).
 gen-demo:
-    cargo run -p sahou -- gen examples/demo/schema.sahou.yaml --out-dir examples/demo/runtime/gen --lang python --node sensor
-    cargo run -p sahou -- gen examples/demo/schema.sahou.yaml --out-dir examples/demo/runtime/gen --lang ts --node visuals
+    cargo run -p sahou-cli -- gen examples/demo/schema.sahou.yaml --out-dir examples/demo/runtime/gen --lang python --node sensor
+    cargo run -p sahou-cli -- gen examples/demo/schema.sahou.yaml --out-dir examples/demo/runtime/gen --lang ts --node visuals
 
 # Regenerate the third-party license notice embedded in the cli (needs `cargo install cargo-about --features cli`).
 licenses:
@@ -63,7 +63,7 @@ build-ffi:
 
 # Regenerate the TD demo descriptor (source of truth = td/examples/schema.sahou.yaml).
 gen-td-demo:
-    cargo run -p sahou -- gen td/examples/schema.sahou.yaml --out-dir td/examples/gen
+    cargo run -p sahou-cli -- gen td/examples/schema.sahou.yaml --out-dir td/examples/gen
 
 # Run the op's TD-independent tests (pure payload/envelope) + the FFI smoke test.
 test-td: build-ffi gen-td-demo
