@@ -5,7 +5,7 @@ with zero IP configuration, and experience how a boundary NO produces the same d
 
 ## Prerequisites (one time only)
 1. `cargo build --release -p sahou` (or `cargo install --path cli`)
-2. `cd runtimes/ts && npm install && npm run build:core && npm run build`
+2. `cd runtimes/typescript && npm install && npm run build:core && npm run build`
 3. Generate IR: `./target/release/sahou gen examples/demo/schema.sahou.yaml --out-dir examples/demo/runtime/gen`
    (In ②d the output location was reorganized under `gen/`. Old layout: `descriptor.json` directly in cwd. Delete any leftover old files.)
 4. `cd examples/demo/runtime && npm install` / `cd browser && npm install`
@@ -18,7 +18,7 @@ with zero IP configuration, and experience how a boundary NO produces the same d
 - Terminal B: `cd examples/demo/runtime && node --experimental-wasm-modules node_state.mjs`
   (Responds to get_state as the archive. Aggregates touch and returns a test response to py_pub's query_confirmed.
   Stop this terminal to experience the "delivery unconfirmed" NO on the py_pub side.)
-- Terminal C: `cd runtimes/py && SAHOU_CONNECT="tcp/[::1]:7448" uv run python ../../examples/demo/runtime/py_pub.py`
+- Terminal C: `cd runtimes/python && SAHOU_CONNECT="tcp/[::1]:7448" uv run python ../../examples/demo/runtime/py_pub.py`
   (In environments where multicast is unavailable, add `SAHOU_CONNECT=tcp/[::1]:7448`. On Windows the link's peer_listen
   is IPv6-only, so use the **IPv6 loopback `[::1]`** rather than `127.0.0.1`.)
 - Browser: `cd examples/demo/runtime/browser && npm run dev` → http://localhost:5173

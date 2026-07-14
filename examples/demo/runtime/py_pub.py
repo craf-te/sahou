@@ -1,5 +1,5 @@
 """Publishes touch as the demo contract's sensor (with a send-boundary NO to experience).
-Run: cd runtimes/py && uv run python ../../examples/demo/runtime/py_pub.py
+Run: cd runtimes/python && uv run python ../../examples/demo/runtime/py_pub.py
 Environments without multicast: add SAHOU_CONNECT=tcp/[::1]:7448 (link's peer port; on Windows use the IPv6 loopback).
 """
 import os

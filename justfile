@@ -50,9 +50,9 @@ licenses:
 # --- Runtimes: publish (placeholders — wire up once npm org / PyPI name are secured) ---
 
 # publish-npm:
-#     cd runtimes/ts && npm run build:core && npm run build && npm publish --access public
+#     cd runtimes/typescript && npm run build:core && npm run build && npm publish --access public
 # publish-py:
-#     cd runtimes/py && maturin publish
+#     cd runtimes/python && maturin publish
 
 # --- FFI (C ABI for C++/Go/TouchDesigner) ---
 
@@ -63,23 +63,23 @@ build-ffi:
     cd core && cbindgen --config cbindgen.toml -o sahou.h
 
 # --- TouchDesigner op (macOS .plugin) ---
-# Needs the TD C++ SDK vendored into td/vendor/ (Derivative Shared Use License — see td/README.md).
+# Needs the TD C++ SDK vendored into runtimes/touchdesigner/vendor/ (Derivative Shared Use License — see runtimes/touchdesigner/README.md).
 
-# Regenerate the TD demo descriptor (source of truth = td/examples/schema.sahou.yaml).
+# Regenerate the TD demo descriptor (source of truth = runtimes/touchdesigner/examples/schema.sahou.yaml).
 gen-td-demo:
-    cargo run -p sahou-cli -- gen td/examples/schema.sahou.yaml --out-dir td/examples/gen
+    cargo run -p sahou-cli -- gen runtimes/touchdesigner/examples/schema.sahou.yaml --out-dir runtimes/touchdesigner/examples/gen
 
 # Run the op's TD-independent tests (pure payload/envelope) + the FFI smoke test.
 test-td: build-ffi gen-td-demo
-    td/test/run.sh
+    runtimes/touchdesigner/test/run.sh
 
-# Build the Sahou Out CHOP .plugin (arm64) into td/build/Release/SahouOut.plugin.
+# Build the Sahou Out CHOP .plugin (arm64) into runtimes/touchdesigner/build/Release/SahouOut.plugin.
 # Bundles the zenoh transport dylib into the plugin (Contents/Frameworks) and ad-hoc re-signs it.
 build-td-macos: build-ffi
     cargo build -p sahou-transport --release
     install_name_tool -id @rpath/libsahou_transport.dylib target/release/libsahou_transport.dylib
-    xcodebuild -project td/macos/SahouOut.xcodeproj -target SahouOut -configuration Release SYMROOT="$PWD/td/build" build
-    mkdir -p "td/build/Release/SahouOut.plugin/Contents/Frameworks"
-    cp target/release/libsahou_transport.dylib "td/build/Release/SahouOut.plugin/Contents/Frameworks/"
-    codesign -f -s - "td/build/Release/SahouOut.plugin/Contents/Frameworks/libsahou_transport.dylib"
-    codesign -f -s - "td/build/Release/SahouOut.plugin"
+    xcodebuild -project runtimes/touchdesigner/macos/SahouOut.xcodeproj -target SahouOut -configuration Release SYMROOT="$PWD/runtimes/touchdesigner/build" build
+    mkdir -p "runtimes/touchdesigner/build/Release/SahouOut.plugin/Contents/Frameworks"
+    cp target/release/libsahou_transport.dylib "runtimes/touchdesigner/build/Release/SahouOut.plugin/Contents/Frameworks/"
+    codesign -f -s - "runtimes/touchdesigner/build/Release/SahouOut.plugin/Contents/Frameworks/libsahou_transport.dylib"
+    codesign -f -s - "runtimes/touchdesigner/build/Release/SahouOut.plugin"

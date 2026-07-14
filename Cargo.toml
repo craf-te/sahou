@@ -1,5 +1,5 @@
 [workspace]
-members = ["core", "cli", "td/transport", "runtime"]
+members = ["core", "cli", "runtimes/touchdesigner/transport", "runtimes/rust"]
 resolver = "2"
 
 # The profile that 'dist' will build with

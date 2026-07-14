@@ -195,15 +195,15 @@
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(SRCROOT)/../vendor",
-					"$(SRCROOT)/../../core",
+					"$(SRCROOT)/../../../core",
 					"$(SRCROOT)/../transport",
 				);
 				INFOPLIST_FILE = "$(SRCROOT)/Info.plist";
 				INSTALL_PATH = /;
 				LD_RUNPATH_SEARCH_PATHS = "@loader_path/../Frameworks";
 				OTHER_LDFLAGS = (
-					"$(SRCROOT)/../../target/release/libsahou_core.a",
-					"$(SRCROOT)/../../target/release/libsahou_transport.dylib",
+					"$(SRCROOT)/../../../target/release/libsahou_core.a",
+					"$(SRCROOT)/../../../target/release/libsahou_transport.dylib",
 					"-framework",
 					CoreFoundation,
 					"-framework",
@@ -226,15 +226,15 @@
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(SRCROOT)/../vendor",
-					"$(SRCROOT)/../../core",
+					"$(SRCROOT)/../../../core",
 					"$(SRCROOT)/../transport",
 				);
 				INFOPLIST_FILE = "$(SRCROOT)/Info.plist";
 				INSTALL_PATH = /;
 				LD_RUNPATH_SEARCH_PATHS = "@loader_path/../Frameworks";
 				OTHER_LDFLAGS = (
-					"$(SRCROOT)/../../target/release/libsahou_core.a",
-					"$(SRCROOT)/../../target/release/libsahou_transport.dylib",
+					"$(SRCROOT)/../../../target/release/libsahou_core.a",
+					"$(SRCROOT)/../../../target/release/libsahou_transport.dylib",
 					"-framework",
 					CoreFoundation,
 					"-framework",

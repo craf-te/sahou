@@ -12,7 +12,7 @@ import subprocess
 import sys
 
 HERE = pathlib.Path(__file__).resolve().parent
-REPO = HERE.parents[2]  # runtimes/py/tests → repository root
+REPO = HERE.parents[2]  # runtimes/python/tests → repository root
 STUB_DIR = REPO / "examples" / "demo" / "runtime" / "gen" / "sensor"
 FIXTURES = HERE / "typestub"
 

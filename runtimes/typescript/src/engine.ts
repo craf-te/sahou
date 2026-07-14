@@ -1,5 +1,5 @@
 // SahouNode — zenoh-ts glue. All boundary semantics are delegated to the core (wasm) (design §1, option B).
-// Symmetric with the Python version, runtimes/py/python/sahou/_engine.py.
+// Symmetric with the Python version, runtimes/python/python/sahou/_engine.py.
 import {
   CongestionControl,
   Duration,

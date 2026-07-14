@@ -23,11 +23,12 @@ rather than propagating. The transport is built on Zenoh.
 - `cli/` — the `sahou` binary (`gen` / `validate` / `check` / `fmt` / `tap` / `gui` /
   `licenses`). Embeds the built GUI via rust-embed.
 - `gui/` — the browser node editor (Vue + G6), running the core as wasm.
-- `runtimes/` — thin, hand-written language runtimes: `py` (`sahou`, PyPI) and `ts`
-  (`sahou`, npm).
+- `runtimes/` — thin, hand-written language runtimes, one directory each: `python`
+  (`sahou`, PyPI), `typescript` (`sahou`, npm), `rust` (`sahou`, crates.io — placeholder),
+  and `touchdesigner` (see below).
 - `examples/` — a runnable demo.
-- `td/` — the TouchDesigner Sahou Out CHOP (C++/Rust). Experimental, macOS/arm64.
-  `td/transport/` is the `sahou-transport` cdylib (a C ABI over Zenoh).
+- `runtimes/touchdesigner/` — the TouchDesigner Sahou Out CHOP (C++/Rust). Experimental, macOS/arm64.
+  `runtimes/touchdesigner/transport/` is the `sahou-transport` cdylib (a C ABI over Zenoh).
 
 ## Toolchain and tasks
 
@@ -40,7 +41,7 @@ rather than propagating. The transport is built on Zenoh.
   - `just gen-demo` — regenerate the committed demo IR + stubs (guarded by a freshness test).
   - `just licenses` — regenerate the bundled third-party notice (needs `cargo install cargo-about --features cli`).
   - `just build-ffi` — build the static lib + regenerate `core/sahou.h` (needs `cbindgen`).
-  - `just build-td-macos` / `just test-td` — build/test the TouchDesigner plugin (macOS; needs the TD SDK vendored into `td/vendor/`).
+  - `just build-td-macos` / `just test-td` — build/test the TouchDesigner plugin (macOS; needs the TD SDK vendored into `runtimes/touchdesigner/vendor/`).
 - On this machine, `cc` is a shell alias — for C/C++ compilation use `/usr/bin/cc` / `/usr/bin/c++` explicitly.
 
 ## Non-negotiable design invariants

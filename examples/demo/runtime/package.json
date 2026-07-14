@@ -2,5 +2,5 @@
   "name": "sahou-demo-runtime",
   "private": true,
   "type": "module",
-  "dependencies": { "sahou": "file:../../../runtimes/ts" }
+  "dependencies": { "sahou": "file:../../../runtimes/typescript" }
 }

@@ -1,17 +1,17 @@
 # Rust build artifacts
 /target
 
-# Python runtime (runtimes/py)
-runtimes/py/.venv/
+# Python runtime (runtimes/python)
+runtimes/python/.venv/
 **/__pycache__/
 *.egg-info/
 .pytest_cache/
 # build artifacts that `maturin develop` (editable install) drops inside the python source
-runtimes/py/python/sahou/_core*.pyd
-runtimes/py/python/sahou/_core*.so
-runtimes/py/python/sahou/*.pdb
+runtimes/python/python/sahou/_core*.pyd
+runtimes/python/python/sahou/_core*.so
+runtimes/python/python/sahou/*.pdb
 
-# demo example (file: dependency on runtimes/ts + generated IR)
+# demo example (file: dependency on runtimes/typescript + generated IR)
 # The IR (whole descriptor.json) is a generated artifact, so it is ignored. The stub artifacts
 # (gen/<node>/sahou_stub.*) are committed as freshness-guard fixtures and living examples, so they are NOT ignored.
 examples/demo/runtime/gen/descriptor.json

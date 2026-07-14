@@ -1,4 +1,4 @@
-# Build platform wheels for the `sahou` Python runtime (runtimes/py, pyo3 via maturin)
+# Build platform wheels for the `sahou` Python runtime (runtimes/python, pyo3 via maturin)
 # and publish to PyPI. Triggered manually (workflow_dispatch) so it is decoupled from the
 # CLI's cargo-dist tag release. Publishing uses PyPI Trusted Publishing (OIDC, no token).
 name: python-release
@@ -21,14 +21,14 @@ jobs:
       - name: Build wheels
         uses: PyO3/maturin-action@v1
         with:
-          working-directory: runtimes/py
+          working-directory: runtimes/python
           target: ${{ matrix.target }}
           args: --release --out dist
           manylinux: auto
       - uses: actions/upload-artifact@v4
         with:
           name: wheels-linux-${{ matrix.target }}
-          path: runtimes/py/dist
+          path: runtimes/python/dist
 
   macos:
     runs-on: ${{ matrix.runner }}
@@ -43,13 +43,13 @@ jobs:
       - name: Build wheels
         uses: PyO3/maturin-action@v1
         with:
-          working-directory: runtimes/py
+          working-directory: runtimes/python
           target: ${{ matrix.target }}
           args: --release --out dist
       - uses: actions/upload-artifact@v4
         with:
           name: wheels-macos-${{ matrix.target }}
-          path: runtimes/py/dist
+          path: runtimes/python/dist
 
   windows:
     runs-on: windows-latest
@@ -58,13 +58,13 @@ jobs:
       - name: Build wheels
         uses: PyO3/maturin-action@v1
         with:
-          working-directory: runtimes/py
+          working-directory: runtimes/python
           target: x64
           args: --release --out dist
       - uses: actions/upload-artifact@v4
         with:
           name: wheels-windows-x64
-          path: runtimes/py/dist
+          path: runtimes/python/dist
 
   sdist:
     runs-on: ubuntu-latest
@@ -73,13 +73,13 @@ jobs:
       - name: Build sdist
         uses: PyO3/maturin-action@v1
         with:
-          working-directory: runtimes/py
+          working-directory: runtimes/python
           command: sdist
           args: --out dist
       - uses: actions/upload-artifact@v4
         with:
           name: wheels-sdist
-          path: runtimes/py/dist
+          path: runtimes/python/dist
 
   release:
     name: Publish to PyPI

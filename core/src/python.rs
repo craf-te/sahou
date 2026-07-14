@@ -1,5 +1,5 @@
 //! Python bindings (feature "python"). ABI = string/bytes in, JSON string out.
-//! The Python glue (runtimes/py) imports this as `sahou._core`.
+//! The Python glue (runtimes/python) imports this as `sahou._core`.
 use pyo3::exceptions::PyValueError;
 use pyo3::prelude::*;
 

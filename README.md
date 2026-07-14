@@ -87,14 +87,14 @@ sahou gui
 
 Thin, hand-written libraries that share the Rust core:
 
-- **Python** — package `sahou` (PyPI). See [`runtimes/py/README.md`](runtimes/py/README.md).
-- **Node.js / browser** — package `sahou` (npm). See [`runtimes/ts/README.md`](runtimes/ts/README.md).
+- **Python** — package `sahou` (PyPI). See [`runtimes/python/README.md`](runtimes/python/README.md).
+- **Node.js / browser** — package `sahou` (npm). See [`runtimes/typescript/README.md`](runtimes/typescript/README.md).
 
 ## TouchDesigner (experimental)
 
 A native **Sahou Out CHOP** for TouchDesigner is included. It is **experimental and
 macOS/arm64 only** today, and building it needs the TouchDesigner C++ SDK.
-See [`td/README.md`](td/README.md).
+See [`runtimes/touchdesigner/README.md`](runtimes/touchdesigner/README.md).
 
 ## License
 

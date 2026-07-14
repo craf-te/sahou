@@ -3,6 +3,6 @@
   "private": true,
   "type": "module",
   "scripts": { "dev": "vite" },
-  "dependencies": { "sahou": "file:../../../../runtimes/ts" },
+  "dependencies": { "sahou": "file:../../../../runtimes/typescript" },
   "devDependencies": { "vite": "^6" }
 }
