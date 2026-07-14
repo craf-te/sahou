@@ -7,7 +7,20 @@ name = "sahou"
 version = "0.0.1"
 description = "Sahou runtime — schema-first typed messaging for creative installations (on Zenoh)"
 requires-python = ">=3.11"
+readme = "README.md"
+authors = [{ name = "craf-te" }]
+keywords = ["schema", "messaging", "zenoh", "lan", "runtime"]
+classifiers = [
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Rust",
+    "Topic :: Software Development :: Libraries",
+]
 dependencies = ["eclipse-zenoh>=1.9,<2"]
+
+[project.urls]
+Homepage = "https://github.com/craf-te/sahou"
+Repository = "https://github.com/craf-te/sahou"
 
 [tool.maturin]
 manifest-path = "../../core/Cargo.toml"
