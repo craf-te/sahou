@@ -504,7 +504,15 @@ fn python_all_generates_connect_overloads() {
         ),
         "{pyi}"
     );
-    assert!(pyi.contains("@overload"), "{pyi}");
+    // module-level overloads: @overload sits at column 0 (a 4-space indent would be a Python syntax error)
+    assert!(
+        pyi.contains("\n@overload\ndef connect("),
+        "connect @overload must be at column 0: {pyi}"
+    );
+    assert!(
+        !pyi.contains("    @overload\ndef connect("),
+        "connect @overload must not be indented: {pyi}"
+    );
     assert!(!pyi.contains("OscLightNode"), "{pyi}");
     let py = content_of(&files, "sahou_gen.py");
     assert!(py.contains("from sahou import connect"), "{py}");
