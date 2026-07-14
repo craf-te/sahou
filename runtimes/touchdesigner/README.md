@@ -2,7 +2,7 @@
 
 > **Status: experimental.** The Sahou Out CHOP is currently **macOS / arm64 only** and
 > validates channels against the schema (with optional Zenoh sending). Building it
-> requires the TouchDesigner C++ SDK vendored into `td/vendor/` (Derivative Shared Use
+> requires the TouchDesigner C++ SDK vendored into `runtimes/touchdesigner/vendor/` (Derivative Shared Use
 > License — not redistributed here; copy it from your local TouchDesigner install).
 
 TouchDesigner as a first-class Sahou node: send/receive over the typed contract from custom
@@ -24,7 +24,7 @@ statically linked).
 ## Layout
 
 ```
-td/
+runtimes/touchdesigner/
 ├── src/                 # our code (committed)
 │   ├── SahouOutCHOP.{h,cpp}   the op — thin TD glue
 │   ├── payload.{h,cpp}        pure: channels -> JSON payload (no TD SDK)
@@ -33,7 +33,8 @@ td/
 │   ├── payload_test.cpp / envelope_test.cpp   pure unit tests
 │   ├── ffi_smoke.cpp                          payload -> core -> OK/NO (links the C ABI)
 │   └── run.sh                                 builds & runs all three
-├── macos/               # xcodeproj + Info.plist (committed)
+├── macos/               # macOS build project: SahouOut.xcodeproj + Info.plist -> .plugin (committed)
+├── windows/             # Windows build project: Visual Studio -> SahouOut.dll (planned; placeholder)
 ├── transport/           # sahou-transport: zenoh send glue (Rust cdylib, committed) — bundled into
 │                         # the .plugin's Contents/Frameworks and ad-hoc signed by build-td-macos
 ├── examples/            # schema.sahou.yaml (committed); gen/descriptor.json (generated, ignored)
@@ -41,29 +42,34 @@ td/
 └── build/               # xcodebuild output — ignored
 ```
 
+The C++ op source (`src/`), the tests (`test/`), the Rust `transport/`, and `examples/` are
+**shared across platforms**. Only `macos/` and `windows/` hold the per-platform build projects
+(Xcode → `.plugin` on macOS; Visual Studio → `.dll` on Windows). Windows is **not implemented yet**
+— the current supported build is macOS/arm64.
+
 ## Prerequisite — vendor the TD C++ SDK (once)
 
 The TD C++ SDK (`CHOP_CPlusPlusBase.h`, `CPlusPlus_Common.h`) and the sample project are owned by
-Derivative under the **Shared Use License**, so they are **not committed** (`td/.gitignore`). Copy
-them from your local TD install into `td/vendor/`:
+Derivative under the **Shared Use License**, so they are **not committed** (`runtimes/touchdesigner/.gitignore`). Copy
+them from your local TD install into `runtimes/touchdesigner/vendor/`:
 
 ```sh
-cp -R "/Applications/TouchDesigner.app/Contents/Resources/tfs/Samples/CPlusPlus/CHOP/." td/vendor/
+cp -R "/Applications/TouchDesigner.app/Contents/Resources/tfs/Samples/CPlusPlus/CHOP/." runtimes/touchdesigner/vendor/
 ```
 
 (If your TD ships without the samples, get them from
 [TouchDesigner/CustomOperatorSamples](https://github.com/TouchDesigner/CustomOperatorSamples).)
-The xcodeproj expects the headers and `Info.plist` template location under `td/vendor/` and the
-op's own `Info.plist` under `td/macos/`.
+The xcodeproj expects the headers and `Info.plist` template location under `runtimes/touchdesigner/vendor/` and the
+op's own `Info.plist` under `runtimes/touchdesigner/macos/`.
 
 ## Build (macOS, arm64)
 
 ```sh
 just build-ffi        # target/release/libsahou_core.a + core/sahou.h (once / after core changes)
-just build-td-macos   # -> td/build/Release/SahouOut.plugin
+just build-td-macos   # -> runtimes/touchdesigner/build/Release/SahouOut.plugin
 ```
 
-`build-td-macos` runs `xcodebuild` on `td/macos/SahouOut.xcodeproj`. The Rust core is **statically
+`build-td-macos` runs `xcodebuild` on `runtimes/touchdesigner/macos/SahouOut.xcodeproj`. The Rust core is **statically
 linked**, so the `.plugin` is self-contained — unlike the spike there is no companion `sahou_td`
 dylib to co-locate. The build is pinned to `arm64` (TD 2025 on Apple Silicon); a universal binary
 for Intel TD would need a `lipo`'d `libsahou_core.a` (follow-up).
@@ -85,11 +91,11 @@ TD restart (no re-copy):
 ```sh
 PLUGINS="$HOME/Library/Application Support/Derivative/TouchDesigner099/Plugins"
 mkdir -p "$PLUGINS"
-ln -s "$PWD/td/build/Release/SahouOut.plugin" "$PLUGINS/SahouOut.plugin"
+ln -s "$PWD/runtimes/touchdesigner/build/Release/SahouOut.plugin" "$PLUGINS/SahouOut.plugin"
 ```
 
 Then restart TD (plugins are scanned at startup; a running TD locks the loaded bundle) and add a
-**Sahou Out** CHOP. Notes: the symlink target lives under `td/build/` (git-ignored), so a
+**Sahou Out** CHOP. Notes: the symlink target lives under `runtimes/touchdesigner/build/` (git-ignored), so a
 `cargo clean` / removed build breaks the link — just rebuild. The local ad-hoc signature means no
 Gatekeeper quarantine.
 
@@ -112,7 +118,7 @@ Parameters:
 - **Test Send** — publish one IR-valid sample of the selected connection over Zenoh (works with no
   input). Verify receipt with `sahou tap`:
   ```sh
-  sahou tap td/examples/gen/descriptor.json --node viz --count 1   # subscribe to `motion` as `viz`
+  sahou tap runtimes/touchdesigner/examples/gen/descriptor.json --node viz --count 1   # subscribe to `motion` as `viz`
   ```
   then press **Test Send** in TD; the tap prints `[motion] #0 OK sahou/motion {...}`. The node's
   Info DAT `test` row shows the sent payload and transport status (`opened` / `sent` / `error`).
@@ -136,11 +142,11 @@ latest sample → value). The node's status shows up as:
 
 ### Demo contract
 
-`td/examples/schema.sahou.yaml` defines node `td` / connection `motion` with three float fields
+`runtimes/touchdesigner/examples/schema.sahou.yaml` defines node `td` / connection `motion` with three float fields
 `x`, `y`, `speed`. Generate its descriptor and point the op at it:
 
 ```sh
-just gen-td-demo   # -> td/examples/gen/descriptor.json
+just gen-td-demo   # -> runtimes/touchdesigner/examples/gen/descriptor.json
 ```
 
 Set **Node** = `td`, **Connection** = `motion`, and feed a CHOP with channels named `x`, `y`,

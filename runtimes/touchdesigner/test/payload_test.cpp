@@ -1,5 +1,5 @@
 // Zero-dependency unit test for the pure payload mapping (TDD).
-// Build & run:  /usr/bin/c++ -std=c++17 td/src/payload.cpp td/test/payload_test.cpp -o /tmp/payload_test && /tmp/payload_test
+// Build & run:  /usr/bin/c++ -std=c++17 runtimes/touchdesigner/src/payload.cpp runtimes/touchdesigner/test/payload_test.cpp -o /tmp/payload_test && /tmp/payload_test
 #include "../src/payload.h"
 
 #include <cmath>

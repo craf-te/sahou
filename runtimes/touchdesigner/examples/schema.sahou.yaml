@@ -1,7 +1,7 @@
 # Minimal float-only contract used by the Sahou Out CHOP demo/verification.
 # The CHOP projects numeric channels, so this connection is all scalar floats
 # (a clean OK path). The descriptor is generated with:
-#   sahou gen td/examples/schema.sahou.yaml --out-dir td/examples/gen
+#   sahou gen runtimes/touchdesigner/examples/schema.sahou.yaml --out-dir runtimes/touchdesigner/examples/gen
 schema: td_demo
 version: 1
 nodes:

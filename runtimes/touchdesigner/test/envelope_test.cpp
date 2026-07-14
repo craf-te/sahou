@@ -1,5 +1,5 @@
 // Zero-dependency unit test for the pure envelope helpers (TDD).
-// Build & run:  /usr/bin/c++ -std=c++17 td/src/envelope.cpp td/test/envelope_test.cpp -o /tmp/envelope_test && /tmp/envelope_test
+// Build & run:  /usr/bin/c++ -std=c++17 runtimes/touchdesigner/src/envelope.cpp runtimes/touchdesigner/test/envelope_test.cpp -o /tmp/envelope_test && /tmp/envelope_test
 #include "../src/envelope.h"
 
 #include <cstdio>

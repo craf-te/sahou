@@ -5,9 +5,9 @@
 //
 // Build & run (from repo root, after `just build-ffi`):
 //   /usr/bin/c++ -std=c++17 -DSAHOU_CAPI -Icore \
-//       td/src/payload.cpp td/test/ffi_smoke.cpp target/release/libsahou_core.a \
+//       runtimes/touchdesigner/src/payload.cpp runtimes/touchdesigner/test/ffi_smoke.cpp target/release/libsahou_core.a \
 //       -framework CoreFoundation -framework Security -o /tmp/ffi_smoke \
-//   && /tmp/ffi_smoke td/examples/gen/descriptor.json
+//   && /tmp/ffi_smoke runtimes/touchdesigner/examples/gen/descriptor.json
 #include "../src/envelope.h"
 #include "../src/payload.h"
 
@@ -50,7 +50,7 @@ static void expect(const char* label, SahouRuntime* rt, const char* node, const 
 }
 
 int main(int argc, char** argv) {
-    const char* desc_path = argc > 1 ? argv[1] : "td/examples/gen/descriptor.json";
+    const char* desc_path = argc > 1 ? argv[1] : "runtimes/touchdesigner/examples/gen/descriptor.json";
     std::string desc = slurp(desc_path);
     if (desc.empty()) {
         std::printf("FAIL could not read descriptor: %s\n", desc_path);
