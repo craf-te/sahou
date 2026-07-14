@@ -7,8 +7,8 @@ runtimes/py/.venv/
 *.egg-info/
 .pytest_cache/
 # build artifacts that `maturin develop` (editable install) drops inside the python source
-runtimes/py/python/sahou/_core.pyd
-runtimes/py/python/sahou/_core.so
+runtimes/py/python/sahou/_core*.pyd
+runtimes/py/python/sahou/_core*.so
 runtimes/py/python/sahou/*.pdb
 
 # demo example (file: dependency on runtimes/ts + generated IR)
