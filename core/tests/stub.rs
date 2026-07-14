@@ -6,7 +6,8 @@ use sahou_core::ir::descriptor_json;
 use sahou_core::parse::parse_contract;
 use sahou_core::runtime::load_descriptor;
 use sahou_core::stub::{
-    check_drift, gen_stub, parse_stub_hashes, parse_stub_node, StubFile, StubLang,
+    check_drift, check_drift_all, gen_stub, gen_stub_all, parse_stub_hashes, parse_stub_node,
+    parse_stub_schema, StubFile, StubLang, TsTarget,
 };
 
 const DEMO: &str = include_str!("../../examples/demo/schema.sahou.yaml");
@@ -414,6 +415,178 @@ fn conflicting_markers_are_no() {
     let text = "# sahou:hash touch=aaaaaaaaaaaaaaaa\n# sahou:hash touch=bbbbbbbbbbbbbbbb\n";
     let err = parse_stub_hashes(text).unwrap_err();
     assert_eq!(err[0].code, "stub_marker_conflict");
+}
+
+// ---- Whole-descriptor mode (gen_stub_all) ----------------------------------
+
+#[test]
+fn ts_all_generates_facade_per_sahou_node_and_connect_overloads() {
+    let files = gen_stub_all(&demo_desc(), StubLang::Ts, TsTarget::Node).unwrap();
+    let dts = content_of(&files, "sahou.gen.d.mts");
+    // one facade per sahou node (archive, sensor, visuals); the external osc_light is excluded
+    assert!(dts.contains("export interface SensorNode {"), "{dts}");
+    assert!(dts.contains("export interface VisualsNode {"), "{dts}");
+    assert!(dts.contains("export interface ArchiveNode {"), "{dts}");
+    assert!(
+        !dts.contains("OscLightNode"),
+        "external node must be excluded: {dts}"
+    );
+    // one connect overload per sahou node → node-name completion + correct facade return
+    assert!(
+        dts.contains(
+            r#"export declare function connect(descriptor: string | object, opts: { node: "sensor"; locator?: string; port?: number; spawnLink?: boolean }): Promise<SensorNode>;"#
+        ),
+        "{dts}"
+    );
+    assert!(
+        dts.contains(r#"opts: { node: "visuals"; locator?: string; port?: number; spawnLink?: boolean }): Promise<VisualsNode>;"#),
+        "{dts}"
+    );
+    // shared payload type defined exactly once (dedup across sensor/visuals/archive referencing touch)
+    assert_eq!(
+        dts.matches("export interface Touch {").count(),
+        1,
+        "Touch must be defined once: {dts}"
+    );
+    // role filtering preserved
+    assert!(
+        dts.contains(r#"  publish(conn: "touch", payload: Touch): Promise<void>;"#),
+        "sensor publishes touch: {dts}"
+    );
+    assert!(
+        dts.contains(
+            r#"  subscribe(conn: "touch", handler: (payload: Touch) => void | Promise<void>"#
+        ),
+        "visuals/archive subscribe touch: {dts}"
+    );
+    // runtime side re-exports the real connect (node target) + SCHEMA_HASHES
+    let mjs = content_of(&files, "sahou.gen.mjs");
+    assert!(mjs.contains(r#"export { connect } from "sahou";"#), "{mjs}");
+    assert!(
+        mjs.contains("export const SCHEMA_HASHES = Object.freeze({"),
+        "{mjs}"
+    );
+    assert!(
+        !mjs.contains("typedNode"),
+        "whole-descriptor mode types connect directly (no typedNode): {mjs}"
+    );
+}
+
+#[test]
+fn ts_all_browser_target_reexports_browser_entry() {
+    let files = gen_stub_all(&demo_desc(), StubLang::Ts, TsTarget::Browser).unwrap();
+    let mjs = content_of(&files, "sahou.gen.mjs");
+    assert!(
+        mjs.contains(r#"export { connect } from "sahou/browser";"#),
+        "{mjs}"
+    );
+    let dts = content_of(&files, "sahou.gen.d.mts");
+    // browser opts have no node-only fields (port / spawnLink)
+    assert!(
+        dts.contains(r#"opts: { node: "visuals"; locator?: string }): Promise<VisualsNode>;"#),
+        "{dts}"
+    );
+    assert!(
+        !dts.contains("spawnLink"),
+        "browser opts omit node-only fields: {dts}"
+    );
+}
+
+#[test]
+fn python_all_generates_connect_overloads() {
+    let files = gen_stub_all(&demo_desc(), StubLang::Python, TsTarget::Node).unwrap();
+    let pyi = content_of(&files, "sahou_gen.pyi");
+    assert!(pyi.contains("class SensorNode(Protocol):"), "{pyi}");
+    assert!(pyi.contains("class VisualsNode(Protocol):"), "{pyi}");
+    assert!(
+        pyi.contains(
+            r#"def connect(descriptor, node: Literal["visuals"], *, connect: list[str] | None = ..., listen: list[str] | None = ..., multicast: bool = ...) -> VisualsNode: ..."#
+        ),
+        "{pyi}"
+    );
+    assert!(pyi.contains("@overload"), "{pyi}");
+    assert!(!pyi.contains("OscLightNode"), "{pyi}");
+    let py = content_of(&files, "sahou_gen.py");
+    assert!(py.contains("from sahou import connect"), "{py}");
+    assert!(py.contains("SCHEMA_HASHES"), "{py}");
+}
+
+#[test]
+fn all_markers_use_schema_and_cover_all_connections() {
+    let desc = demo_desc();
+    let files = gen_stub_all(&desc, StubLang::Ts, TsTarget::Node).unwrap();
+    for f in &files {
+        assert!(
+            f.content.contains("sahou:stub schema=demo_installation"),
+            "{}",
+            f.rel_path
+        );
+        assert!(
+            parse_stub_node(&f.content).is_none(),
+            "whole-descriptor stub has no node= marker: {}",
+            f.rel_path
+        );
+    }
+    let dts = content_of(&files, "sahou.gen.d.mts");
+    for conn in ["touch", "points", "debug_tap", "get_state"] {
+        let h = &desc.connections[conn].hash;
+        assert!(
+            dts.contains(&format!("sahou:hash {conn}={h}")),
+            "missing {conn}: {dts}"
+        );
+    }
+    assert_eq!(parse_stub_schema(dts).as_deref(), Some("demo_installation"));
+}
+
+#[test]
+fn check_drift_all_fresh_passes_and_detects_drift() {
+    let desc = demo_desc();
+    let files = gen_stub_all(&desc, StubLang::Ts, TsTarget::Node).unwrap();
+    let all: String = files
+        .iter()
+        .map(|f| f.content.as_str())
+        .collect::<Vec<_>>()
+        .join("\n");
+    let hashes = parse_stub_hashes(&all).unwrap();
+    assert_eq!(hashes.len(), 4, "all 4 connections present");
+    assert!(
+        check_drift_all(&desc, &hashes).is_empty(),
+        "fresh must pass"
+    );
+    // a swapped hash is drift
+    let mut bad = hashes.clone();
+    bad.insert("touch".into(), "0000000000000000".into());
+    let diags = check_drift_all(&desc, &bad);
+    assert_eq!(diags.len(), 1);
+    assert_eq!(diags[0].code, "stub_hash_drift");
+}
+
+#[test]
+fn check_drift_all_stale_and_missing_connections() {
+    let desc = demo_desc();
+    let stale: BTreeMap<String, String> =
+        [("ghost".to_string(), "1111111111111111".to_string())].into();
+    let diags = check_drift_all(&desc, &stale);
+    let codes: Vec<&str> = diags.iter().map(|d| d.code.as_str()).collect();
+    assert!(codes.contains(&"stub_stale_connection"), "{codes:?}");
+    assert_eq!(
+        codes
+            .iter()
+            .filter(|c| **c == "stub_missing_connection")
+            .count(),
+        4,
+        "all 4 participating connections are missing: {codes:?}"
+    );
+}
+
+#[test]
+fn gen_stub_all_is_deterministic() {
+    let desc = demo_desc();
+    for lang in [StubLang::Python, StubLang::Ts] {
+        let a = gen_stub_all(&desc, lang, TsTarget::Node).unwrap();
+        let b = gen_stub_all(&desc, lang, TsTarget::Node).unwrap();
+        assert_eq!(a, b, "regeneration must be deterministic");
+    }
 }
 
 #[test]

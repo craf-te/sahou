@@ -6,16 +6,24 @@ use std::collections::{BTreeMap, BTreeSet};
 
 use serde::Serialize;
 
-use crate::contract::{Slot, SlotKind, Typing};
+use crate::contract::{NodeKind, Pattern, Slot, SlotKind, Typing};
 use crate::diag::Diag;
-use crate::ir::Descriptor;
-use crate::runtime::node_plan;
+use crate::ir::{Descriptor, DescriptorConnection};
+use crate::runtime::{node_plan, NodePlan};
 use crate::typespec::{Field, TypeName, TypeSpec};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum StubLang {
     Python,
     Ts,
+}
+
+/// Transport a whole-descriptor TS stub binds to. Selects the `connect` re-export source in the
+/// runtime `.mjs` and the node-only fields in the typed opts. Ignored for Python (single transport).
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum TsTarget {
+    Node,
+    Browser,
 }
 
 /// One generated file. rel_path is relative to `gen/<node>/` (deciding the write destination is a CLI responsibility).
@@ -562,6 +570,15 @@ pub fn parse_stub_node(text: &str) -> Option<String> {
     })
 }
 
+/// Get the schema marker from a whole-descriptor stub text (the first one).
+pub fn parse_stub_schema(text: &str) -> Option<String> {
+    text.lines().find_map(|l| {
+        l.split("sahou:stub schema=")
+            .nth(1)
+            .map(|s| s.trim().to_string())
+    })
+}
+
 /// Drift check of the stub-embedded hashes × descriptor (design §8; the guts of check). An empty Vec = no drift.
 /// All classified as NO (the stub generates every participating connection, so any mismatch means "regeneration needed").
 pub fn check_drift(
@@ -608,6 +625,62 @@ pub fn check_drift(
                 format!("connections.{conn}"),
                 format!(
                     "connection '{conn}' in which node '{node}' participates is absent from the stub (added to the contract later). Regenerate with `sahou gen --lang ... --node {node}`"
+                ),
+            ));
+        }
+    }
+    diags
+}
+
+/// Whether `node` is a `sahou`-kind node in the descriptor (a Sahou runtime cannot be an `external` node).
+fn is_sahou(desc: &Descriptor, node: &str) -> bool {
+    desc.nodes
+        .get(node)
+        .is_some_and(|n| n.kind == NodeKind::Sahou)
+}
+
+/// Connections a whole-descriptor stub covers: those touched by at least one `sahou`-kind node
+/// (its `from` is sahou, or any of its `to` is sahou). BTreeSet = deterministic, sorted.
+fn participating_conns(desc: &Descriptor) -> BTreeSet<String> {
+    desc.connections
+        .iter()
+        .filter(|(_, c)| is_sahou(desc, &c.from) || c.to.iter().any(|t| is_sahou(desc, t)))
+        .map(|(id, _)| id.clone())
+        .collect()
+}
+
+/// Whole-descriptor drift check (design §8): compare every participating connection's hash against
+/// the descriptor. Same diagnostic codes as `check_drift`, scoped to the whole descriptor. Empty = no drift.
+pub fn check_drift_all(desc: &Descriptor, stub_hashes: &BTreeMap<String, String>) -> Vec<Diag> {
+    let participating = participating_conns(desc);
+    let mut diags = Vec::new();
+    for (conn, stub_hash) in stub_hashes {
+        match desc.connections.get(conn) {
+            None => diags.push(Diag::new(
+                "stub_stale_connection",
+                format!("connections.{conn}"),
+                format!(
+                    "connection '{conn}' present in the stub is absent from the descriptor (removed from the contract). Regenerate with `sahou gen --lang ...`"
+                ),
+            )),
+            Some(c) if &c.hash != stub_hash => diags.push(Diag::new(
+                "stub_hash_drift",
+                format!("connections.{conn}.hash"),
+                format!(
+                    "stub hash '{stub_hash}' and descriptor hash '{}' do not match (the contract changed). Regenerate with `sahou gen --lang ...`",
+                    c.hash
+                ),
+            )),
+            _ => {}
+        }
+    }
+    for conn in &participating {
+        if !stub_hashes.contains_key(conn.as_str()) {
+            diags.push(Diag::new(
+                "stub_missing_connection",
+                format!("connections.{conn}"),
+                format!(
+                    "connection '{conn}' (a sahou node participates in it) is absent from the stub (added to the contract later). Regenerate with `sahou gen --lang ...`"
                 ),
             ));
         }
@@ -739,5 +812,272 @@ pub fn gen_stub(desc: &Descriptor, node: &str, lang: StubLang) -> Result<Vec<Stu
     Ok(match lang {
         StubLang::Python => py_files(node, &hashes, &g.defs, &sigs),
         StubLang::Ts => ts_files(node, &hashes, &g.defs, &sigs),
+    })
+}
+
+// ---- Whole-descriptor generation (gen_stub_all) -----------------------------
+// One typed module covering the whole descriptor: a `connect` overload per sahou node (node-name
+// completion) returning that node's facade. Reuses the per-connection type resolution and facade
+// builders; shared payload types are resolved once and deduplicated.
+
+/// Resolved type names for one connection (pub_sub → payload, query → request + response).
+struct ConnTypes {
+    payload: Option<String>,
+    request: Option<String>,
+    response: Option<String>,
+}
+
+/// Resolve a connection's slot types into the shared `Gen` exactly once. pub_sub uses the `""`
+/// suffix (type name = Pascal(conn)); query uses `Request` / `Response` (identical to per-node gen).
+fn resolve_conn_types(
+    g: &mut Gen,
+    conn: &str,
+    c: &DescriptorConnection,
+) -> Result<ConnTypes, Vec<Diag>> {
+    match c.pattern {
+        Pattern::PubSub => {
+            let slot = c
+                .payload
+                .as_ref()
+                .ok_or_else(|| missing_slot(conn, "payload"))?;
+            let t = slot_type(g, conn, "", slot, &format!("connections.{conn}.payload"))?;
+            Ok(ConnTypes {
+                payload: Some(t),
+                request: None,
+                response: None,
+            })
+        }
+        Pattern::Query => {
+            let req = c
+                .request
+                .as_ref()
+                .ok_or_else(|| missing_slot(conn, "request"))?;
+            let resp = c
+                .response
+                .as_ref()
+                .ok_or_else(|| missing_slot(conn, "response"))?;
+            let rt = slot_type(
+                g,
+                conn,
+                "Request",
+                req,
+                &format!("connections.{conn}.request"),
+            )?;
+            let rp = slot_type(
+                g,
+                conn,
+                "Response",
+                resp,
+                &format!("connections.{conn}.response"),
+            )?;
+            Ok(ConnTypes {
+                payload: None,
+                request: Some(rt),
+                response: Some(rp),
+            })
+        }
+    }
+}
+
+/// Build one node's Sigs from already-resolved connection types (no re-resolution → no double record()).
+fn node_sigs(plan: &NodePlan, types: &BTreeMap<String, ConnTypes>) -> Sigs {
+    let mut sigs = Sigs {
+        publishes: vec![],
+        subscribes: vec![],
+        queries: vec![],
+        answers: vec![],
+    };
+    for conn in &plan.publishes {
+        if let Some(t) = types.get(conn).and_then(|c| c.payload.clone()) {
+            sigs.publishes.push((conn.clone(), t));
+        }
+    }
+    for conn in &plan.subscribes {
+        if let Some(t) = types.get(conn).and_then(|c| c.payload.clone()) {
+            sigs.subscribes.push((conn.clone(), t));
+        }
+    }
+    for conn in &plan.queries {
+        if let Some(ct) = types.get(conn) {
+            if let (Some(req), Some(resp)) = (ct.request.clone(), ct.response.clone()) {
+                sigs.queries.push((conn.clone(), req, resp));
+            }
+        }
+    }
+    for conn in &plan.answers {
+        if let Some(ct) = types.get(conn) {
+            if let (Some(req), Some(resp)) = (ct.request.clone(), ct.response.clone()) {
+                sigs.answers.push((conn.clone(), req, resp));
+            }
+        }
+    }
+    sigs
+}
+
+/// TS whole-descriptor output: `sahou.gen.mjs` (re-exports the real connect + SCHEMA_HASHES) and
+/// `sahou.gen.d.mts` (all payload types + one facade per node + one typed `connect` overload per node).
+/// Self-contained (no import from "sahou") so tsc needs no package resolution to consume the types.
+fn ts_files_all(
+    schema: &str,
+    hashes: &BTreeMap<String, String>,
+    defs: &BTreeMap<String, String>,
+    nodes: &[(String, String, Sigs)],
+    target: TsTarget,
+) -> Vec<StubFile> {
+    let import_src = match target {
+        TsTarget::Node => "sahou",
+        TsTarget::Browser => "sahou/browser",
+    };
+    let hash_entries = hashes
+        .iter()
+        .map(|(c, h)| format!("  {c:?}: {h:?},"))
+        .collect::<Vec<_>>()
+        .join("\n");
+    let defs_text = defs.values().cloned().collect::<Vec<_>>().join("\n\n");
+    let facades = nodes
+        .iter()
+        .map(|(_, facade, sigs)| ts_facade(facade, sigs))
+        .collect::<Vec<_>>()
+        .join("\n\n");
+    let overloads = nodes
+        .iter()
+        .map(|(node, facade, _)| {
+            // opts mirror the target's ConnectOptions (browser has no port / spawnLink)
+            let opts = match target {
+                TsTarget::Node => format!(
+                    "{{ node: {node:?}; locator?: string; port?: number; spawnLink?: boolean }}"
+                ),
+                TsTarget::Browser => format!("{{ node: {node:?}; locator?: string }}"),
+            };
+            format!(
+                "export declare function connect(descriptor: string | object, opts: {opts}): Promise<{facade}>;"
+            )
+        })
+        .collect::<Vec<_>>()
+        .join("\n");
+
+    let mjs = format!(
+        "{m}// AUTO-GENERATED by `sahou gen --lang ts`. Do not edit by hand (it will be regenerated).\n// Static layer only: the engine does not read this file. The runtime behaves identically without it.\n//\n// Usage (app code): npm i sahou, then import the typed connect from here:\n//   import {{ connect }} from \"./sahou.gen.mjs\";\n//   const node = await connect(\"gen/descriptor.json\", {{ node: \"<node>\" }});\nexport {{ connect }} from \"{import_src}\";\nexport const SCHEMA_HASHES = Object.freeze({{\n{hash_entries}\n}});\n",
+        m = markers("//", "schema", schema, hashes),
+    );
+    let dts = format!(
+        "{m}// AUTO-GENERATED by `sahou gen --lang ts`. Do not edit by hand (it will be regenerated).\nexport interface SahouDiag {{\n  code: string;\n  path: string;\n  message: string;\n}}\n\nexport type OnReject = (conn: string, diags: SahouDiag[]) => void | Promise<void>;\n\n{defs_text}\n\n{facades}\n\n{overloads}\n\nexport declare const SCHEMA_HASHES: Readonly<Record<string, string>>;\n",
+        m = markers("//", "schema", schema, hashes),
+    );
+    vec![
+        StubFile {
+            rel_path: "sahou.gen.mjs".to_string(),
+            content: mjs,
+        },
+        StubFile {
+            rel_path: "sahou.gen.d.mts".to_string(),
+            content: dts,
+        },
+    ]
+}
+
+/// Python whole-descriptor output: `sahou_gen.py` (re-exports the real connect + SCHEMA_HASHES) and
+/// `sahou_gen.pyi` (all payload types + one Protocol facade per node + one `connect` overload per node).
+fn py_files_all(
+    schema: &str,
+    hashes: &BTreeMap<String, String>,
+    defs: &BTreeMap<String, String>,
+    nodes: &[(String, String, Sigs)],
+) -> Vec<StubFile> {
+    let hash_entries = hashes
+        .iter()
+        .map(|(c, h)| format!("    {c:?}: {h:?},"))
+        .collect::<Vec<_>>()
+        .join("\n");
+    let defs_text = defs.values().cloned().collect::<Vec<_>>().join("\n\n");
+    let facades = nodes
+        .iter()
+        .map(|(_, facade, sigs)| py_facade(facade, sigs))
+        .collect::<Vec<_>>()
+        .join("\n\n\n");
+    let overload_sigs: Vec<String> = nodes
+        .iter()
+        .map(|(node, facade, _)| {
+            format!(
+                "def connect(descriptor, node: Literal[{node:?}], *, connect: list[str] | None = ..., listen: list[str] | None = ..., multicast: bool = ...) -> {facade}: ..."
+            )
+        })
+        .collect();
+    // mypy errors on a lone @overload; a single node gets a plain def (matches py_method).
+    let overloads = py_method(&overload_sigs);
+
+    let py = format!(
+        "{m}\"\"\"AUTO-GENERATED by `sahou gen --lang python`. Do not edit by hand (it will be regenerated).\n\nStatic layer: the .pyi drives type checking; this module only re-exports the real connect.\ndrift detection is `sahou check` (CLI/CI responsibility; design §8/§13).\n\nUsage (app code): pip install sahou, then import the typed connect from here:\n    from sahou_gen import connect\n    node = connect(\"gen/descriptor.json\", \"<node>\")\n\"\"\"\nfrom __future__ import annotations\n\nfrom sahou import connect\n\nSCHEMA_HASHES: dict[str, str] = {{\n{hash_entries}\n}}\n",
+        m = markers("#", "schema", schema, hashes),
+    );
+    let pyi = format!(
+        "{m}# AUTO-GENERATED by `sahou gen --lang python`. Do not edit by hand (it will be regenerated).\nfrom typing import Any, Callable, Final, Literal, NotRequired, Protocol, TypedDict, overload\n\nSCHEMA_HASHES: Final[dict[str, str]]\n\n_OnReject = Callable[[str, list[dict[str, str]]], object]\n\n{defs_text}\n\n{facades}\n\n{overloads}\n",
+        m = markers("#", "schema", schema, hashes),
+    );
+    vec![
+        StubFile {
+            rel_path: "sahou_gen.py".to_string(),
+            content: py,
+        },
+        StubFile {
+            rel_path: "sahou_gen.pyi".to_string(),
+            content: pyi,
+        },
+    ]
+}
+
+/// Whole-descriptor stub generation (design §8): one typed module per descriptor. `target` selects the
+/// TS transport (ignored for Python). Errors are structured NOs (unrepresentable name / collision).
+pub fn gen_stub_all(
+    desc: &Descriptor,
+    lang: StubLang,
+    target: TsTarget,
+) -> Result<Vec<StubFile>, Vec<Diag>> {
+    let participating = participating_conns(desc);
+    let mut g = Gen {
+        lang,
+        defs: BTreeMap::new(),
+    };
+    // connection names are emitted as string literals → reject control chars at gen time (right place).
+    for conn in &participating {
+        if !is_safe_literal(conn) {
+            return Err(vec![diag_bad_literal(
+                &format!("connections.{conn}"),
+                "connection name",
+                conn,
+            )]);
+        }
+    }
+    // resolve each participating connection's types once (shared types are deduped in g.defs).
+    let mut types: BTreeMap<String, ConnTypes> = BTreeMap::new();
+    for conn in &participating {
+        let c = &desc.connections[conn];
+        types.insert(conn.clone(), resolve_conn_types(&mut g, conn, c)?);
+    }
+    // one facade per sahou node (BTreeMap iteration = sorted → deterministic output).
+    let mut nodes: Vec<(String, String, Sigs)> = Vec::new();
+    for (node, n) in &desc.nodes {
+        if n.kind != NodeKind::Sahou {
+            continue; // external nodes cannot host a Sahou runtime
+        }
+        let facade = format!("{}Node", pascal(node));
+        if !is_valid_ident(&facade) {
+            return Err(vec![g.diag_bad_ident(
+                &format!("nodes.{node}"),
+                "facade class name",
+                &facade,
+            )]);
+        }
+        let plan = node_plan(desc, node)?;
+        let sigs = node_sigs(&plan, &types);
+        nodes.push((node.clone(), facade, sigs));
+    }
+    let hashes: BTreeMap<String, String> = participating
+        .iter()
+        .map(|c| (c.clone(), desc.connections[c].hash.clone()))
+        .collect();
+    Ok(match lang {
+        StubLang::Python => py_files_all(&desc.schema, &hashes, &g.defs, &nodes),
+        StubLang::Ts => ts_files_all(&desc.schema, &hashes, &g.defs, &nodes, target),
     })
 }
