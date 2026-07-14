@@ -1,0 +1,3 @@
+[workspace]
+members = ["core", "cli", "td/transport"]
+resolver = "2"

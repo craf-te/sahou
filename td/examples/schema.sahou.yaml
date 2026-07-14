@@ -1,0 +1,20 @@
+# Minimal float-only contract used by the Sahou Out CHOP demo/verification.
+# The CHOP projects numeric channels, so this connection is all scalar floats
+# (a clean OK path). The descriptor is generated with:
+#   sahou gen td/examples/schema.sahou.yaml --out-dir td/examples/gen
+schema: td_demo
+version: 1
+nodes:
+  td: { kind: sahou }
+  viz: { kind: sahou }
+connections:
+  motion:
+    pattern: pub_sub
+    from: td
+    to: [viz]
+    payload:
+      typing: typed
+      fields:
+        - { name: x, type: float }
+        - { name: y, type: float }
+        - { name: speed, type: float }

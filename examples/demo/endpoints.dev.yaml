@@ -1,0 +1,3 @@
+env: dev
+namespace: sahou/demo
+# LAN auto-discovery is the default. Only specify a router / explicit endpoint when needed (spec §3)

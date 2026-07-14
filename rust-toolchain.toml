@@ -1,0 +1,6 @@
+# Pin the toolchain so `cargo fmt --check` / `cargo clippy -D warnings` are reproducible
+# locally and in CI (formatting and lints shift between toolchain versions).
+[toolchain]
+channel = "1.88.0"
+components = ["rustfmt", "clippy"]
+targets = ["wasm32-unknown-unknown"]

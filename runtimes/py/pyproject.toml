@@ -1,0 +1,25 @@
+[build-system]
+requires = ["maturin>=1.7,<2"]
+build-backend = "maturin"
+
+[project]
+name = "sahou"
+version = "0.0.1"
+description = "Sahou runtime — schema-first typed messaging for creative installations (on Zenoh)"
+requires-python = ">=3.11"
+dependencies = ["eclipse-zenoh>=1.9,<2"]
+
+[tool.maturin]
+manifest-path = "../../core/Cargo.toml"
+module-name = "sahou._core"
+features = ["python"]
+python-source = "python"
+
+[tool.mypy]
+python_version = "3.11"
+
+[dependency-groups]
+dev = [
+    "mypy>=2.2.0",
+    "pytest>=8",
+]

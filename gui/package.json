@@ -1,0 +1,27 @@
+{
+  "name": "sahou-gui",
+  "private": true,
+  "version": "0.0.1",
+  "type": "module",
+  "scripts": {
+    "build:core": "node scripts/build-core.cjs",
+    "dev": "vite",
+    "build": "vue-tsc -p tsconfig.json --noEmit && vue-tsc -p tsconfig.test.json --noEmit && vite build && node scripts/post-build.cjs",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@antv/g6": "^5.0.0",
+    "vue": "^3.5.0"
+  },
+  "devDependencies": {
+    "@types/node": "^26.1.1",
+    "@vitejs/plugin-vue": "^5.2.0",
+    "@vue/test-utils": "^2.4.0",
+    "happy-dom": "^15",
+    "typescript": "^5.6.0",
+    "vite": "^6.0.0",
+    "vitest": "^3",
+    "vue-tsc": "^2",
+    "wasm-pack": "^0.15.0"
+  }
+}

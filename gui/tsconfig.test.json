@@ -1,0 +1,9 @@
+{
+  // Test-only (enable Node types for tests/** only). The type-check of the browser production code (src/**)
+  // is locked down in tsconfig.json so Node globals (process/Buffer/node:*) are not visible there.
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "types": ["vite/client", "node"]
+  },
+  "include": ["tests/**/*.ts"]
+}

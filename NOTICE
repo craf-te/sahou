@@ -1,0 +1,13 @@
+Sahou
+Copyright 2026 craf-te
+
+This product is licensed under the Apache License, Version 2.0 (see LICENSE).
+
+This product depends on Eclipse Zenoh (https://zenoh.io), which is dual-licensed
+under the Eclipse Public License 2.0 and the Apache License 2.0; it is used here
+under the Apache License 2.0. "Zenoh" and "Eclipse" are trademarks of their
+respective owners and are referenced here descriptively only.
+
+Full third-party license notices for the distributed `sahou` binary are bundled
+in the binary itself (run `sahou licenses`) and are generated into
+cli/licenses/THIRD-PARTY-LICENSES.md.

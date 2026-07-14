@@ -1,0 +1,30 @@
+# Third-party licenses
+
+The `sahou` binary statically links the third-party crates listed below. Each is redistributed
+under its own license, whose full text is retained here to satisfy the redistribution notice
+requirements (e.g. Apache-2.0 section 4). Regenerate with:
+`cd cli && cargo about generate about.hbs -o licenses/THIRD-PARTY-LICENSES.md`.
+
+## Eclipse Zenoh notice
+
+Zenoh (`zenoh`, `zenoh-*`) is used under the Apache License 2.0 (Zenoh is dual-licensed
+EPL-2.0 OR Apache-2.0; Apache-2.0 is chosen here). Required notice, retained verbatim:
+
+> Eclipse zenoh is a trademark of the Eclipse Foundation. Eclipse and the Eclipse Logo are
+> registered trademarks of the Eclipse Foundation.
+
+---
+
+{{#each licenses}}
+## {{name}}
+
+Used by:
+{{#each used_by}}
+- {{crate.name}} {{crate.version}}
+{{/each}}
+
+```
+{{text}}
+```
+
+{{/each}}

@@ -1,0 +1,25 @@
+{
+  "name": "@sahou/runtime",
+  "version": "0.0.1",
+  "description": "Sahou runtime — schema-first typed messaging for creative installations (on Zenoh)",
+  "type": "module",
+  "license": "Apache-2.0",
+  "exports": {
+    ".": { "types": "./dist/node.d.ts", "default": "./dist/node.js" },
+    "./browser": { "types": "./dist/browser.d.ts", "default": "./dist/browser.js" }
+  },
+  "files": ["dist", "core"],
+  "scripts": {
+    "build:core": "wasm-pack build ../../core --release --target nodejs --out-dir ../runtimes/ts/core/node -- --features wasm && wasm-pack build ../../core --release --target web --out-dir ../runtimes/ts/core/browser -- --features wasm",
+    "build": "tsc -p tsconfig.json",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@eclipse-zenoh/zenoh-ts": "^1.9.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24",
+    "typescript": "^5.6",
+    "vitest": "^3"
+  }
+}

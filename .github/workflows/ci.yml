@@ -1,0 +1,23 @@
+name: ci
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  rust:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@1.88.0
+        with:
+          components: rustfmt, clippy
+          targets: wasm32-unknown-unknown
+      - uses: Swatinem/rust-cache@v2
+      - run: cargo fmt --check
+      - run: cargo clippy --all-targets -- -D warnings
+      - run: cargo test --workspace
+      # The wasm ABI the GUI depends on is feature-gated and out of the normal test scope → run it explicitly (design §9-1)
+      - run: cargo test -p sahou-core --features wasm
+      # Guarantees constraint ③ of the three (wasm-capable): the build passes on the wasm target
+      - run: cargo build -p sahou-core --features wasm --target wasm32-unknown-unknown

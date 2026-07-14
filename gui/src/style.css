@@ -1,0 +1,690 @@
+/* ============================================================================
+   Sahou GUI design system (established in Task 13 · shared by all panes)
+   - Tokens (CSS variables) defined in one place: color / typography / spacing / radius / shadow / state colors
+   - Both light and dark themes: `light-dark(light, dark)` gives 1 token = 1 definition (recovers the
+     Task 13 carry-over — replaces the old duplicated media-query + data-theme blocks and removes the
+     manual-sync risk). Follows the OS setting automatically; an explicit toggle via
+     `<html data-theme="light|dark">` takes precedence.
+   - Components reference tokens only (no raw color codes written in lower layers)
+   - --graph-* are the chrome colors of the G6 graph (recovers the Task 12 carry-over). Because it is
+     canvas-rendered, CSS does not reach it directly; graph/theme.ts resolves them to concrete colors
+     and hands them to JS. "Change a color = one place here".
+   ========================================================================== */
+
+/* ---- 1. Tokens ----------------------------------------------------------- */
+:root {
+  color-scheme: light dark;
+
+  /* Typography */
+  --font-ui: "Segoe UI Variable", "Segoe UI", "Hiragino Sans", "Noto Sans JP", system-ui, sans-serif;
+  --font-mono: "Cascadia Code", Consolas, "SF Mono", ui-monospace, monospace;
+  --text-xs: 11px;
+  --text-sm: 12px;
+  --text-md: 13px;
+  --text-lg: 15px;
+
+  /* Spacing scale */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+
+  /* Radius / shadow / transition */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 10px;
+  --radius-full: 999px;
+  --shadow-1: 0 1px 2px light-dark(rgba(20, 30, 50, 0.1), rgba(0, 0, 0, 0.25));
+  --shadow-2: 0 4px 16px light-dark(rgba(20, 30, 50, 0.14), rgba(0, 0, 0, 0.35));
+  --duration: 120ms;
+  --ease: cubic-bezier(0.2, 0, 0, 1);
+
+  /* Surfaces / borders (light-dark(light, dark)) */
+  --bg-app: light-dark(#f2f4f8, #101318);          /* app backmost */
+  --bg-surface: light-dark(#ffffff, #161a22);      /* bars / panels */
+  --bg-raised: light-dark(#f7f9fc, #1b202c);       /* cards / nested surfaces */
+  --bg-inset: light-dark(#fdfdfe, #0c0f14);        /* inside of inputs */
+  --bg-hover: light-dark(rgba(20, 30, 50, 0.045), rgba(255, 255, 255, 0.045));
+  --bg-selected: light-dark(#e3eefa, #1d2a3d);     /* selected row */
+  --border: light-dark(#d9dfe9, #2a3140);
+  --border-strong: light-dark(#b7c1d1, #3e4759);
+
+  /* Text */
+  --text-1: light-dark(#1b2130, #e9ecf2);          /* primary text */
+  --text-2: light-dark(#4c566b, #a9b2c3);          /* secondary text */
+  --text-3: light-dark(#6f7a90, #7d8699);          /* muted text / placeholder */
+
+  /* State colors */
+  --accent: light-dark(#0d7fae, #59b9de);          /* actions / links (AA on --bg-app) */
+  --accent-strong: light-dark(#085e83, #8ed4f0);
+  --accent-bg: light-dark(rgba(13, 127, 174, 0.09), rgba(89, 185, 222, 0.12));
+  --accent-border: light-dark(rgba(13, 127, 174, 0.4), rgba(89, 185, 222, 0.45));
+  --danger: light-dark(#c02f2f, #f38585);          /* NO / destructive actions */
+  --danger-bg: light-dark(rgba(192, 47, 47, 0.07), rgba(243, 110, 110, 0.1));
+  --danger-border: light-dark(rgba(192, 47, 47, 0.4), rgba(243, 110, 110, 0.45));
+  --warn: light-dark(#8a5c00, #e6bb54);            /* unvalidated / caution / stale */
+  --warn-bg: light-dark(rgba(184, 130, 10, 0.09), rgba(230, 187, 84, 0.1));
+  --warn-border: light-dark(rgba(184, 130, 10, 0.4), rgba(230, 187, 84, 0.4));
+  --ok: light-dark(#1e7f4d, #74d69e);
+  --ok-bg: light-dark(rgba(30, 127, 77, 0.08), rgba(116, 214, 158, 0.1));
+  --ok-border: light-dark(rgba(30, 127, 77, 0.4), rgba(116, 214, 158, 0.4));
+  --focus-ring: light-dark(#0d7fae, #6ec8ea);
+
+  /* Graph chrome (G6 canvas · resolved by graph/theme.ts) */
+  --graph-node-fill: light-dark(#ffffff, #1e2430);
+  --graph-node-stroke: light-dark(#94a3b8, #64748b);
+  --graph-node-label: light-dark(#1b2130, #e6e6e6);
+  --graph-ext-fill: light-dark(#fdf3e3, #3a2a16);
+  --graph-ext-stroke: light-dark(#d97706, #f59e0b);
+  --graph-port-fill: light-dark(#f2f4f8, #0f1115);
+  --graph-port-stroke: light-dark(#7d8699, #8b95a5);
+  --graph-topic-fill: light-dark(#f1ebfd, #2a1e3a);
+  --graph-topic-stroke: light-dark(#7c5cd6, #a78bfa);
+  --graph-topic-label: light-dark(#503a99, #d8ccf5);
+  --graph-edge-label: light-dark(#4c566b, #cfd6e0);
+  --graph-edge-label-bg: light-dark(#ffffff, #12151c);
+  --graph-edge-reliable: light-dark(#6b7686, #9aa4b2);
+  --graph-edge-best-effort: light-dark(#b45309, #fbbf24);
+  --graph-edge-query: light-dark(#7c5cd6, #a78bfa);
+  --graph-edge-loose: light-dark(#c02f2f, #f87171);
+  --graph-halo: light-dark(#0d7fae, #22d3ee);
+  --graph-sel-stroke: light-dark(#085e83, #e6faff);
+}
+
+/* Explicit toggle: just switching color-scheme makes every light-dark() token follow */
+:root[data-theme="dark"] { color-scheme: dark; }
+:root[data-theme="light"] { color-scheme: light; }
+
+/* ---- 3. Base ------------------------------------------------------------- */
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg-app);
+  color: var(--text-1);
+  font: var(--text-md) / 1.55 var(--font-ui);
+}
+@media (prefers-reduced-motion: reduce) {
+  * { transition-duration: 0.01ms !important; }
+}
+
+/* Focus visibility (keyboard interaction only) */
+:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 1px;
+  border-radius: var(--radius-sm);
+}
+
+/* Form controls (the base shared by all panes) */
+input, select, textarea {
+  background: var(--bg-inset);
+  color: var(--text-1);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 4px 8px;
+  font: inherit;
+  transition: border-color var(--duration) var(--ease), background var(--duration) var(--ease);
+}
+input:hover, select:hover, textarea:hover { border-color: var(--border-strong); }
+input:focus, select:focus, textarea:focus { border-color: var(--accent); outline: none; }
+input::placeholder, textarea::placeholder { color: var(--text-3); }
+input[type="checkbox"] { accent-color: var(--accent); width: 14px; height: 14px; cursor: pointer; }
+input[aria-invalid="true"] { border-color: var(--danger-border); background: var(--danger-bg); }
+input[aria-invalid="true"]:focus { border-color: var(--danger); }
+
+/* Buttons (.btn = normal / .ghost = borderless / .icon-btn = symbol only) */
+button, .btn {
+  background: var(--bg-raised);
+  color: var(--text-1);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 4px 12px;
+  font: inherit;
+  cursor: pointer;
+  transition: background var(--duration) var(--ease), border-color var(--duration) var(--ease);
+}
+button:hover, .btn:hover { background: var(--bg-hover); border-color: var(--border-strong); }
+.btn-ghost {
+  background: transparent;
+  border-color: transparent;
+  color: var(--accent);
+}
+.btn-ghost:hover { background: var(--accent-bg); border-color: transparent; }
+.icon-btn {
+  padding: 2px 7px;
+  line-height: 1.4;
+  background: transparent;
+  border-color: transparent;
+  color: var(--text-2);
+}
+.icon-btn:hover { background: var(--bg-hover); color: var(--text-1); }
+.icon-btn.del:hover { background: var(--danger-bg); color: var(--danger); }
+
+/* Segmented toggle (exclusive selection among 2–3 choices) */
+.seg { display: inline-flex; border: 1px solid var(--border); border-radius: var(--radius-md); overflow: hidden; }
+.seg button {
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  color: var(--text-2);
+  padding: 3px 12px;
+  font-size: var(--text-sm);
+}
+.seg button + button { border-left: 1px solid var(--border); }
+.seg button.on { background: var(--accent-bg); color: var(--accent-strong); font-weight: 600; }
+.seg button:focus-visible { outline-offset: -2px; }
+
+/* Helper text / callouts */
+.hint { color: var(--text-3); font-size: var(--text-sm); margin: var(--space-2) 0; }
+.callout {
+  display: flex;
+  gap: var(--space-2);
+  align-items: baseline;
+  padding: var(--space-2) var(--space-3);
+  margin: var(--space-2) 0;
+  border-radius: var(--radius-md);
+  font-size: var(--text-sm);
+  border: 1px solid var(--border);
+  background: var(--bg-raised);
+}
+.callout.warn { border-color: var(--warn-border); background: var(--warn-bg); color: var(--warn); }
+.callout.danger { border-color: var(--danger-border); background: var(--danger-bg); color: var(--danger); }
+.callout.ok { border-color: var(--ok-border); background: var(--ok-bg); color: var(--ok); }
+.warn { color: var(--warn); font-size: var(--text-sm); }
+
+/* ---- 4. App shell (the App frame assembled by Task 14 · scaffold-compatible) ------------- */
+.app { display: flex; flex-direction: column; height: 100vh; }
+.topbar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-3);
+  background: var(--bg-surface);
+  border-bottom: 1px solid var(--border);
+}
+.topbar h1 { font-size: var(--text-lg); font-weight: 600; margin: 0 var(--space-2) 0 0; color: var(--accent-strong); }
+.topbar .meta { margin-left: auto; color: var(--text-3); font-size: var(--text-sm); }
+.tabs button.on, .topbar button.on { background: var(--accent-bg); border-color: var(--accent-border); color: var(--accent-strong); }
+
+/* Main nav (UX redesign requirement 1/3/4): the three top-level tabs Design / Deploy / Diagnostics.
+   Active = a 3px underline + accent surface so it reads at a glance */
+.main-tabs {
+  display: flex;
+  gap: var(--space-1);
+  padding: var(--space-1) var(--space-3) 0;
+  background: var(--bg-surface);
+  border-bottom: 1px solid var(--border);
+}
+.main-tabs button {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1px;
+  padding: var(--space-2) var(--space-5) 6px;
+  font-size: var(--text-lg);
+  font-weight: 600;
+  color: var(--text-2);
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-md) var(--radius-md) 0 0;
+  border-bottom: 3px solid transparent;
+}
+.main-tabs button:hover { background: var(--bg-hover); color: var(--text-1); border-color: transparent; }
+.main-tabs button.on {
+  color: var(--accent-strong);
+  background: var(--accent-bg);
+  border-bottom-color: var(--accent);
+}
+.main-tabs .tab-sub { font-size: var(--text-xs); font-weight: 400; color: var(--text-3); }
+.main-tabs button.on .tab-sub { color: var(--accent); }
+.tab-badge {
+  margin-left: var(--space-1);
+  padding: 0 7px;
+  border-radius: var(--radius-full);
+  background: var(--danger-bg);
+  border: 1px solid var(--danger-border);
+  color: var(--danger);
+  font-size: var(--text-xs);
+  font-weight: 600;
+}
+
+/* Design tab = a Graph|Table toggle bar on top of the view area */
+.design { display: flex; flex-direction: column; flex: 1; min-height: 0; }
+.design-bar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  background: var(--bg-surface);
+  border-bottom: 1px solid var(--border);
+}
+.body { display: flex; flex: 1; min-height: 0; }
+
+/* Table (workbook) view: full-width scrolling area, its own responsive context.
+   min-width:0 lets this flex item shrink below its content (the wide sheet) so the overflow scrolls
+   INSIDE here instead of pushing the whole app off-screen (flexbox min-width:auto trap). */
+.table-canvas {
+  flex: 1;
+  min-width: 0;
+  overflow: auto;
+  padding: var(--space-4) var(--space-5);
+  container-type: inline-size;
+}
+
+/* Spreadsheet sheet (the node-centric Sends/Receives tables): a clean fixed-height grid.
+   table-layout: fixed + explicit column widths so every column (incl. Pattern) keeps its width and its
+   control shows fully; the pane scrolls horizontally below min-width instead of crushing the cells. */
+.sheet { width: 100%; min-width: 720px; table-layout: fixed; border-collapse: collapse; }
+.sheet th {
+  text-align: left;
+  font-size: var(--text-xs);
+  font-weight: 600;
+  color: var(--text-3);
+  height: 28px;
+  padding: 0 var(--space-2);
+  vertical-align: middle;
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+/* Summary rows are a uniform height with vertically centered content (no ragged rows) */
+.sheet td {
+  height: 34px;
+  padding: 0 var(--space-2);
+  vertical-align: middle;
+  white-space: nowrap;
+  border-bottom: 1px solid var(--border);
+}
+.sheet tbody tr.conn-summary { transition: background var(--duration) var(--ease); }
+.sheet tbody tr.conn-summary:hover { background: var(--bg-hover); }
+.sheet input, .sheet select { width: 100%; font-size: var(--text-sm); height: 26px; }
+/* Explicit column widths (fixed layout). The Type column has no width → it takes the remainder. */
+.sheet th:nth-child(1), .sheet td:nth-child(1) { width: 160px; } /* To / From */
+.sheet th:nth-child(2), .sheet td:nth-child(2) { width: 200px; } /* Key */
+.sheet th:nth-child(3), .sheet td:nth-child(3) { width: 130px; } /* Pattern */
+.sheet .ops { width: 48px; text-align: right; white-space: nowrap; }
+/* Expanded connection row: the inline slot type editor(s) sit in a sunken, guide-lined cell (auto height) */
+.conn-detail > td.nest {
+  height: auto;
+  white-space: normal;
+  padding: var(--space-1) var(--space-2) var(--space-2);
+  border-left: 2px solid var(--accent-border);
+  background: var(--bg-raised);
+}
+
+/* Canvas (design tab): graph + floating tools (requirement 2/5) */
+.canvas { position: relative; display: flex; flex: 1; min-width: 0; }
+#graph { flex: 1; min-width: 0; }
+.canvas-tools {
+  position: absolute;
+  top: var(--space-3);
+  left: var(--space-3);
+  display: flex;
+  gap: var(--space-2);
+  z-index: 5;
+}
+.canvas-tools button { background: var(--bg-surface); box-shadow: var(--shadow-1); }
+.canvas-tools button.primary { background: var(--accent-bg); }
+.canvas-mode {
+  position: absolute;
+  top: var(--space-3);
+  right: var(--space-3);
+  z-index: 5;
+  background: var(--bg-surface);
+  box-shadow: var(--shadow-1);
+  opacity: 0.9;
+}
+.canvas-mode:hover, .canvas-mode:focus-within { opacity: 1; }
+.canvas-mode button { font-size: var(--text-xs); padding: 2px 10px; }
+
+/* Right pane (requirement 9: widened to improve legibility of selects / inputs).
+   container-type makes the pane its own responsive context (§bug2): inner layouts reflow to the pane's
+   width, not the viewport. overflow:auto lets any residual wide content scroll instead of being clipped. */
+.panel {
+  width: clamp(320px, 32vw, 520px);
+  min-width: 0;
+  flex-shrink: 0;
+  container-type: inline-size;
+  overflow-x: hidden; /* content is laid out to fit — never scroll the pane sideways */
+  overflow-y: auto;
+  padding: var(--space-3) var(--space-4);
+  background: var(--bg-surface);
+  border-left: 1px solid var(--border);
+}
+/* Long monospace tokens (keyexpr / diagnostic paths) wrap instead of forcing horizontal overflow */
+.panel .keyexpr code, .panel .diag .path, .panel .diag .code { overflow-wrap: anywhere; }
+.panel section h3 { margin: var(--space-1) 0 var(--space-2); font-size: var(--text-md); color: var(--accent-strong); }
+.panel label { display: block; margin: var(--space-2) 0; color: var(--text-2); font-size: var(--text-sm); }
+.panel input, .panel select { width: 100%; }
+.pane-full { flex: 1; min-width: 0; overflow: auto; padding: var(--space-4) var(--space-5); container-type: inline-size; }
+
+/* The dependency table (DeployPane) keeps a readable minimum and scrolls within the wide deploy pane.
+   .fields is intentionally NOT constrained here — it uses fixed layout to fit its (often narrow) pane. */
+.dep { min-width: 280px; }
+
+/* When the pane itself is narrow, force single-column layouts and tighten padding (container query on
+   the pane's inline-size, independent of the viewport). */
+@container (max-width: 360px) {
+  .grid2 { grid-template-columns: 1fr; }
+  .seg-row, .caps-row { gap: var(--space-1); }
+}
+.statusbar {
+  padding: var(--space-1) var(--space-3);
+  background: var(--bg-surface);
+  border-top: 1px solid var(--border);
+  color: var(--text-3);
+  font-size: var(--text-sm);
+  cursor: pointer;
+}
+.banner {
+  padding: var(--space-2) var(--space-3);
+  background: var(--warn-bg);
+  color: var(--warn);
+  border-bottom: 1px solid var(--warn-border);
+  font-size: var(--text-sm);
+}
+
+/* Diagnostics (shows the core's {code, path, message} verbatim §4) */
+.diag {
+  padding: var(--space-1) var(--space-2);
+  margin: var(--space-1) 0;
+  border-left: 3px solid var(--danger);
+  background: var(--danger-bg);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  cursor: pointer;
+  font-size: var(--text-sm);
+}
+.diag .code { color: var(--danger); font-family: var(--font-mono); margin-right: var(--space-2); }
+.diag .path { color: var(--text-3); font-family: var(--font-mono); margin-right: var(--space-2); }
+
+/* ---- 5. FieldsTable (recursive field editor) ------------------------------------- */
+/* Each field is a flex-wrap row of min-width controls: when the pane is too narrow to fit them side by
+   side, controls drop to the next line (the pane grows taller) instead of crushing or forcing a
+   horizontal scroll. Container-agnostic (works in the narrow side pane and the wide table-view expand). */
+.fields { display: flex; flex-direction: column; gap: 2px; font-size: var(--text-sm); }
+.field-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 6px;
+  padding: 4px;
+  border-radius: var(--radius-sm);
+  transition: background var(--duration) var(--ease);
+}
+.field-row:hover { background: var(--bg-hover); }
+.field-row.picked { background: var(--bg-selected); box-shadow: inset 2px 0 0 var(--accent); }
+.field-row input[type="checkbox"] { width: 14px; flex: none; }
+.field-row .f-pick { margin-top: 6px; }
+.field-row .f-name { flex: 2 1 120px; min-width: 110px; width: auto; }
+.field-row .f-type { flex: 1 1 120px; min-width: 110px; display: flex; flex-direction: column; gap: 3px; }
+.field-row .f-req {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  margin-top: 5px;
+  color: var(--text-2);
+  font-size: var(--text-xs);
+  white-space: nowrap;
+}
+.field-row .f-default { flex: 2 1 140px; min-width: 130px; }
+.field-row .f-ops { flex: none; margin-left: auto; white-space: nowrap; }
+/* Controls fill their flex slot regardless of container (do not depend on the .panel width:100% rule) */
+.field-row .f-type select, .field-row .f-type .sub, .field-row .f-default .default { width: 100%; }
+.fields .default { font-family: var(--font-mono); }
+
+/* The group nest surface: an indented left guide line + a slightly sunken surface to show the hierarchy */
+.fields .nest {
+  margin: 2px 0 4px var(--space-3);
+  padding: var(--space-1) 0 var(--space-1) var(--space-2);
+  border-left: 2px solid var(--accent-border);
+  background: var(--bg-raised);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+}
+
+/* default cell: input + an "e.g." suggestion chip + inline NO */
+.default-cell { min-width: 130px; }
+.adopt {
+  display: inline-block;
+  margin-top: 3px;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding: 0 var(--space-2);
+  border: 1px dashed var(--accent-border);
+  border-radius: var(--radius-full);
+  color: var(--accent);
+  font-size: var(--text-xs);
+  font-family: var(--font-mono);
+  cursor: pointer;
+  user-select: none;
+  transition: background var(--duration) var(--ease);
+}
+.adopt:hover { background: var(--accent-bg); border-style: solid; }
+.field-diag {
+  margin-top: 2px;
+  color: var(--danger);
+  font-size: var(--text-xs);
+  line-height: 1.4;
+}
+.field-diag .code { font-family: var(--font-mono); font-weight: 600; }
+.field-diag .path { font-family: var(--font-mono); color: var(--text-3); }
+
+/* The action row below the table */
+.row-btns { display: flex; gap: var(--space-2); margin-top: var(--space-2); align-items: center; }
+
+/* ---- 6. ShapeEditor (the slot type-editing card) ----------------------------------- */
+.shape {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-3);
+  margin: var(--space-2) 0;
+  background: var(--bg-surface);
+  box-shadow: var(--shadow-1);
+}
+.shape-head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-bottom: var(--space-2);
+}
+.slot-label {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--accent-strong);
+  background: var(--accent-bg);
+  border-radius: var(--radius-full);
+  padding: 1px var(--space-3);
+}
+.shape-head .seg { margin-left: auto; }
+.kind-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin: var(--space-2) 0;
+  color: var(--text-2);
+  font-size: var(--text-sm);
+}
+.encoding-row { display: flex; align-items: center; gap: var(--space-2); color: var(--text-2); font-size: var(--text-sm); }
+.encoding-row input { flex: 1; font-family: var(--font-mono); }
+
+/* ---- 7. Generic utilities (shared with other panes) -------------------------------- */
+/* Two-up when there is room, collapsing to one full-width column when the pane is narrow so the
+   controls stay legible (responsive: no crushing) */
+.grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: var(--space-3); }
+.chk { display: inline-flex !important; width: auto !important; align-items: center; gap: var(--space-1); margin-right: var(--space-3) !important; }
+.chk input, .chkline input { width: auto; }
+.stale { color: var(--warn); }
+.danger { background: var(--danger-bg) !important; border-color: var(--danger-border) !important; }
+.fatal { padding: var(--space-6); color: var(--danger); white-space: pre-wrap; font-family: var(--font-mono); }
+.broken { padding: var(--space-4); }
+.broken textarea { width: 100%; height: 40vh; font-family: var(--font-mono); }
+
+/* Add-style modals (UX redesign · BaseDialog): unified with the conflict dialog's tokens */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 20;
+}
+.modal {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+  width: min(440px, 92vw);
+  max-height: 85vh;
+  overflow: auto;
+  box-shadow: var(--shadow-2);
+}
+.modal h3 { margin: 0 0 var(--space-3); color: var(--accent-strong); }
+.modal label { display: block; margin: var(--space-2) 0; color: var(--text-2); font-size: var(--text-sm); }
+.modal input, .modal select { width: 100%; }
+.modal-btns { display: flex; gap: var(--space-2); justify-content: flex-end; margin-top: var(--space-4); }
+.modal .warn { margin: var(--space-2) 0; }
+
+/* Conflict-resolution modal (§5.3 · used by Task 14) */
+.conflict-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+.conflict {
+  background: var(--bg-surface);
+  border: 1px solid var(--warn-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+  max-width: 720px;
+  max-height: 80vh;
+  overflow: auto;
+  box-shadow: var(--shadow-2);
+}
+.conflict .btns { display: flex; gap: var(--space-3); margin: var(--space-3) 0; }
+.diff { background: var(--bg-inset); padding: var(--space-2); font-size: var(--text-sm); font-family: var(--font-mono); overflow-x: auto; border-radius: var(--radius-sm); }
+.diff .add { color: var(--ok); display: block; }
+.diff .del { color: var(--danger); display: block; }
+.diff .same { color: var(--text-3); display: block; }
+
+/* Dependency table and other tables */
+.dep { width: 100%; border-collapse: collapse; }
+.dep th, .dep td { text-align: left; padding: var(--space-1) var(--space-2); border-bottom: 1px solid var(--border); }
+.dep th { font-size: var(--text-xs); font-weight: 600; color: var(--text-3); }
+
+/* ---- 8. Later panes + App (Task 14) ---------------------------------------- */
+
+/* Chip (a small label for pattern / kind / capability) */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 0 var(--space-2);
+  border-radius: var(--radius-full);
+  font-size: var(--text-xs);
+  font-family: var(--font-mono);
+  background: var(--accent-bg);
+  color: var(--accent-strong);
+  border: 1px solid var(--accent-border);
+}
+.chip.muted { background: var(--bg-raised); color: var(--text-2); border-color: var(--border); }
+
+/* Shared pane header / rows */
+.pane-head { display: flex; align-items: center; gap: var(--space-2); }
+.pane-head h3 { margin: var(--space-1) 0; }
+.seg-row, .caps-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+  margin: var(--space-2) 0;
+  color: var(--text-2);
+  font-size: var(--text-sm);
+}
+.caps-row .hint { margin: 0; }
+.pane-connect { width: 100%; margin-top: var(--space-4); }
+.pane-del { width: 100%; margin-top: var(--space-2); }
+button.danger { color: var(--danger); }
+button.primary { background: var(--accent-bg); border-color: var(--accent-border); color: var(--accent-strong); font-weight: 600; }
+
+/* Collapsible (advanced knobs · progressive disclosure) */
+details.adv {
+  margin: var(--space-3) 0;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: var(--space-2) var(--space-3);
+  background: var(--bg-raised);
+}
+details.adv summary { cursor: pointer; color: var(--text-2); font-size: var(--text-sm); user-select: none; }
+details.adv summary:hover { color: var(--text-1); }
+details.adv[open] > summary { margin-bottom: var(--space-2); }
+details.adv h4 { margin: var(--space-3) 0 var(--space-1); font-size: var(--text-sm); color: var(--text-2); }
+
+/* Connection targets (declarative pane: only valid targets are offered §9) */
+.to-list { display: flex; flex-wrap: wrap; gap: 2px var(--space-2); margin: var(--space-1) 0 var(--space-2); }
+
+/* Effective keyexpr (from the descriptor · shown as stale §7) */
+.keyexpr code {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  background: var(--bg-inset);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 1px var(--space-2);
+}
+
+/* Diagnostics list */
+.diag-list { list-style: none; margin: 0; padding: 0; }
+.diag { display: flex; gap: var(--space-2); align-items: baseline; transition: background var(--duration) var(--ease); }
+.diag:hover { background: var(--bg-hover); }
+.diag .msg { flex: 1; }
+.diag .jump-mark { color: var(--text-3); }
+
+/* topbar inline inputs / tabs */
+.topbar .inline { display: inline-flex; align-items: center; gap: var(--space-1); margin: 0; color: var(--text-2); font-size: var(--text-sm); }
+.topbar input.sm { width: 150px; }
+.topbar input.xs { width: 44px; }
+
+/* statusbar (always-on state visibility: diagnostics / stale / unwired / autosave) */
+.statusbar { display: flex; align-items: center; gap: var(--space-4); }
+.sb-ok { color: var(--ok); }
+.sb-warn { color: var(--warn); }
+.sb-danger { color: var(--danger); }
+.sb-save { margin-left: auto; }
+
+/* Server-stopped overlay (§bug4: the backend went away; in an app-mode window the tab also self-closes) */
+.server-down {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.6);
+}
+.server-down-card {
+  max-width: 420px;
+  padding: var(--space-6);
+  text-align: center;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-2);
+}
+.server-down-card h2 { margin: 0 0 var(--space-2); color: var(--text-1); font-size: var(--text-lg); }
+.server-down-card p { margin: 0; color: var(--text-2); font-size: var(--text-sm); }
+
+/* Loading (a non-emergency state, distinct from fatal) */
+.loading {
+  display: flex;
+  height: 100vh;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-3);
+}

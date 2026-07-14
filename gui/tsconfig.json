@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "strict": true,
+    "noEmit": true,
+    "skipLibCheck": true,
+    "lib": ["ES2022", "DOM"],
+    "types": ["vite/client"],
+    "jsx": "preserve"
+  },
+  "include": ["src/**/*.ts", "src/**/*.vue"],
+  "exclude": ["src/core-wasm"]
+}

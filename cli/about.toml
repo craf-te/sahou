@@ -1,0 +1,21 @@
+# cargo-about config: SPDX licenses that may be bundled into the `sahou` binary.
+# `sahou licenses` prints the generated THIRD-PARTY-LICENSES.md so a single binary
+# carries the redistribution notices (Apache-2.0 section 4 for Zenoh etc.).
+accepted = [
+    "Apache-2.0",
+    "MIT",
+    "BSD-2-Clause",
+    "BSD-3-Clause",
+    "ISC",
+    "Unicode-DFS-2016",
+    "Unicode-3.0",
+    "Zlib",
+    "MPL-2.0",
+    "EPL-2.0",
+    "BSL-1.0",
+    "0BSD",
+    "CC0-1.0",
+    "OpenSSL",
+    "Unlicense",
+    "CDLA-Permissive-2.0",
+]

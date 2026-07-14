@@ -1,0 +1,85 @@
+{
+  "schema": "runtime_demo",
+  "version": "1",
+  "namespace": "sahou",
+  "nodes": {
+    "display": {},
+    "sensor": {}
+  },
+  "connections": {
+    "ask": {
+      "pattern": "query",
+      "from": "sensor",
+      "to": [
+        "display"
+      ],
+      "key": "sahou/ask",
+      "hash": "7b90736c293e8c54",
+      "reliability": "best_effort",
+      "congestion": "drop",
+      "priority": "data",
+      "express": false,
+      "encoding": "json",
+      "validate": "full",
+      "request": {
+        "typing": "typed",
+        "fields": [
+          {
+            "name": "sel",
+            "type": "string",
+            "max_len": 32
+          }
+        ]
+      },
+      "response": {
+        "typing": "typed",
+        "fields": [
+          {
+            "name": "level",
+            "type": "int"
+          }
+        ]
+      }
+    },
+    "touch": {
+      "pattern": "pub_sub",
+      "from": "sensor",
+      "to": [
+        "display"
+      ],
+      "key": "sahou/touch",
+      "hash": "0b05231c4caeef0b",
+      "reliability": "best_effort",
+      "congestion": "drop",
+      "priority": "data",
+      "express": false,
+      "encoding": "json",
+      "validate": "full",
+      "payload": {
+        "typing": "typed",
+        "fields": [
+          {
+            "name": "x",
+            "type": "float",
+            "min": 0.0,
+            "max": 1.0
+          },
+          {
+            "name": "phase",
+            "type": "enum",
+            "values": [
+              "down",
+              "move",
+              "up"
+            ]
+          },
+          {
+            "name": "pressure",
+            "type": "float",
+            "required": false
+          }
+        ]
+      }
+    }
+  }
+}

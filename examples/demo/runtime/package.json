@@ -1,0 +1,6 @@
+{
+  "name": "sahou-demo-runtime",
+  "private": true,
+  "type": "module",
+  "dependencies": { "@sahou/runtime": "file:../../../runtimes/ts" }
+}

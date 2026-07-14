@@ -1,0 +1,11 @@
+# TouchDesigner C++ SDK sample + headers are Derivative "Shared Use License" — do NOT commit.
+# Obtain them from your local TD install (see README.md) into vendor/.
+vendor/
+
+# Generated IR (descriptor.json) — regenerate with `sahou gen` (schema.sahou.yaml is the source of truth).
+examples/gen/
+
+# Build outputs.
+build/
+*.plugin
+*.o

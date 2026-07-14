@@ -1,0 +1,49 @@
+schema: demo_installation
+version: 1
+nodes:
+  sensor: { kind: sahou }
+  visuals: { kind: sahou }
+  archive: { kind: sahou }
+  osc_light: { kind: external }
+connections:
+  touch:
+    pattern: pub_sub
+    from: sensor
+    to: [visuals, archive]
+    payload:
+      typing: typed
+      fields:
+        - { name: x, type: float, min: 0, max: 1 }
+        - { name: phase, type: enum, values: [down, move, up] }
+        - name: meta
+          type: group
+          fields:
+            - { name: ts, type: timestamp }
+            - { name: source, type: string, required: false }
+    reliability: reliable
+    congestion: block
+  points:
+    pattern: pub_sub
+    from: sensor
+    to: [visuals]
+    payload:
+      typing: typed
+      fields:
+        - { name: pts, type: array, items: { type: array, items: float } }
+  debug_tap:
+    pattern: pub_sub
+    from: sensor
+    to: [visuals]
+    payload: { typing: any }
+  get_state:
+    pattern: query
+    from: sensor
+    to: [archive]
+    request:
+      typing: typed
+      fields:
+        - { name: sel, type: string, max_len: 64 }
+    response:
+      typing: typed
+      fields:
+        - { name: level, type: int }

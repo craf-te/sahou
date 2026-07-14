@@ -1,0 +1,18 @@
+# Sahou transport (zenoh) for the TouchDesigner plugin — the send/receive glue that lives OUTSIDE
+# the pure core (design §8/§10: zenoh is kept in a cdylib, the core stays std-only). The plugin
+# bundles this dylib next to itself and statically links libsahou_core.a for validation/sample.
+[package]
+name = "sahou-transport"
+version = "0.0.1"
+edition = "2021"
+license = "Apache-2.0"
+
+[lib]
+name = "sahou_transport"
+crate-type = ["cdylib"]
+
+[dependencies]
+# Match the version the `sahou` CLI (tap/link/doctor) uses so peers interoperate. Features are
+# unified across the workspace, so the CLI's unstable/internal features are available here too.
+zenoh = { version = "1.9", features = ["unstable"] }
+serde_json = "1"

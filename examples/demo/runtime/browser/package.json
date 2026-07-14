@@ -1,0 +1,8 @@
+{
+  "name": "sahou-demo-browser",
+  "private": true,
+  "type": "module",
+  "scripts": { "dev": "vite" },
+  "dependencies": { "@sahou/runtime": "file:../../../../runtimes/ts" },
+  "devDependencies": { "vite": "^6" }
+}
