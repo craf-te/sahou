@@ -3,6 +3,7 @@ use std::process::ExitCode;
 
 mod check;
 mod doctor;
+#[cfg(feature = "gui")]
 mod gui;
 mod init;
 mod link;
@@ -65,6 +66,7 @@ enum Cmd {
     /// Detect stub <-> IR drift (for CI): compare the stub's embedded hashes against the descriptor and reject on mismatch
     Check(check::CheckArgs),
     /// Node editor GUI (localhost). All contract interpretation happens in the in-browser core wasm — the backend only moves raw bytes
+    #[cfg(feature = "gui")]
     Gui(gui::GuiArgs),
     /// Print a schema-authoring reference for AI (coding agents)
     Reference,
@@ -199,6 +201,7 @@ fn run(cli: Cli) -> Result<(), Vec<Diag>> {
         Cmd::Tap(args) => tap::run(args),
         Cmd::Doctor(args) => doctor::run(args),
         Cmd::Check(args) => check::run(args),
+        #[cfg(feature = "gui")]
         Cmd::Gui(args) => gui::run(args),
         Cmd::Reference => {
             print!("{}", reference::reference_text());
