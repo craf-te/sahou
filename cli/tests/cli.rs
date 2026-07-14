@@ -166,18 +166,141 @@ fn gen_lang_node_writes_stub_files() {
 }
 
 #[test]
-fn gen_lang_requires_node_and_vice_versa() {
+fn gen_node_requires_lang() {
     let dir = tempfile::tempdir().unwrap();
     let schema = write(&dir, "schema.sahou.yaml", DEMO);
-    for args in [vec!["--lang", "ts"], vec!["--node", "sensor"]] {
-        let mut a = vec!["gen", schema.to_str().unwrap()];
-        a.extend(args);
-        Command::cargo_bin("sahou")
-            .unwrap()
-            .args(&a)
-            .assert()
-            .failure(); // clap's requires
-    }
+    // --node without --lang is rejected by clap's requires (per-node stub needs a language)
+    Command::cargo_bin("sahou")
+        .unwrap()
+        .args(["gen", schema.to_str().unwrap(), "--node", "sensor"])
+        .assert()
+        .failure();
+}
+
+#[test]
+fn gen_lang_alone_writes_whole_descriptor_ts() {
+    let dir = tempfile::tempdir().unwrap();
+    let schema = write(&dir, "schema.sahou.yaml", DEMO);
+    let out_dir = dir.path().join("gen");
+    Command::cargo_bin("sahou")
+        .unwrap()
+        .args([
+            "gen",
+            schema.to_str().unwrap(),
+            "--out-dir",
+            out_dir.to_str().unwrap(),
+            "--lang",
+            "ts",
+        ])
+        .assert()
+        .success();
+    let dts = std::fs::read_to_string(out_dir.join("sahou.gen.d.mts")).unwrap();
+    let mjs = std::fs::read_to_string(out_dir.join("sahou.gen.mjs")).unwrap();
+    assert!(dts.contains("sahou:stub schema=demo_installation"), "{dts}");
+    assert!(dts.contains("export interface VisualsNode {"), "{dts}");
+    assert!(
+        dts.contains(r#"): Promise<SensorNode>;"#),
+        "connect overload per node: {dts}"
+    );
+    assert!(mjs.contains(r#"export { connect } from "sahou";"#), "{mjs}");
+}
+
+#[test]
+fn gen_lang_target_browser_reexports_browser_entry() {
+    let dir = tempfile::tempdir().unwrap();
+    let schema = write(&dir, "schema.sahou.yaml", DEMO);
+    let out_dir = dir.path().join("gen");
+    Command::cargo_bin("sahou")
+        .unwrap()
+        .args([
+            "gen",
+            schema.to_str().unwrap(),
+            "--out-dir",
+            out_dir.to_str().unwrap(),
+            "--lang",
+            "ts",
+            "--target",
+            "browser",
+        ])
+        .assert()
+        .success();
+    let mjs = std::fs::read_to_string(out_dir.join("sahou.gen.mjs")).unwrap();
+    assert!(
+        mjs.contains(r#"export { connect } from "sahou/browser";"#),
+        "{mjs}"
+    );
+}
+
+#[test]
+fn gen_lang_alone_writes_whole_descriptor_python() {
+    let dir = tempfile::tempdir().unwrap();
+    let schema = write(&dir, "schema.sahou.yaml", DEMO);
+    let out_dir = dir.path().join("gen");
+    Command::cargo_bin("sahou")
+        .unwrap()
+        .args([
+            "gen",
+            schema.to_str().unwrap(),
+            "--out-dir",
+            out_dir.to_str().unwrap(),
+            "--lang",
+            "python",
+        ])
+        .assert()
+        .success();
+    let pyi = std::fs::read_to_string(out_dir.join("sahou_gen.pyi")).unwrap();
+    assert!(pyi.contains("class VisualsNode(Protocol):"), "{pyi}");
+    assert!(
+        pyi.contains(r#"node: Literal["sensor"]"#),
+        "connect overload per node: {pyi}"
+    );
+    assert!(std::fs::read_to_string(out_dir.join("sahou_gen.py")).is_ok());
+}
+
+#[test]
+fn gen_target_with_python_is_rejected() {
+    let dir = tempfile::tempdir().unwrap();
+    let schema = write(&dir, "schema.sahou.yaml", DEMO);
+    let out_dir = dir.path().join("gen");
+    Command::cargo_bin("sahou")
+        .unwrap()
+        .args([
+            "gen",
+            schema.to_str().unwrap(),
+            "--out-dir",
+            out_dir.to_str().unwrap(),
+            "--lang",
+            "python",
+            "--target",
+            "browser",
+        ])
+        .assert()
+        .failure()
+        .stdout(predicate::str::contains("[bad_flag]"));
+}
+
+#[test]
+fn gen_target_with_node_stub_is_rejected() {
+    let dir = tempfile::tempdir().unwrap();
+    let schema = write(&dir, "schema.sahou.yaml", DEMO);
+    let out_dir = dir.path().join("gen");
+    Command::cargo_bin("sahou")
+        .unwrap()
+        .args([
+            "gen",
+            schema.to_str().unwrap(),
+            "--out-dir",
+            out_dir.to_str().unwrap(),
+            "--lang",
+            "ts",
+            "--node",
+            "visuals",
+            "--target",
+            "browser",
+        ])
+        .assert()
+        .failure()
+        .stdout(predicate::str::contains("[bad_flag]"));
 }
 
 #[test]
