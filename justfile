@@ -25,12 +25,16 @@ install:
 gui-build:
     cd gui && npm ci && npm run build:core && npm run build
 
+# Copy the built GUI (gui/dist) into the cli crate so rust-embed can bundle it (release/publish pipeline).
+gui-embed:
+    rm -rf cli/gui-dist && mkdir -p cli/gui-dist && cp -R gui/dist/. cli/gui-dist/
+
 # Run the GUI unit tests (vitest).
 gui-test:
     cd gui && npm test
 
 # Build the GUI, then install so the binary carries the freshest GUI assets.
-install-full: gui-build install
+install-full: gui-build gui-embed install
 
 # --- Generated artifacts (committed) ---
 

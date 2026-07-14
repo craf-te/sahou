@@ -22,3 +22,7 @@ gui/node_modules/
 gui/dist/*
 !gui/dist/.gitkeep
 gui/src/core-wasm/
+
+# CLI embeds the built GUI from cli/gui-dist (populated by `just gui-embed`); keep only the folder.
+cli/gui-dist/*
+!cli/gui-dist/.gitkeep

@@ -12,7 +12,7 @@ use super::files::{etag_of, write_if_match, FileKind, PutError, Targets};
 
 /// Embedded GUI assets (gui/dist). Debug builds reference real files; release builds embed them in the binary (rust-embed default).
 #[derive(rust_embed::RustEmbed)]
-#[folder = "../gui/dist/"]
+#[folder = "gui-dist/"]
 struct Assets;
 
 /// SSE subscriber hub. Distributes watch events to all clients (disconnected clients drop out naturally on send failure).
