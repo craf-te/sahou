@@ -23,6 +23,6 @@ gui/dist/*
 !gui/dist/.gitkeep
 gui/src/core-wasm/
 
-# CLI embeds the built GUI from cli/gui-dist (populated by `just gui-embed`); keep only the folder.
-cli/gui-dist/*
-!cli/gui-dist/.gitkeep
+# NOTE: cli/gui-dist/ (the built GUI embedded into the sahou binary) is committed on purpose,
+# so release CI and `cargo publish` bundle the GUI without needing node/wasm-pack. Rebuild it
+# with `just gui-build && just gui-embed` and commit when the GUI changes.
