@@ -34,16 +34,34 @@ contract runs unchanged across environments.
 
 ## Install
 
-From source (installs the `sahou` CLI with the GUI embedded):
+### `sahou` CLI (the tool)
 
 ```bash
-git clone https://github.com/craf-te/sahou
-cd sahou
-just install-full
+# From crates.io (needs Rust):
+cargo install sahou-cli        # installs the `sahou` command (GUI embedded)
 ```
 
-`just install-full` builds the browser GUI and then runs `cargo install --path cli`.
-To install without rebuilding the GUI, use `cargo install --path cli`.
+Or grab a prebuilt binary — **no Rust needed** (macOS / Linux):
+
+```bash
+curl --proto '=https' --tlsv1.2 -LsSf https://github.com/craf-te/sahou/releases/latest/download/sahou-cli-installer.sh | sh
+```
+
+On Windows (PowerShell): `irm https://github.com/craf-te/sahou/releases/latest/download/sahou-cli-installer.ps1 | iex`.
+Prebuilt binaries for macOS (arm64/x64), Linux (arm64/x64), and Windows (x64) — with the GUI
+embedded — are on the [releases page](https://github.com/craf-te/sahou/releases). From source:
+`git clone … && just install-full`.
+
+### Runtime library (to build apps)
+
+Add the runtime for your language, then send and receive over a contract:
+
+```bash
+npm install sahou     # Node.js & browser
+pip install sahou     # Python
+```
+
+(A Rust runtime — `cargo add sahou` — is reserved and coming; for now build on the core, `sahou-core`.)
 
 ## Quickstart
 
@@ -85,10 +103,11 @@ sahou gui
 
 ## Runtimes
 
-Thin, hand-written libraries that share the Rust core:
+Thin, hand-written libraries that share the Rust core (install commands above):
 
-- **Python** — package `sahou` (PyPI). See [`runtimes/python/README.md`](runtimes/python/README.md).
-- **Node.js / browser** — package `sahou` (npm). See [`runtimes/typescript/README.md`](runtimes/typescript/README.md).
+- **Node.js / browser** — [`sahou`](https://www.npmjs.com/package/sahou) on npm. See [`runtimes/typescript/README.md`](runtimes/typescript/README.md).
+- **Python** — [`sahou`](https://pypi.org/project/sahou/) on PyPI. See [`runtimes/python/README.md`](runtimes/python/README.md).
+- **Rust** — [`sahou`](https://crates.io/crates/sahou) on crates.io (placeholder for now); the core is [`sahou-core`](https://crates.io/crates/sahou-core).
 
 ## TouchDesigner (experimental)
 
