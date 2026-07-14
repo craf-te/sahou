@@ -3,13 +3,19 @@ name = "sahou-cli"
 version = "0.0.1"
 edition = "2021"
 license = "Apache-2.0"
+description = "Sahou CLI (sahou) — a schema-first tool for building the interface layer between systems on a LAN."
+repository = "https://github.com/craf-te/sahou"
+homepage = "https://github.com/craf-te/sahou"
+readme = "README.md"
+keywords = ["schema", "cli", "messaging", "zenoh", "lan"]
+categories = ["command-line-utilities", "network-programming"]
 
 [[bin]]
 name = "sahou"
 path = "src/main.rs"
 
 [dependencies]
-sahou-core = { path = "../core" }
+sahou-core = { path = "../core", version = "0.0.1" }
 clap = { version = "4", features = ["derive"] }
 tokio = { version = "1", features = ["rt-multi-thread", "time", "macros"] }
 zenoh = { version = "1.9", features = ["unstable", "internal", "plugins"] }

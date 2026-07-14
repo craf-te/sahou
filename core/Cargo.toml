@@ -3,6 +3,12 @@ name = "sahou-core"
 version = "0.0.1"
 edition = "2021"
 license = "Apache-2.0"
+description = "Sahou core — the schema-first IR: parse, serialize, and validate a contract, and judge compatibility."
+repository = "https://github.com/craf-te/sahou"
+homepage = "https://github.com/craf-te/sahou"
+readme = "README.md"
+keywords = ["schema", "ir", "validation", "messaging", "contract"]
+categories = ["encoding", "parser-implementations"]
 
 [lib]
 crate-type = ["cdylib", "rlib", "staticlib"]
