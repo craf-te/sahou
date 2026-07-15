@@ -1,105 +1,104 @@
-
 msgid ""
 msgstr ""
 "Project-Id-Version: Sahou\n"
-"POT-Creation-Date: 2026-07-15T14:41:50+09:00\n"
+"POT-Creation-Date: 2026-07-15T14:51:30+09:00\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: en\n"
+"Language: ja\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 #: src\SUMMARY.md:1
 msgid "Summary"
-msgstr ""
+msgstr "目次"
 
-#: src\SUMMARY.md:3
-msgid "Introduction Quickstart"
-msgstr ""
+#: src\SUMMARY.md:3 src\introduction.md:1
+msgid "Introduction"
+msgstr "はじめに"
 
-#: src\SUMMARY.md:6
+#: src\SUMMARY.md:5 src\quickstart.md:1
+msgid "Quickstart"
+msgstr "クイックスタート"
+
+#: src\SUMMARY.md:7
 msgid "Concepts"
-msgstr ""
+msgstr "コンセプト"
 
-#: src\SUMMARY.md:8 src\SUMMARY.md:22 src\concepts/index.md:1
+#: src\SUMMARY.md:9 src\SUMMARY.md:23 src\concepts/index.md:1
 #: src\runtimes/index.md:1
 msgid "Overview"
-msgstr ""
+msgstr "概要"
 
-#: src\SUMMARY.md:9 src\concepts/node-message-connection.md:1
+#: src\SUMMARY.md:10 src\concepts/node-message-connection.md:1
 msgid "Node, Message, Connection"
-msgstr ""
+msgstr "ノード・メッセージ・コネクション"
 
-#: src\SUMMARY.md:10 src\concepts/contract-vs-endpoints.md:1
+#: src\SUMMARY.md:11 src\concepts/contract-vs-endpoints.md:1
 msgid "Contract vs Endpoints"
-msgstr ""
+msgstr "契約とエンドポイント"
 
-#: src\SUMMARY.md:11 src\concepts/ir-and-round-trip.md:1
+#: src\SUMMARY.md:12 src\concepts/ir-and-round-trip.md:1
 msgid "The IR and round-trip"
-msgstr ""
+msgstr "IR とラウンドトリップ"
 
-#: src\SUMMARY.md:12 src\concepts/say-no-early.md:1
+#: src\SUMMARY.md:13 src\concepts/say-no-early.md:1
 msgid "Say NO early"
-msgstr ""
+msgstr "早期に NO を返す"
 
-#: src\SUMMARY.md:13 src\concepts/contract-evolution.md:1
+#: src\SUMMARY.md:14 src\concepts/contract-evolution.md:1
 msgid "Contract evolution"
-msgstr ""
+msgstr "契約の進化"
 
-#: src\SUMMARY.md:15
+#: src\SUMMARY.md:16
 msgid "Authoring"
-msgstr ""
+msgstr "オーサリング"
 
-#: src\SUMMARY.md:17 src\schema-authoring.md:1
+#: src\SUMMARY.md:18 src\schema-authoring.md:1
 msgid "Schema authoring"
-msgstr ""
+msgstr "スキーマの記述"
 
-#: src\SUMMARY.md:18 src\cli-reference.md:1
+#: src\SUMMARY.md:19 src\cli-reference.md:1
 msgid "CLI reference"
-msgstr ""
+msgstr "CLI リファレンス"
 
-#: src\SUMMARY.md:20
+#: src\SUMMARY.md:21
 msgid "Runtimes"
-msgstr ""
+msgstr "ランタイム"
 
-#: src\SUMMARY.md:23 src\runtimes/python.md:1
+#: src\SUMMARY.md:24 src\runtimes/python.md:1
 msgid "Python"
 msgstr ""
 
-#: src\SUMMARY.md:24 src\runtimes/typescript.md:1
+#: src\SUMMARY.md:25 src\runtimes/typescript.md:1
 msgid "TypeScript (Node & browser)"
-msgstr ""
+msgstr "TypeScript（Node・ブラウザ）"
 
-#: src\SUMMARY.md:25 src\runtimes/rust.md:1
+#: src\SUMMARY.md:26 src\runtimes/rust.md:1
 msgid "Rust"
 msgstr ""
 
-#: src\SUMMARY.md:26 src\runtimes/touchdesigner.md:1
+#: src\SUMMARY.md:27 src\runtimes/touchdesigner.md:1
 msgid "TouchDesigner"
-msgstr ""
+msgstr "TouchDesigner"
 
-#: src\SUMMARY.md:28
+#: src\SUMMARY.md:29
 msgid "Operating"
-msgstr ""
+msgstr "運用"
 
-#: src\SUMMARY.md:30 src\networking-and-deployment.md:1
+#: src\SUMMARY.md:31 src\networking-and-deployment.md:1
 msgid "Networking & deployment"
-msgstr ""
+msgstr "ネットワークとデプロイ"
 
-#: src\SUMMARY.md:31 src\gui.md:1
+#: src\SUMMARY.md:32 src\gui.md:1
 msgid "Visual editor (GUI)"
-msgstr ""
+msgstr "ビジュアルエディタ（GUI）"
 
-#: src\SUMMARY.md:32 src\faq.md:1
+#: src\SUMMARY.md:33 src\faq.md:1
 msgid "FAQ & troubleshooting"
-msgstr ""
-
-#: src\introduction.md:1
-msgid "Introduction"
-msgstr ""
+msgstr "FAQ・トラブルシューティング"
 
 #: src\introduction.md:3
 msgid ""
@@ -109,61 +108,61 @@ msgid ""
 "hand-managing IP addresses or ports** — and rejects wrong types and mistyped "
 "fields at the boundary, instead of letting a mistake propagate and surface "
 "somewhere far away."
-msgstr ""
+msgstr "Sahou は、**システム間のインターフェース層を構築するためのスキーマファーストなツール**です。メッセージとその配線を、スキーマの中で一度だけ記述します。あとは同じ LAN 上のアプリ同士が **IP アドレスやポートを手で管理することなく** 通信でき、型の誤りやフィールドのタイプミスは、遠く離れた場所で表面化させる代わりに境界で拒否されます。"
 
 #: src\introduction.md:10
 msgid ""
 "\"Sahou\" (作法) means _proper form / etiquette_ — the small set of "
 "conventions that let independent programs talk to each other comfortably and "
 "without mistakes."
-msgstr ""
+msgstr "「Sahou（作法）」とは _正しい形式・礼儀_ を意味します。独立したプログラム同士が、心地よく、間違いなく対話するための小さな取り決めの集まりです。"
 
 #: src\introduction.md:14
 msgid "What you describe, and what you get"
-msgstr ""
+msgstr "何を記述し、何が得られるか"
 
 #: src\introduction.md:16
 msgid ""
 "A Sahou schema names three things: the **nodes** that participate, the "
 "**messages** they exchange, and the **connections** that wire them together. "
 "From that one description you get:"
-msgstr ""
+msgstr "Sahou のスキーマは 3 つのものに名前を付けます。参加する **ノード**、それらが交換する **メッセージ**、そしてそれらを配線する **コネクション** です。この 1 つの記述から、次のものが得られます。"
 
 #: src\introduction.md:20
 msgid ""
 "**Discovery and transport**, so nodes find each other by name on a shared "
 "LAN."
-msgstr ""
+msgstr "**発見とトランスポート** — ノードは共有 LAN 上で名前によって互いを見つけます。"
 
 #: src\introduction.md:21
 msgid ""
 "**A boundary that says NO**, so a wrong type or a mistyped field is caught "
 "where it happens."
-msgstr ""
+msgstr "**NO と言う境界** — 型の誤りやフィールドのタイプミスは、それが起きた場所で捕捉されます。"
 
 #: src\introduction.md:23
 msgid ""
 "**One contract across many languages** — Rust, Python, Node.js, the browser, "
 "and TouchDesigner all speak the same schema."
-msgstr ""
+msgstr "**多くの言語にまたがる 1 つの契約** — Rust・Python・Node.js・ブラウザ・TouchDesigner がすべて同じスキーマを話します。"
 
 #: src\introduction.md:26
 msgid "Why Sahou"
-msgstr ""
+msgstr "なぜ Sahou か"
 
 #: src\introduction.md:28
 msgid ""
 "**No addresses, no ports.** On a shared LAN, nodes discover each other by "
 "name. You declare connections in a schema; Sahou handles discovery and "
 "transport for you (built on [Zenoh](https://zenoh.io))."
-msgstr ""
+msgstr "**アドレスもポートも不要。** 共有 LAN 上で、ノードは名前によって互いを発見します。コネクションはスキーマで宣言し、発見とトランスポートは Sahou が引き受けます（[Zenoh](https://zenoh.io) の上に構築）。"
 
 #: src\introduction.md:31
 msgid ""
 "**Say NO early.** A wrong type or a mistyped field is rejected the moment it "
 "crosses the boundary — and, with generated type stubs, in your editor at "
 "build time — rather than failing later in the hardest place to debug."
-msgstr ""
+msgstr "**早期に NO を返す。** 型の誤りやフィールドのタイプミスは、境界を越えたその瞬間に拒否されます。さらに生成された型スタブを使えば、エディタ上のビルド時に拒否されます。デバッグが最も難しい場所で後から失敗することがありません。"
 
 #: src\introduction.md:34
 msgid ""
@@ -171,27 +170,23 @@ msgid ""
 "Node.js, the browser, and TouchDesigner. The core is a neutral data model "
 "(an intermediate representation, or _IR_); the per-language runtimes are "
 "thin."
-msgstr ""
+msgstr "**1 つのスキーマ、多くの環境。** 同じ契約が Rust・Python・Node.js・ブラウザ・TouchDesigner を駆動します。コアは中立的なデータモデル（中間表現、すなわち _IR_）であり、言語ごとのランタイムは薄い層です。"
 
 #: src\introduction.md:38
 msgid "Where to go next"
-msgstr ""
+msgstr "次に読むもの"
 
 #: src\introduction.md:40
 msgid ""
 "**[Quickstart](quickstart.md)** — from zero to a validated contract and a "
 "working LAN message flow."
-msgstr ""
+msgstr "**[クイックスタート](quickstart.md)** — ゼロから、検証済みの契約と LAN 上で動くメッセージフローまで。"
 
 #: src\introduction.md:42
 msgid ""
 "**[Concepts](concepts/index.md)** — the mental model: nodes, messages, "
 "connections, and why the IR sits in the middle."
-msgstr ""
-
-#: src\quickstart.md:1
-msgid "Quickstart"
-msgstr ""
+msgstr "**[コンセプト](concepts/index.md)** — 考え方のモデル。ノード・メッセージ・コネクション、そしてなぜ IR が中間に位置するのか。"
 
 #: src\quickstart.md:3
 msgid ""
@@ -199,15 +194,15 @@ msgid ""
 "flowing on your LAN in about 15 minutes. You will install the `sahou` CLI, "
 "look at a contract, validate it, build its IR, and observe traffic — no app "
 "code required."
-msgstr ""
+msgstr "このチュートリアルは、およそ 15 分で、ゼロから検証済みの契約と LAN を流れるメッセージまで案内します。`sahou` CLI をインストールし、契約を眺め、検証し、その IR をビルドし、トラフィックを観察します。アプリのコードは不要です。"
 
 #: src\quickstart.md:8
 msgid "1. Install the CLI"
-msgstr ""
+msgstr "1. CLI をインストールする"
 
 #: src\quickstart.md:10
 msgid "From crates.io (needs Rust):"
-msgstr ""
+msgstr "crates.io から（Rust が必要）:"
 
 #: src\quickstart.md:13
 msgid "# installs the `sahou` command (GUI embedded)\n"
@@ -215,7 +210,7 @@ msgstr ""
 
 #: src\quickstart.md:16
 msgid "Or grab a prebuilt binary — **no Rust needed**:"
-msgstr ""
+msgstr "またはビルド済みバイナリを入手する（**Rust 不要**）:"
 
 #: src\quickstart.md:19
 msgid "# macOS / Linux\n"
@@ -240,15 +235,15 @@ msgid ""
 "Prebuilt binaries for macOS (arm64/x64), Linux (arm64/x64), and Windows "
 "(x64) — with the GUI embedded — are on the [releases "
 "page](https://github.com/craf-te/sahou/releases)."
-msgstr ""
+msgstr "macOS（arm64/x64）・Linux（arm64/x64）・Windows（x64）向けの、GUI を同梱したビルド済みバイナリが [リリースページ](https://github.com/craf-te/sahou/releases) にあります。"
 
 #: src\quickstart.md:32
 msgid "2. Get a contract"
-msgstr ""
+msgstr "2. 契約を用意する"
 
 #: src\quickstart.md:34
 msgid "Scaffold a fresh project (a minimal valid seed):"
-msgstr ""
+msgstr "新しいプロジェクトの雛形を作る（最小の有効な種）:"
 
 #: src\quickstart.md:40
 msgid ""
@@ -257,9 +252,9 @@ msgid ""
 "**connections** between them. Here is one connection from the demo — a "
 "publish/subscribe stream of typed touch events from `sensor` to `visuals` "
 "and `archive`:"
-msgstr ""
+msgstr "あるいは、同梱のデモに沿って進めましょう。その契約は `examples/demo/schema.sahou.yaml` にあります。契約は **ノード** と、それらの間の **コネクション** に名前を付けます。デモの中の 1 つのコネクションを示します。`sensor` から `visuals` と `archive` への、型付きタッチイベントの publish/subscribe ストリームです。"
 
-#: src\quickstart.md:47
+#: src\quickstart.md:47 src\schema-authoring.md:12 src\schema-authoring.md:145
 msgid "schema"
 msgstr ""
 
@@ -267,137 +262,217 @@ msgstr ""
 msgid "demo_installation"
 msgstr ""
 
-#: src\quickstart.md:47
+#: src\quickstart.md:47 src\schema-authoring.md:145
 msgid "version"
 msgstr ""
 
-#: src\quickstart.md:48
+#: src\quickstart.md:48 src\concepts/node-message-connection.md:13
+#: src\schema-authoring.md:26 src\schema-authoring.md:146
 msgid "nodes"
 msgstr ""
 
 #: src\quickstart.md:50 src\quickstart.md:56
+#: src\concepts/node-message-connection.md:14
+#: src\concepts/node-message-connection.md:54
+#: src\concepts/node-message-connection.md:59 src\schema-authoring.md:27
+#: src\schema-authoring.md:148 src\schema-authoring.md:155
+#: src\schema-authoring.md:173 src\schema-authoring.md:183
 msgid "sensor"
 msgstr ""
 
 #: src\quickstart.md:50 src\quickstart.md:51 src\quickstart.md:52
+#: src\concepts/node-message-connection.md:14
+#: src\concepts/node-message-connection.md:15
+#: src\concepts/node-message-connection.md:16 src\schema-authoring.md:27
+#: src\schema-authoring.md:28 src\schema-authoring.md:148
+#: src\schema-authoring.md:149 src\schema-authoring.md:150
+#: src\schema-authoring.md:151 src\schema-authoring.md:198
 msgid "kind"
 msgstr ""
 
 #: src\quickstart.md:50 src\quickstart.md:51 src\quickstart.md:52
+#: src\concepts/node-message-connection.md:14
+#: src\concepts/node-message-connection.md:15 src\schema-authoring.md:27
+#: src\schema-authoring.md:148 src\schema-authoring.md:149
+#: src\schema-authoring.md:150
 msgid "sahou"
 msgstr ""
 
 #: src\quickstart.md:51 src\quickstart.md:57
+#: src\concepts/node-message-connection.md:55 src\schema-authoring.md:149
+#: src\schema-authoring.md:156 src\schema-authoring.md:174
+#: src\schema-authoring.md:197
 msgid "visuals"
 msgstr ""
 
 #: src\quickstart.md:52 src\quickstart.md:57
+#: src\concepts/node-message-connection.md:55
+#: src\concepts/node-message-connection.md:60 src\schema-authoring.md:150
+#: src\schema-authoring.md:156 src\schema-authoring.md:184
 msgid "archive"
 msgstr ""
 
-#: src\quickstart.md:52
+#: src\quickstart.md:52 src\concepts/node-message-connection.md:51
+#: src\schema-authoring.md:36 src\schema-authoring.md:151
 msgid "connections"
 msgstr ""
 
-#: src\quickstart.md:54
+#: src\quickstart.md:54 src\concepts/node-message-connection.md:52
+#: src\schema-authoring.md:153
 msgid "touch"
 msgstr ""
 
-#: src\quickstart.md:55
+#: src\quickstart.md:55 src\schema-authoring.md:38 src\schema-authoring.md:154
+#: src\schema-authoring.md:172 src\schema-authoring.md:182
+#: src\schema-authoring.md:195
 msgid "pattern"
 msgstr ""
 
-#: src\quickstart.md:55
+#: src\quickstart.md:55 src\concepts/node-message-connection.md:53
+#: src\schema-authoring.md:154 src\schema-authoring.md:172
+#: src\schema-authoring.md:195
 msgid "pub_sub"
 msgstr ""
 
-#: src\quickstart.md:56
+#: src\quickstart.md:56 src\concepts/node-message-connection.md:54
+#: src\concepts/node-message-connection.md:59 src\schema-authoring.md:155
+#: src\schema-authoring.md:173 src\schema-authoring.md:183
+#: src\schema-authoring.md:196
 msgid "from"
 msgstr ""
 
-#: src\quickstart.md:57
+#: src\quickstart.md:57 src\concepts/node-message-connection.md:55
+#: src\concepts/node-message-connection.md:60 src\schema-authoring.md:40
+#: src\schema-authoring.md:156 src\schema-authoring.md:174
+#: src\schema-authoring.md:184 src\schema-authoring.md:197
 msgid "to"
 msgstr ""
 
-#: src\quickstart.md:58
+#: src\quickstart.md:58 src\concepts/node-message-connection.md:33
+#: src\concepts/node-message-connection.md:56 src\schema-authoring.md:159
+#: src\schema-authoring.md:175 src\schema-authoring.md:198
 msgid "payload"
 msgstr ""
 
-#: src\quickstart.md:59
+#: src\quickstart.md:59 src\concepts/node-message-connection.md:34
+#: src\concepts/node-message-connection.md:56
+#: src\concepts/node-message-connection.md:61
+#: src\concepts/node-message-connection.md:62 src\schema-authoring.md:64
+#: src\schema-authoring.md:160 src\schema-authoring.md:176
+#: src\schema-authoring.md:187 src\schema-authoring.md:191
+#: src\schema-authoring.md:198
 msgid "typing"
 msgstr ""
 
-#: src\quickstart.md:59
+#: src\quickstart.md:59 src\concepts/node-message-connection.md:34
+#: src\concepts/node-message-connection.md:56
+#: src\concepts/node-message-connection.md:61
+#: src\concepts/node-message-connection.md:62 src\schema-authoring.md:160
+#: src\schema-authoring.md:176 src\schema-authoring.md:187
+#: src\schema-authoring.md:191
 msgid "typed"
 msgstr ""
 
 #: src\quickstart.md:60 src\quickstart.md:65
+#: src\concepts/node-message-connection.md:35
+#: src\concepts/node-message-connection.md:56
+#: src\concepts/node-message-connection.md:61
+#: src\concepts/node-message-connection.md:62 src\schema-authoring.md:161
+#: src\schema-authoring.md:167 src\schema-authoring.md:177
+#: src\schema-authoring.md:188 src\schema-authoring.md:192
 msgid "fields"
 msgstr ""
 
 #: src\quickstart.md:61 src\quickstart.md:62 src\quickstart.md:63
 #: src\quickstart.md:66 src\quickstart.md:67
+#: src\concepts/node-message-connection.md:36
+#: src\concepts/node-message-connection.md:37 src\schema-authoring.md:76
+#: src\schema-authoring.md:162 src\schema-authoring.md:163
+#: src\schema-authoring.md:164 src\schema-authoring.md:165
+#: src\schema-authoring.md:168 src\schema-authoring.md:169
+#: src\schema-authoring.md:170 src\schema-authoring.md:178
+#: src\schema-authoring.md:179 src\schema-authoring.md:180
+#: src\schema-authoring.md:189 src\schema-authoring.md:193
 msgid "name"
 msgstr ""
 
-#: src\quickstart.md:61
+#: src\quickstart.md:61 src\concepts/node-message-connection.md:36
+#: src\schema-authoring.md:162
 msgid "x"
 msgstr ""
 
 #: src\quickstart.md:61 src\quickstart.md:62 src\quickstart.md:64
 #: src\quickstart.md:66 src\quickstart.md:67
+#: src\concepts/node-message-connection.md:36
+#: src\concepts/node-message-connection.md:37 src\schema-authoring.md:76
+#: src\schema-authoring.md:92 src\schema-authoring.md:162
+#: src\schema-authoring.md:163 src\schema-authoring.md:164
+#: src\schema-authoring.md:166 src\schema-authoring.md:168
+#: src\schema-authoring.md:169 src\schema-authoring.md:170
+#: src\schema-authoring.md:178 src\schema-authoring.md:179
+#: src\schema-authoring.md:180 src\schema-authoring.md:189
+#: src\schema-authoring.md:193
 msgid "type"
 msgstr ""
 
-#: src\quickstart.md:61
+#: src\quickstart.md:61 src\concepts/node-message-connection.md:36
+#: src\schema-authoring.md:162 src\schema-authoring.md:178
 msgid "float"
 msgstr ""
 
-#: src\quickstart.md:61
+#: src\quickstart.md:61 src\concepts/node-message-connection.md:36
+#: src\schema-authoring.md:80 src\schema-authoring.md:162
 msgid "min"
 msgstr ""
 
-#: src\quickstart.md:61
+#: src\quickstart.md:61 src\concepts/node-message-connection.md:36
+#: src\schema-authoring.md:162
 msgid "max"
 msgstr ""
 
-#: src\quickstart.md:62
+#: src\quickstart.md:62 src\concepts/node-message-connection.md:37
+#: src\schema-authoring.md:164
 msgid "phase"
 msgstr ""
 
-#: src\quickstart.md:62
+#: src\quickstart.md:62 src\concepts/node-message-connection.md:37
+#: src\schema-authoring.md:164
 msgid "enum"
 msgstr ""
 
-#: src\quickstart.md:62
+#: src\quickstart.md:62 src\concepts/node-message-connection.md:37
+#: src\schema-authoring.md:164
 msgid "values"
 msgstr ""
 
-#: src\quickstart.md:62
+#: src\quickstart.md:62 src\concepts/node-message-connection.md:37
+#: src\schema-authoring.md:164
 msgid "down"
 msgstr ""
 
-#: src\quickstart.md:62
+#: src\quickstart.md:62 src\concepts/node-message-connection.md:37
+#: src\schema-authoring.md:164
 msgid "move"
 msgstr ""
 
-#: src\quickstart.md:62
+#: src\quickstart.md:62 src\concepts/node-message-connection.md:37
+#: src\schema-authoring.md:164
 msgid "up"
 msgstr ""
 
-#: src\quickstart.md:63
+#: src\quickstart.md:63 src\schema-authoring.md:165
 msgid "meta"
 msgstr ""
 
-#: src\quickstart.md:64
+#: src\quickstart.md:64 src\schema-authoring.md:166
 msgid "group"
 msgstr ""
 
-#: src\quickstart.md:66
+#: src\quickstart.md:66 src\schema-authoring.md:168
 msgid "ts"
 msgstr ""
 
-#: src\quickstart.md:66
+#: src\quickstart.md:66 src\schema-authoring.md:168
 msgid "timestamp"
 msgstr ""
 
@@ -405,27 +480,29 @@ msgstr ""
 msgid "source"
 msgstr ""
 
-#: src\quickstart.md:67
+#: src\quickstart.md:67 src\schema-authoring.md:170 src\schema-authoring.md:179
+#: src\schema-authoring.md:180 src\schema-authoring.md:189
 msgid "string"
 msgstr ""
 
-#: src\quickstart.md:67
+#: src\quickstart.md:67 src\schema-authoring.md:77 src\schema-authoring.md:169
+#: src\schema-authoring.md:170
 msgid "required"
 msgstr ""
 
-#: src\quickstart.md:68
+#: src\quickstart.md:68 src\schema-authoring.md:157
 msgid "reliability"
 msgstr ""
 
-#: src\quickstart.md:68
+#: src\quickstart.md:68 src\schema-authoring.md:157
 msgid "reliable"
 msgstr ""
 
-#: src\quickstart.md:69
+#: src\quickstart.md:69 src\schema-authoring.md:158
 msgid "congestion"
 msgstr ""
 
-#: src\quickstart.md:69
+#: src\quickstart.md:69 src\schema-authoring.md:158
 msgid "block"
 msgstr ""
 
@@ -433,11 +510,11 @@ msgstr ""
 msgid ""
 "You do not manage any IP addresses or ports here — only _who_ talks to "
 "_whom_ and _what shape_ the messages are."
-msgstr ""
+msgstr "ここでは IP アドレスもポートも一切管理しません。管理するのは _誰_ が _誰_ と話すか、そしてメッセージが _どんな形_ かだけです。"
 
 #: src\quickstart.md:75
 msgid "3. Contract vs endpoints"
-msgstr ""
+msgstr "3. 契約とエンドポイント"
 
 #: src\quickstart.md:77
 msgid ""
@@ -446,25 +523,25 @@ msgid ""
 "transport settings — live in a separate `endpoints.<env>.yaml`, so one "
 "contract runs unchanged across environments. The demo's `endpoints.dev.yaml` "
 "is tiny, because LAN auto-discovery is the default:"
-msgstr ""
+msgstr "**契約**（型・名前・配線）は `schema.sahou.yaml` にあります。**エンドポイント** — どのマシンがどのノードを担うか、および環境固有のトランスポート設定 — は別の `endpoints.<env>.yaml` にあり、1 つの契約が環境をまたいで変更なしに動きます。LAN の自動発見が既定なので、デモの `endpoints.dev.yaml` はごく小さなものです。"
 
-#: src\quickstart.md:84
+#: src\quickstart.md:84 src\concepts/contract-vs-endpoints.md:25
 msgid "env"
 msgstr ""
 
-#: src\quickstart.md:84
+#: src\quickstart.md:84 src\concepts/contract-vs-endpoints.md:25
 msgid "dev"
 msgstr ""
 
-#: src\quickstart.md:84
+#: src\quickstart.md:84 src\concepts/contract-vs-endpoints.md:25
 msgid "namespace"
 msgstr ""
 
-#: src\quickstart.md:85
+#: src\quickstart.md:85 src\concepts/contract-vs-endpoints.md:26
 msgid "sahou/demo"
 msgstr ""
 
-#: src\quickstart.md:86
+#: src\quickstart.md:86 src\concepts/contract-vs-endpoints.md:27
 msgid ""
 "LAN auto-discovery is the default. Only specify a router / explicit endpoint "
 "when needed."
@@ -474,11 +551,11 @@ msgstr ""
 msgid ""
 "See [Contract vs Endpoints](concepts/contract-vs-endpoints.md) for the full "
 "picture."
-msgstr ""
+msgstr "全体像は [契約とエンドポイント](concepts/contract-vs-endpoints.md) を参照してください。"
 
 #: src\quickstart.md:92
 msgid "4. Validate the contract"
-msgstr ""
+msgstr "4. 契約を検証する"
 
 #: src\quickstart.md:98
 msgid ""
@@ -486,11 +563,11 @@ msgid ""
 "exact field or connection, and duplicate keys or mistyped (unknown) keys are "
 "rejected rather than silently dropped. See [Say NO "
 "early](concepts/say-no-early.md)."
-msgstr ""
+msgstr "検証は **位置情報つきの構造化された診断** を返します。該当するフィールドやコネクションを正確に指し示し、重複キーやタイプミス（未知のキー）は黙って捨てられるのではなく拒否されます。[早期に NO を返す](concepts/say-no-early.md) を参照してください。"
 
 #: src\quickstart.md:102
 msgid "5. Build the IR (and an optional typed stub)"
-msgstr ""
+msgstr "5. IR をビルドする（および任意の型スタブ）"
 
 #: src\quickstart.md:108
 msgid ""
@@ -500,58 +577,2058 @@ msgid ""
 "node sends and receives — this is the \"say NO in your editor\" half of "
 "Sahou. Drift between a stub and the contract is caught later by `sahou "
 "check`."
-msgstr ""
+msgstr "これは完全な IR を `gen/descriptor.json` に書き出し、さらに `--lang`/`--node` を渡したことで `sensor` ノード向けの型スタブを `gen/sensor/` に生成します。このスタブは、そのノードが送受信するメッセージについて、エディタでのビルド時型チェックを提供します。これが Sahou の「エディタで NO を言う」側面です。スタブと契約のズレは、後で `sahou check` が捕捉します。"
 
 #: src\quickstart.md:114
 msgid "6. Observe what actually flows"
-msgstr ""
+msgstr "6. 実際に流れるものを観察する"
 
 #: src\quickstart.md:116
 msgid ""
 "You do not need an app to see traffic. `sahou tap` can observe (and inject) "
 "messages from a node's vantage point:"
-msgstr ""
+msgstr "トラフィックを見るのにアプリは不要です。`sahou tap` は、あるノードの視点からメッセージを観察（および注入）できます。"
 
 #: src\quickstart.md:123
 msgid ""
 "To build real senders and receivers, add a runtime for your language — see "
 "[Runtimes](runtimes/index.md)."
-msgstr ""
+msgstr "本物の送信側・受信側を作るには、あなたの言語向けのランタイムを追加します。[ランタイム](runtimes/index.md) を参照してください。"
 
 #: src\quickstart.md:126
 msgid "7. Open the visual editor"
-msgstr ""
+msgstr "7. ビジュアルエディタを開く"
 
 #: src\quickstart.md:128
 msgid "At any point, edit the contract visually in your browser:"
-msgstr ""
+msgstr "いつでも、ブラウザで契約を視覚的に編集できます。"
 
 #: src\quickstart.md:134
 msgid "Next steps"
-msgstr ""
+msgstr "次のステップ"
 
 #: src\quickstart.md:136
 msgid ""
 "**[Concepts](concepts/index.md)** — nodes, messages, connections, and the IR."
-msgstr ""
+msgstr "**[コンセプト](concepts/index.md)** — ノード・メッセージ・コネクション、そして IR。"
 
 #: src\quickstart.md:137
 msgid ""
 "**[Schema authoring](schema-authoring.md)** — every field type and "
 "connection option."
-msgstr ""
+msgstr "**[スキーマの記述](schema-authoring.md)** — すべてのフィールド型とコネクションのオプション。"
 
 #: src\quickstart.md:139
 msgid "**[CLI reference](cli-reference.md)** — every command and flag."
+msgstr "**[CLI リファレンス](cli-reference.md)** — すべてのコマンドとフラグ。"
+
+#: src\concepts/index.md:3
+msgid ""
+"Sahou has a small mental model. Once these pieces click, the rest of the "
+"tool follows from them."
+msgstr "Sahou の考え方のモデルは小さなものです。これらのピースが腑に落ちれば、ツールの残りはそこから自然に導かれます。"
+
+#: src\concepts/index.md:6
+msgid ""
+"**[Node, Message, Connection](node-message-connection.md)** — the three "
+"things a schema names."
+msgstr "**[ノード・メッセージ・コネクション](node-message-connection.md)** — スキーマが名前を付ける 3 つのもの。"
+
+#: src\concepts/index.md:8
+msgid ""
+"**[Contract vs Endpoints](contract-vs-endpoints.md)** — what belongs in the "
+"shared contract, and what is environment-specific."
+msgstr "**[契約とエンドポイント](contract-vs-endpoints.md)** — 共有される契約に属するものと、環境固有のもの。"
+
+#: src\concepts/index.md:10
+msgid ""
+"**[The IR and round-trip](ir-and-round-trip.md)** — why a neutral "
+"intermediate representation sits between the YAML you write and everything "
+"Sahou generates."
+msgstr "**[IR とラウンドトリップ](ir-and-round-trip.md)** — 中立的な中間表現が、あなたが書く YAML と Sahou が生成するすべての間に位置する理由。"
+
+#: src\concepts/index.md:13
+msgid ""
+"**[Say NO early](say-no-early.md)** — how, and where, a wrong type or a typo "
+"gets rejected."
+msgstr "**[早期に NO を返す](say-no-early.md)** — 型の誤りやタイプミスが、どのように、どこで拒否されるか。"
+
+#: src\concepts/index.md:15
+msgid ""
+"**[Contract evolution](contract-evolution.md)** — what happens when the "
+"contract changes while apps are running."
+msgstr "**[契約の進化](contract-evolution.md)** — アプリが動作中に契約が変わるとどうなるか。"
+
+#: src\concepts/index.md:18
+msgid ""
+"The one-paragraph version: you write a **contract** that names **nodes**, "
+"the **messages** they exchange, and the **connections** that wire them. "
+"Sahou parses that into a neutral **IR**, validates it with precise "
+"diagnostics, and uses it to discover peers, carry traffic, and — optionally "
+"— generate typed stubs. Anything that does not fit the contract is rejected "
+"at the boundary rather than allowed to propagate."
+msgstr "一段落で言えば、あなたは **ノード**、それらが交換する **メッセージ**、それらを配線する **コネクション** に名前を付けた **契約** を書きます。Sahou はそれを中立的な **IR** にパースし、精密な診断で検証し、それを使ってピアを発見し、トラフィックを運び、そして — 任意で — 型スタブを生成します。契約に合わないものは、伝播を許される代わりに境界で拒否されます。"
+
+#: src\concepts/node-message-connection.md:3
+msgid ""
+"The IR — and therefore the schema — is built from three elements. Types are "
+"kept separate from wiring: a Message describes _shape_, a Connection "
+"describes _who talks to whom and how_."
+msgstr "IR は — したがってスキーマも — 3 つの要素から構成されます。型は配線から分離されています。メッセージは _形_ を、コネクションは _誰が誰とどのように話すか_ を記述します。"
+
+#: src\concepts/node-message-connection.md:7
+msgid "Node"
+msgstr "ノード"
+
+#: src\concepts/node-message-connection.md:9
+msgid ""
+"A **participant**: an app, a process, or a device. In the schema, a node has "
+"a `kind`:"
+msgstr "**参加者** — アプリ、プロセス、またはデバイスです。スキーマ上、ノードは `kind` を持ちます。"
+
+#: src\concepts/node-message-connection.md:14
+msgid "# speaks the Sahou contract (the default)\n  visuals"
 msgstr ""
 
-#: src\concepts/index.md:3 src\concepts/node-message-connection.md:3
-#: src\concepts/contract-vs-endpoints.md:3 src\concepts/ir-and-round-trip.md:3
-#: src\concepts/say-no-early.md:3 src\concepts/contract-evolution.md:3
-#: src\schema-authoring.md:3 src\cli-reference.md:3 src\runtimes/index.md:3
-#: src\runtimes/python.md:3 src\runtimes/typescript.md:3 src\runtimes/rust.md:3
-#: src\runtimes/touchdesigner.md:3 src\networking-and-deployment.md:3
-#: src\gui.md:3 src\faq.md:3
-msgid "_This page is under construction._"
+#: src\concepts/node-message-connection.md:16 src\schema-authoring.md:151
+#: src\schema-authoring.md:196
+msgid "legacy_console"
 msgstr ""
+
+#: src\concepts/node-message-connection.md:16 src\schema-authoring.md:28
+#: src\schema-authoring.md:151
+msgid "external"
+msgstr ""
+
+#: src\concepts/node-message-connection.md:16
+msgid "# a non-Sahou device\n"
+msgstr ""
+
+#: src\concepts/node-message-connection.md:19
+msgid ""
+"`kind: sahou` — a device or process that speaks the Sahou contract. This is "
+"the default when `kind` is omitted."
+msgstr "`kind: sahou` — Sahou の契約を話すデバイスまたはプロセス。`kind` を省略したときの既定です。"
+
+#: src\concepts/node-message-connection.md:21
+msgid ""
+"`kind: external` — a non-Sahou device. It can be a wiring target (something "
+"a connection sends _to_) but it does not itself speak the contract."
+msgstr "`kind: external` — Sahou を話さないデバイス。配線の宛先（コネクションが _to_ で送る先）にはなれますが、それ自身は契約を話しません。"
+
+#: src\concepts/node-message-connection.md:24
+msgid "Message"
+msgstr "メッセージ"
+
+#: src\concepts/node-message-connection.md:26
+msgid ""
+"A named, reusable **shape of data** — its fields and their types. A Field "
+"belongs to a Message. Sahou supports eleven field types (`int`, `float`, "
+"`bool`, `string`, `bytes`, `timestamp`, `enum`, `array`, `map`, `group`, "
+"`union`); see [Schema authoring](../schema-authoring.md) for each. In the "
+"schema, a message shape appears inside a connection's slot (`payload`, or "
+"`request`/`response`):"
+msgstr "名前が付いた再利用可能な **データの形** — そのフィールドと型です。フィールドはメッセージに属します。Sahou は 11 のフィールド型（`int`・`float`・`bool`・`string`・`bytes`・`timestamp`・`enum`・`array`・`map`・`group`・`union`）をサポートします。各型については [スキーマの記述](../schema-authoring.md) を参照してください。スキーマ上、メッセージの形はコネクションのスロット（`payload`、または `request`/`response`）の中に現れます。"
+
+#: src\concepts/node-message-connection.md:40
+msgid "Connection"
+msgstr "コネクション"
+
+#: src\concepts/node-message-connection.md:42
+msgid ""
+"The **wiring**: which message, from which node to which, and how it is "
+"carried. The transport-related settings (reliability, congestion, encoding, "
+"and so on) are Connection attributes. Sahou has two patterns:"
+msgstr "**配線** — どのメッセージを、どのノードからどのノードへ、どのように運ぶか。トランスポート関連の設定（reliability・congestion・encoding など）はコネクションの属性です。Sahou には 2 つのパターンがあります。"
+
+#: src\concepts/node-message-connection.md:46
+msgid "**`pub_sub`** — one-to-many distribution. Its only slot is `payload`."
+msgstr "**`pub_sub`** — 一対多の配信。スロットは `payload` のみです。"
+
+#: src\concepts/node-message-connection.md:47
+msgid ""
+"**`query`** — one-to-one request/response. Its slots are `request` and "
+"`response`."
+msgstr "**`query`** — 一対一のリクエスト/レスポンス。スロットは `request` と `response` です。"
+
+#: src\concepts/node-message-connection.md:52
+msgid "# pub_sub\n    pattern"
+msgstr ""
+
+#: src\concepts/node-message-connection.md:57 src\schema-authoring.md:181
+msgid "get_level"
+msgstr ""
+
+#: src\concepts/node-message-connection.md:57
+msgid "# query\n    pattern"
+msgstr ""
+
+#: src\concepts/node-message-connection.md:58 src\schema-authoring.md:182
+msgid "query"
+msgstr ""
+
+#: src\concepts/node-message-connection.md:61 src\schema-authoring.md:186
+msgid "request"
+msgstr ""
+
+#: src\concepts/node-message-connection.md:62 src\schema-authoring.md:190
+msgid "response"
+msgstr ""
+
+#: src\concepts/node-message-connection.md:65
+msgid ""
+"The `pattern` determines which slots are allowed — using `payload` on a "
+"`query`, or `request` on a `pub_sub`, is rejected. `to` may only reference "
+"nodes defined in `nodes`, and cannot equal `from`."
+msgstr "`pattern` がどのスロットを使えるかを決めます。`query` に `payload` を、あるいは `pub_sub` に `request` を使うと拒否されます。`to` は `nodes` に定義済みのノードしか参照できず、`from` と同じにはできません。"
+
+#: src\concepts/contract-vs-endpoints.md:3
+msgid "Sahou keeps three concerns in three separate files. Do not conflate them."
+msgstr "Sahou は 3 つの関心事を 3 つの別々のファイルに保ちます。これらを混同しないでください。"
+
+#: src\concepts/contract-vs-endpoints.md:5
+msgid "File"
+msgstr "ファイル"
+
+#: src\concepts/contract-vs-endpoints.md:5
+msgid "What it holds"
+msgstr "何を保持するか"
+
+#: src\concepts/contract-vs-endpoints.md:5
+msgid "Who edits it"
+msgstr "誰が編集するか"
+
+#: src\concepts/contract-vs-endpoints.md:7
+msgid "`schema.sahou.yaml`"
+msgstr ""
+
+#: src\concepts/contract-vs-endpoints.md:7
+msgid "The **contract** — meaning, types, wiring. The single source to edit."
+msgstr "**契約** — 意味・型・配線。編集すべき唯一の源。"
+
+#: src\concepts/contract-vs-endpoints.md:7
+msgid "Humans / AI / the GUI"
+msgstr "人間 / AI / GUI"
+
+#: src\concepts/contract-vs-endpoints.md:8
+msgid "`endpoints.<env>.yaml`"
+msgstr ""
+
+#: src\concepts/contract-vs-endpoints.md:8
+msgid "**Deployment** — per-environment connection settings. Empty by default."
+msgstr "**デプロイ** — 環境ごとの接続設定。既定では空。"
+
+#: src\concepts/contract-vs-endpoints.md:8
+msgid "Per environment"
+msgstr "環境ごと"
+
+#: src\concepts/contract-vs-endpoints.md:9
+msgid "`layout.sahou.json`"
+msgstr ""
+
+#: src\concepts/contract-vs-endpoints.md:9
+msgid "GUI **coordinates** only. No bearing on the contract's meaning."
+msgstr "GUI の **座標** のみ。契約の意味には影響しません。"
+
+#: src\concepts/contract-vs-endpoints.md:9
+msgid "The GUI"
+msgstr "GUI"
+
+#: src\concepts/contract-vs-endpoints.md:11
+msgid "The contract"
+msgstr "契約"
+
+#: src\concepts/contract-vs-endpoints.md:13
+msgid ""
+"`schema.sahou.yaml` is the one file that defines _what_ the system "
+"communicates: the nodes, the messages, and the connections between them. It "
+"is transport- and environment-independent. This is the file you version, "
+"review, and share."
+msgstr "`schema.sahou.yaml` は、システムが _何_ を通信するか — ノード、メッセージ、およびそれらの間のコネクション — を定義する唯一のファイルです。トランスポートにも環境にも依存しません。これが、バージョン管理し、レビューし、共有するファイルです。"
+
+#: src\concepts/contract-vs-endpoints.md:17
+msgid "The endpoints"
+msgstr "エンドポイント"
+
+#: src\concepts/contract-vs-endpoints.md:19
+msgid ""
+"`endpoints.<env>.yaml` says _which machine plays which node_ and carries any "
+"environment-specific settings, so the **same contract runs unchanged across "
+"environments** (dev, staging, an installation on site). It is deliberately "
+"small — often just a namespace — because **LAN auto-discovery is the "
+"default**:"
+msgstr "`endpoints.<env>.yaml` は _どのマシンがどのノードを担うか_ を記述し、環境固有の設定を持ちます。そのため **同じ契約が環境をまたいで変更なしに動きます**（dev、staging、現地でのインストール）。**LAN の自動発見が既定** なので、これは意図的に小さく — しばしば名前空間だけ — なっています。"
+
+#: src\concepts/contract-vs-endpoints.md:30
+msgid ""
+"When you omit endpoints entirely, Sahou uses the LAN-auto default (namespace "
+"`sahou`)."
+msgstr "エンドポイントを完全に省略すると、Sahou は LAN 自動の既定（名前空間 `sahou`）を使います。"
+
+#: src\concepts/contract-vs-endpoints.md:33
+msgid "Why the split matters"
+msgstr "なぜ分割が重要か"
+
+#: src\concepts/contract-vs-endpoints.md:35
+msgid ""
+"Because deployment lives outside the contract, moving from your laptop to a "
+"gallery network, or from one machine to three, does not touch the contract. "
+"You change _where_ nodes run without changing _what_ they say. See "
+"[Networking & deployment](../networking-and-deployment.md) for how discovery "
+"and transport use these files."
+msgstr "デプロイが契約の外にあるので、ノート PC からギャラリーのネットワークへ、あるいは 1 台から 3 台へ移しても、契約には触れません。ノードが _どこ_ で動くかを、それらが _何_ を言うかを変えずに変更できます。発見とトランスポートがこれらのファイルをどう使うかは [ネットワークとデプロイ](../networking-and-deployment.md) を参照してください。"
+
+#: src\concepts/ir-and-round-trip.md:3
+msgid ""
+"At the center of Sahou is a neutral data model called the **IR** "
+"(intermediate representation). The surface you write (YAML) is never wired "
+"directly to the output (codegen, transport, the GUI). The IR always sits in "
+"between."
+msgstr "Sahou の中心には、**IR**（中間表現）と呼ばれる中立的なデータモデルがあります。あなたが書く表層（YAML）が、出力（コード生成・トランスポート・GUI）に直接つながることは決してありません。IR が常にその間に位置します。"
+
+#: src\concepts/ir-and-round-trip.md:15
+msgid "Why an IR"
+msgstr "なぜ IR か"
+
+#: src\concepts/ir-and-round-trip.md:17
+msgid ""
+"Wiring surface syntax straight to output couples the two: every consumer "
+"would have to re-parse YAML and re-implement validation, and they would "
+"drift. With the IR as the single neutral model, parsing, validation, and "
+"every output share one source of truth. The CLI, the browser GUI, and the "
+"language runtimes all consume the same IR."
+msgstr "表層の構文を出力へ直結させると、両者が密結合してしまいます。すべての消費者が YAML を再パースし、検証を再実装することになり、やがてズレが生じます。IR を単一の中立的なモデルとすることで、パース・検証・あらゆる出力が 1 つの真実の源を共有します。CLI・ブラウザ GUI・各言語ランタイムは、すべて同じ IR を消費します。"
+
+#: src\concepts/ir-and-round-trip.md:23
+msgid "The three properties the core guarantees"
+msgstr "コアが保証する 3 つの性質"
+
+#: src\concepts/ir-and-round-trip.md:25
+msgid ""
+"The core (`sahou-core`, written in Rust and WASM-capable) keeps three "
+"properties so the same logic can back a CLI, a browser GUI, and future "
+"tooling:"
+msgstr "コア（`sahou-core`。Rust で書かれ WASM 対応）は 3 つの性質を保ち、同じロジックが CLI・ブラウザ GUI・将来のツールを支えられるようにします。"
+
+#: src\concepts/ir-and-round-trip.md:28
+msgid ""
+"**Parse _and_ serialize** — reading a contract into the IR and writing it "
+"back out is round-trip stable. (Comments are the one known exception; `sahou "
+"fmt` notes this.)"
+msgstr "**パース _かつ_ シリアライズ** — 契約を IR に読み込み、また書き出す往復は安定しています。（コメントは唯一知られている例外で、`sahou fmt` がこれを注記します。）"
+
+#: src\concepts/ir-and-round-trip.md:31
+msgid ""
+"**Structured diagnostics** — validation returns positional, structured "
+"results: a `code`, a `path` to the exact location, and a `message`. Not a "
+"single opaque error string. See [Say NO early](say-no-early.md)."
+msgstr "**構造化された診断** — 検証は位置情報つきの構造化された結果を返します。`code`、正確な位置を指す `path`、そして `message` です。単一の不透明なエラー文字列ではありません。[早期に NO を返す](say-no-early.md) を参照してください。"
+
+#: src\concepts/ir-and-round-trip.md:34
+msgid ""
+"**Pure and WASM-capable** — parse / serialize / validate are pure functions "
+"with no I/O, so they run identically in the CLI and in the browser (the GUI "
+"runs the core compiled to WebAssembly)."
+msgstr "**純粋かつ WASM 対応** — parse / serialize / validate は I/O のない純粋関数なので、CLI でもブラウザでも同一に動きます（GUI は WebAssembly にコンパイルしたコアを実行します）。"
+
+#: src\concepts/ir-and-round-trip.md:38
+msgid ""
+"Everything under `gen/` — `descriptor.json` (the full IR) and any typed "
+"stubs — is produced from the IR by `sahou gen`. Treat it as generated "
+"output; edit the contract, not `gen/`."
+msgstr "`gen/` の下のすべて — `descriptor.json`（完全な IR）と型スタブ — は `sahou gen` が IR から生成します。生成された出力として扱い、`gen/` ではなく契約を編集してください。"
+
+#: src\concepts/say-no-early.md:3
+msgid ""
+"The core idea of Sahou: a wrong type or a mistyped field should be rejected "
+"**the moment it crosses the boundary** — and, with generated type stubs, "
+"**in your editor at build time** — rather than failing later, somewhere far "
+"away, in the hardest place to debug."
+msgstr "Sahou の核心的な考え方は、型の誤りやフィールドのタイプミスを、**境界を越えたその瞬間に** — さらに生成された型スタブを使えば **エディタ上のビルド時に** — 拒否すべき、というものです。デバッグが最も難しい遠く離れた場所で後から失敗させるのではなく。"
+
+#: src\concepts/say-no-early.md:8
+msgid "Two boundaries where NO happens"
+msgstr "NO が起きる 2 つの境界"
+
+#: src\concepts/say-no-early.md:10
+msgid ""
+"**At build time, in your editor (opt-in).** Generate a typed stub with "
+"`sahou gen --lang <python|ts>` and your editor type-checks the messages a "
+"node sends and receives before anything runs. This is the earliest possible "
+"NO."
+msgstr "**ビルド時、エディタで（オプトイン）。** `sahou gen --lang <python|ts>` で型スタブを生成すると、何かが実行される前に、ノードが送受信するメッセージをエディタが型チェックします。これは可能な限り最も早い NO です。"
+
+#: src\concepts/say-no-early.md:13
+msgid ""
+"**At runtime, at the boundary.** When a message is sent or received, the "
+"core validates it against the contract. A send-boundary rejection raises an "
+"error (`SahouRejected`); a receive-boundary rejection is routed to a reject "
+"handler, never to your message handler. Either way the bad value does not "
+"propagate."
+msgstr "**実行時、境界で。** メッセージが送受信されるとき、コアはそれを契約に照らして検証します。送信境界での拒否はエラー（`SahouRejected`）を送出し、受信境界での拒否は拒否ハンドラへ回され、あなたのメッセージハンドラには決して届きません。いずれにせよ、不正な値は伝播しません。"
+
+#: src\concepts/say-no-early.md:18
+msgid "Never silently fold the contract"
+msgstr "契約を黙って畳み込まない"
+
+#: src\concepts/say-no-early.md:20
+msgid ""
+"Sahou refuses the quiet failure modes that serde-style parsing defaults to:"
+msgstr "Sahou は、serde 流のパースが既定とする静かな失敗モードを拒みます。"
+
+#: src\concepts/say-no-early.md:22
+msgid "**Duplicate keys** are rejected, not silently resolved \"last one wins\"."
+msgstr "**重複キー** は拒否されます。黙って「後勝ち」で解決されることはありません。"
+
+#: src\concepts/say-no-early.md:23
+msgid "**Unknown keys** (typos) are rejected, not silently dropped."
+msgstr "**未知のキー**（タイプミス）は拒否されます。黙って捨てられることはありません。"
+
+#: src\concepts/say-no-early.md:25
+msgid ""
+"This is enforced with `deny_unknown_fields` and unique-map checks. A typo in "
+"a field name is a boundary NO, not a field that silently vanishes."
+msgstr "これは `deny_unknown_fields` と一意マップのチェックによって強制されます。フィールド名のタイプミスは境界での NO であり、黙って消えるフィールドではありません。"
+
+#: src\concepts/say-no-early.md:28
+msgid "Structured diagnostics"
+msgstr "構造化された診断"
+
+#: src\concepts/say-no-early.md:30
+msgid ""
+"`sahou validate` returns a list of `{ code, path, message }` — each pointing "
+"at the exact place. A few common codes:"
+msgstr "`sahou validate` は `{ code, path, message }` のリストを返し、それぞれが正確な場所を指し示します。よくあるコードをいくつか挙げます。"
+
+#: src\concepts/say-no-early.md:33 src\schema-authoring.md:118
+msgid "code"
+msgstr "code"
+
+#: src\concepts/say-no-early.md:33 src\schema-authoring.md:118
+msgid "meaning"
+msgstr "意味"
+
+#: src\concepts/say-no-early.md:35 src\schema-authoring.md:121
+msgid "`unknown_node`"
+msgstr ""
+
+#: src\concepts/say-no-early.md:35
+msgid "`from`/`to` references an identifier not in `nodes`"
+msgstr "`from`/`to` が `nodes` にない識別子を参照している"
+
+#: src\concepts/say-no-early.md:36 src\schema-authoring.md:122
+msgid "`self_loop`"
+msgstr ""
+
+#: src\concepts/say-no-early.md:36
+msgid "`from` and `to` are the same node"
+msgstr "`from` と `to` が同じノード"
+
+#: src\concepts/say-no-early.md:37
+msgid "`missing_slot` / `unexpected_slot`"
+msgstr "`missing_slot` / `unexpected_slot`"
+
+#: src\concepts/say-no-early.md:37
+msgid "slots don't match the `pattern`"
+msgstr "スロットが `pattern` と一致しない"
+
+#: src\concepts/say-no-early.md:38 src\schema-authoring.md:126
+msgid "`duplicate_field`"
+msgstr ""
+
+#: src\concepts/say-no-early.md:38 src\schema-authoring.md:126
+msgid "a field name repeats within one slot"
+msgstr "1 つのスロット内でフィールド名が重複している"
+
+#: src\concepts/say-no-early.md:39 src\schema-authoring.md:130
+msgid "`missing_items`"
+msgstr ""
+
+#: src\concepts/say-no-early.md:39
+msgid "`array`/`map` omitted its element/value type"
+msgstr "`array`/`map` が要素型・値型を省略している"
+
+#: src\concepts/say-no-early.md:40 src\schema-authoring.md:132
+msgid "`invalid_default`"
+msgstr ""
+
+#: src\concepts/say-no-early.md:40 src\schema-authoring.md:132
+msgid "a `default` violates its own type/constraints"
+msgstr "`default` が自身の型・制約に違反している"
+
+#: src\concepts/say-no-early.md:42
+msgid "The full list is in [Schema authoring](../schema-authoring.md)."
+msgstr "全リストは [スキーマの記述](../schema-authoring.md) にあります。"
+
+#: src\concepts/say-no-early.md:44
+msgid "Runtime interprets the IR; stubs are opt-in"
+msgstr "ランタイムは IR を解釈する。スタブはオプトイン"
+
+#: src\concepts/say-no-early.md:46
+msgid ""
+"At runtime, the engine plus its interpretation of the IR does the validation "
+"— so the boundary NO exists whether or not you generated stubs. Static types "
+"are an **opt-in, consumer-side** convenience layer; the engine never reads "
+"them. Because a stub is generated and code drifts, `sahou check` compares a "
+"stub against the current IR and rejects on drift — a natural CI gate."
+msgstr "実行時には、エンジンとその IR の解釈が検証を行います。したがって境界での NO は、スタブを生成したかどうかに関わらず存在します。静的型は **オプトインの、消費者側の** 便宜的な層であり、エンジンはそれを決して読みません。スタブは生成物でありコードはズレていくので、`sahou check` はスタブを現在の IR と比較し、ズレていれば拒否します — 自然な CI のゲートです。"
+
+#: src\concepts/contract-evolution.md:3
+msgid ""
+"Contracts change. A node gains a field; a new receiver is added; a message "
+"grows. Sahou decides, per connection, whether a change is safe to roll out "
+"while peers are still running."
+msgstr "契約は変わります。ノードにフィールドが増え、新しい受信側が加わり、メッセージが成長します。Sahou はコネクションごとに、ピアがまだ動作している間にその変更を安全に展開できるかを判断します。"
+
+#: src\concepts/contract-evolution.md:7
+msgid "Additive passes, breaking is a NO"
+msgstr "追加は通り、破壊は NO"
+
+#: src\concepts/contract-evolution.md:9
+msgid "Compatibility is judged **per connection** and **structurally**:"
+msgstr "互換性は **コネクションごと** に、**構造的に** 判定されます。"
+
+#: src\concepts/contract-evolution.md:11
+msgid ""
+"**Additive changes pass.** Adding an optional field, or otherwise widening "
+"in a structurally-compatible way, is allowed — old and new peers can coexist."
+msgstr "**追加的な変更は通ります。** 任意フィールドの追加や、その他の構造的に互換な形での拡張は許されます。古いピアと新しいピアが共存できます。"
+
+#: src\concepts/contract-evolution.md:13
+msgid ""
+"**Breaking changes are a NO.** Removing or retyping a field in a way that "
+"would make existing messages invalid is rejected."
+msgstr "**破壊的な変更は NO です。** 既存のメッセージを無効にするようなフィールドの削除や型変更は拒否されます。"
+
+#: src\concepts/contract-evolution.md:16
+msgid ""
+"Because the judgement is structural and per-connection, one connection "
+"evolving does not force every peer to upgrade in lockstep."
+msgstr "判定が構造的かつコネクションごとなので、1 つのコネクションの進化が、すべてのピアに足並みをそろえたアップグレードを強いることはありません。"
+
+#: src\concepts/contract-evolution.md:19
+msgid "The delivery handshake"
+msgstr "配送ハンドシェイク"
+
+#: src\concepts/contract-evolution.md:21
+msgid ""
+"The compatibility decision is made by the **delivery handshake**. When peers "
+"meet, they compare their views of a connection's contract and decide whether "
+"they are compatible before traffic flows. A compatible (additive) difference "
+"is accepted; an incompatible (breaking) one is refused — the same \"say NO "
+"early\" principle, applied to two peers that were built against different "
+"versions of the contract rather than to a single bad message."
+msgstr "互換性の判断は **配送ハンドシェイク** が行います。ピアが出会うと、あるコネクションの契約についての互いの見方を比較し、トラフィックが流れる前に互換かどうかを決めます。互換な（追加的な）差分は受け入れられ、非互換な（破壊的な）差分は拒まれます。これは「早期に NO を返す」という同じ原則を、1 つの不正なメッセージではなく、異なるバージョンの契約に対してビルドされた 2 つのピアに適用したものです。"
+
+#: src\concepts/contract-evolution.md:28
+msgid ""
+"This is why you can evolve a running system additively with confidence: the "
+"handshake, not luck, decides that an old subscriber and a newer publisher "
+"still agree."
+msgstr "だからこそ、動作中のシステムを追加的に、自信を持って進化させられます。古いサブスクライバと新しいパブリッシャがなお合意していると決めるのは、運ではなくハンドシェイクです。"
+
+#: src\schema-authoring.md:3
+msgid ""
+"This page is the reference for writing `schema.sahou.yaml` by hand. (The CLI "
+"can print a compact version of the same reference for AI coding agents with "
+"`sahou reference`.)"
+msgstr "このページは `schema.sahou.yaml` を手で書くためのリファレンスです。（CLI は `sahou reference` で、AI コーディングエージェント向けに同じリファレンスの簡潔版を出力できます。）"
+
+#: src\schema-authoring.md:7
+msgid "File shape"
+msgstr "ファイルの形"
+
+#: src\schema-authoring.md:9
+msgid "Top level:"
+msgstr "トップレベル:"
+
+#: src\schema-authoring.md:12
+msgid "my_installation   # required; also the namespace\nversion"
+msgstr ""
+
+#: src\schema-authoring.md:13
+msgid "# default \"1\"\nnodes"
+msgstr ""
+
+#: src\schema-authoring.md:14
+msgid "# required; may be an empty map\nconnections"
+msgstr ""
+
+#: src\schema-authoring.md:15
+msgid "# required; may be an empty map\n"
+msgstr ""
+
+#: src\schema-authoring.md:18
+msgid ""
+"Remember the [three-file separation](concepts/contract-vs-endpoints.md): the "
+"contract goes here, deployment goes in `endpoints.<env>.yaml`, and GUI "
+"coordinates go in `layout.sahou.json`. Never write deployment or coordinates "
+"in the contract."
+msgstr "[3 ファイルの分離](concepts/contract-vs-endpoints.md) を思い出してください。契約はここに、デプロイは `endpoints.<env>.yaml` に、GUI の座標は `layout.sahou.json` に入ります。デプロイや座標を契約に書いてはいけません。"
+
+#: src\schema-authoring.md:23
+msgid "Nodes"
+msgstr "ノード"
+
+#: src\schema-authoring.md:27
+msgid "# default when kind is omitted\n  legacy_console"
+msgstr ""
+
+#: src\schema-authoring.md:28
+msgid "# a wiring target that doesn't speak the contract\n"
+msgstr ""
+
+#: src\schema-authoring.md:31
+msgid "Connections"
+msgstr "コネクション"
+
+#: src\schema-authoring.md:33
+msgid "A connection's `pattern` decides which slots it has."
+msgstr "コネクションの `pattern` が、どのスロットを持つかを決めます。"
+
+#: src\schema-authoring.md:37
+msgid "<id>"
+msgstr ""
+
+#: src\schema-authoring.md:38
+msgid "pub_sub | query    # determines the slots\n    from"
+msgstr ""
+
+#: src\schema-authoring.md:39 src\schema-authoring.md:40
+msgid "<node_id>"
+msgstr ""
+
+#: src\schema-authoring.md:40
+msgid ""
+"# a single value may be a bare string; must be in nodes; cannot equal from\n"
+"    key"
+msgstr ""
+
+#: src\schema-authoring.md:41
+msgid ""
+"<keyexpr>              # optional; auto-derived from namespace + connection "
+"id when omitted\n"
+"    selector"
+msgstr ""
+
+#: src\schema-authoring.md:42
+msgid ""
+"<string>          # query only (on pub_sub → unexpected_selector)\n"
+"    reliability"
+msgstr ""
+
+#: src\schema-authoring.md:43
+msgid "best_effort | reliable   # default best_effort\n    congestion"
+msgstr ""
+
+#: src\schema-authoring.md:44
+msgid "drop | block              # default drop\n    priority"
+msgstr ""
+
+#: src\schema-authoring.md:45
+msgid ""
+"realtime | interactive_high | interactive_low | data_high | data | data_low "
+"| background  # default data\n"
+"    express"
+msgstr ""
+
+#: src\schema-authoring.md:46
+msgid "true | false       # default false\n    encoding"
+msgstr ""
+
+#: src\schema-authoring.md:47
+msgid ""
+"json              # a contract attribute; currently json only; default json\n"
+"    validate"
+msgstr ""
+
+#: src\schema-authoring.md:48
+msgid ""
+"full | sampled | off  # default full\n"
+"    # slots (pattern-dependent):\n"
+"    payload"
+msgstr ""
+
+#: src\schema-authoring.md:50
+msgid "<Slot>            # pub_sub only\n    request"
+msgstr ""
+
+#: src\schema-authoring.md:51
+msgid "<Slot>            # query only\n    response"
+msgstr ""
+
+#: src\schema-authoring.md:52
+msgid "<Slot>            # query only\n"
+msgstr ""
+
+#: src\schema-authoring.md:55
+msgid "**`pub_sub`** — one-to-many. Only `payload`."
+msgstr "**`pub_sub`** — 一対多。`payload` のみ。"
+
+#: src\schema-authoring.md:56
+msgid "**`query`** — one-to-one request/response. Only `request` + `response`."
+msgstr "**`query`** — 一対一のリクエスト/レスポンス。`request` + `response` のみ。"
+
+#: src\schema-authoring.md:58
+msgid ""
+"Using the wrong slot for the pattern is rejected (`missing_slot` / "
+"`unexpected_slot`)."
+msgstr "パターンに対して誤ったスロットを使うと拒否されます（`missing_slot` / `unexpected_slot`）。"
+
+#: src\schema-authoring.md:61
+msgid "Slots"
+msgstr "スロット"
+
+#: src\schema-authoring.md:64
+msgid ""
+"any | typed     # any = unvalidated (no type safety; the GUI marks it red)\n"
+"kind"
+msgstr ""
+
+#: src\schema-authoring.md:65
+msgid ""
+"record | opaque   # default record; opaque is raw data with no fields\n"
+"fields"
+msgstr ""
+
+#: src\schema-authoring.md:66 src\schema-authoring.md:87
+msgid "<Field>"
+msgstr ""
+
+#: src\schema-authoring.md:66
+msgid "# kind: record only\nencoding"
+msgstr ""
+
+#: src\schema-authoring.md:67
+msgid "<string>      # free-form text for kind: opaque (e.g. \"video/raw\")\n"
+msgstr ""
+
+#: src\schema-authoring.md:70
+msgid ""
+"Use `typing: typed` for anything whose shape you want guaranteed. `typing: "
+"any` turns off validation for that slot."
+msgstr "形を保証したいものには `typing: typed` を使います。`typing: any` はそのスロットの検証を無効にします。"
+
+#: src\schema-authoring.md:73
+msgid "Fields and types"
+msgstr "フィールドと型"
+
+#: src\schema-authoring.md:76 src\schema-authoring.md:84
+msgid "<string>"
+msgstr ""
+
+#: src\schema-authoring.md:77
+msgid ""
+"int | float | bool | string | bytes | timestamp | enum | array | map | group "
+"| union"
+msgstr ""
+
+#: src\schema-authoring.md:78
+msgid "true | false   # default true\ndefault"
+msgstr ""
+
+#: src\schema-authoring.md:79
+msgid "<value>         # must match the type/constraints, else invalid_default\n"
+msgstr ""
+
+#: src\schema-authoring.md:80
+msgid "type-specific attributes"
+msgstr ""
+
+#: src\schema-authoring.md:81
+msgid "<number>            # int/float\nmax"
+msgstr ""
+
+#: src\schema-authoring.md:82
+msgid "<number>            # int/float\nmax_len"
+msgstr ""
+
+#: src\schema-authoring.md:83
+msgid "<uint>          # string (character-count limit)\nvalues"
+msgstr ""
+
+#: src\schema-authoring.md:84
+msgid "# enum (empty → empty_enum)\nitems"
+msgstr ""
+
+#: src\schema-authoring.md:85
+msgid ""
+"<TypeSpec>        # array element type / map value type (omitting → "
+"missing_items)\n"
+"any_of"
+msgstr ""
+
+#: src\schema-authoring.md:86
+msgid "<TypeSpec>"
+msgstr ""
+
+#: src\schema-authoring.md:86
+msgid "# union candidates (empty → empty_union)\nfields"
+msgstr ""
+
+#: src\schema-authoring.md:87
+msgid "# group (anonymous inline hierarchy)\n"
+msgstr ""
+
+#: src\schema-authoring.md:90
+msgid "The eleven types:"
+msgstr "11 の型:"
+
+#: src\schema-authoring.md:92
+msgid "notes"
+msgstr "備考"
+
+#: src\schema-authoring.md:94
+msgid "`int`"
+msgstr ""
+
+#: src\schema-authoring.md:94
+msgid "`min`/`max`. `int` → `float` is a compatible promotion."
+msgstr "`min`/`max`。`int` → `float` は互換な昇格です。"
+
+#: src\schema-authoring.md:95
+msgid "`float`"
+msgstr ""
+
+#: src\schema-authoring.md:95
+msgid "`min`/`max`."
+msgstr "`min`/`max`。"
+
+#: src\schema-authoring.md:96
+msgid "`bool`"
+msgstr ""
+
+#: src\schema-authoring.md:96
+msgid "booleans only."
+msgstr "真偽値のみ。"
+
+#: src\schema-authoring.md:97
+msgid "`string`"
+msgstr ""
+
+#: src\schema-authoring.md:97
+msgid "`max_len` sets the character-count limit."
+msgstr "`max_len` が文字数の上限を設定します。"
+
+#: src\schema-authoring.md:98
+msgid "`bytes`"
+msgstr ""
+
+#: src\schema-authoring.md:98
+msgid "a base64 string on the wire (JSON)."
+msgstr "ワイヤ上（JSON）では base64 文字列。"
+
+#: src\schema-authoring.md:99
+msgid "`timestamp`"
+msgstr ""
+
+#: src\schema-authoring.md:99
+msgid "an **integer** of epoch milliseconds (non-integer → `type_mismatch`)."
+msgstr "エポックミリ秒の **整数**（非整数 → `type_mismatch`）。"
+
+#: src\schema-authoring.md:100
+msgid "`enum`"
+msgstr ""
+
+#: src\schema-authoring.md:100
+msgid "`values` required (empty → `empty_enum`)."
+msgstr "`values` が必須（空 → `empty_enum`）。"
+
+#: src\schema-authoring.md:101
+msgid "`array`"
+msgstr ""
+
+#: src\schema-authoring.md:101
+msgid ""
+"`items` required (omit → `missing_items`). Can nest: `array<array<float>>`."
+msgstr "`items` が必須（省略 → `missing_items`）。ネスト可能: `array<array<float>>`。"
+
+#: src\schema-authoring.md:102
+msgid "`map`"
+msgstr ""
+
+#: src\schema-authoring.md:102
+msgid "`items` is the **value** type; required (omit → `missing_items`)."
+msgstr "`items` は **値** の型で必須（省略 → `missing_items`）。"
+
+#: src\schema-authoring.md:103
+msgid "`group`"
+msgstr ""
+
+#: src\schema-authoring.md:103
+msgid "anonymous inline hierarchy (an alternative to named nesting)."
+msgstr "無名のインライン階層（名前付きネストの代替）。"
+
+#: src\schema-authoring.md:104
+msgid "`union`"
+msgstr ""
+
+#: src\schema-authoring.md:104
+msgid ""
+"`any_of` required (empty → `empty_union`). Untagged: accepted if it matches "
+"any candidate."
+msgstr "`any_of` が必須（空 → `empty_union`）。タグなし: いずれかの候補に一致すれば受理。"
+
+#: src\schema-authoring.md:106
+msgid "What gets rejected"
+msgstr "何が拒否されるか"
+
+#: src\schema-authoring.md:108
+msgid ""
+"Sahou refuses to silently fold the contract. In addition to the type checks "
+"above:"
+msgstr "Sahou は契約を黙って畳み込むことを拒みます。上記の型チェックに加えて:"
+
+#: src\schema-authoring.md:111
+msgid "**Duplicate keys** → rejected (not \"last-wins\")."
+msgstr "**重複キー** → 拒否（「後勝ち」ではない）。"
+
+#: src\schema-authoring.md:112
+msgid "**Unknown keys** (typos) → rejected (not silently dropped)."
+msgstr "**未知のキー**（タイプミス）→ 拒否（黙って捨てられない）。"
+
+#: src\schema-authoring.md:114
+msgid "Diagnostic codes"
+msgstr "診断コード"
+
+#: src\schema-authoring.md:116
+msgid ""
+"`sahou validate` returns a list of `{ code, path, message }`. The main codes:"
+msgstr "`sahou validate` は `{ code, path, message }` のリストを返します。主なコード:"
+
+#: src\schema-authoring.md:120
+msgid "`parse_error`"
+msgstr ""
+
+#: src\schema-authoring.md:120
+msgid "YAML syntax / type mismatch / duplicate key / unknown key"
+msgstr "YAML 構文 / 型不一致 / 重複キー / 未知のキー"
+
+#: src\schema-authoring.md:121
+msgid "`from`/`to` points at an id not in `nodes`"
+msgstr "`from`/`to` が `nodes` にない ID を指している"
+
+#: src\schema-authoring.md:122
+msgid "`from` equals `to`"
+msgstr "`from` が `to` と等しい"
+
+#: src\schema-authoring.md:123
+msgid "`missing_slot`"
+msgstr ""
+
+#: src\schema-authoring.md:123
+msgid "a slot the pattern requires is missing"
+msgstr "パターンが要求するスロットが欠けている"
+
+#: src\schema-authoring.md:124
+msgid "`unexpected_slot`"
+msgstr ""
+
+#: src\schema-authoring.md:124
+msgid "a slot the pattern cannot have is present"
+msgstr "パターンが持てないスロットが存在する"
+
+#: src\schema-authoring.md:125
+msgid "`unexpected_selector`"
+msgstr ""
+
+#: src\schema-authoring.md:125
+msgid "`selector` on a `pub_sub`"
+msgstr "`pub_sub` に `selector`"
+
+#: src\schema-authoring.md:127
+msgid "`non_finite_bound`"
+msgstr ""
+
+#: src\schema-authoring.md:127
+msgid "`min`/`max` is NaN/Inf"
+msgstr "`min`/`max` が NaN/Inf"
+
+#: src\schema-authoring.md:128
+msgid "`invalid_range`"
+msgstr ""
+
+#: src\schema-authoring.md:128
+msgid "`min > max`"
+msgstr "`min > max`"
+
+#: src\schema-authoring.md:129
+msgid "`empty_enum`"
+msgstr ""
+
+#: src\schema-authoring.md:129
+msgid "`enum` with empty `values`"
+msgstr "`values` が空の `enum`"
+
+#: src\schema-authoring.md:130
+msgid "`array`/`map` without `items`"
+msgstr "`items` のない `array`/`map`"
+
+#: src\schema-authoring.md:131
+msgid "`empty_union`"
+msgstr ""
+
+#: src\schema-authoring.md:131
+msgid "`union` with empty `any_of`"
+msgstr "`any_of` が空の `union`"
+
+#: src\schema-authoring.md:134
+msgid "The edit loop"
+msgstr "編集ループ"
+
+#: src\schema-authoring.md:136
+msgid "Edit `schema.sahou.yaml`."
+msgstr "`schema.sahou.yaml` を編集する。"
+
+#: src\schema-authoring.md:137
+msgid "Run `sahou validate <file>`."
+msgstr "`sahou validate <file>` を実行する。"
+
+#: src\schema-authoring.md:138
+msgid "Fix each `{ code, path, message }` at the location its `path` points to."
+msgstr "各 `{ code, path, message }` を、その `path` が指す場所で修正する。"
+
+#: src\schema-authoring.md:139
+msgid "Repeat until there are zero rejections."
+msgstr "拒否がゼロになるまで繰り返す。"
+
+#: src\schema-authoring.md:140
+msgid "If `sahou gui` is open, edits are reflected immediately."
+msgstr "`sahou gui` が開いていれば、編集は即座に反映される。"
+
+#: src\schema-authoring.md:142
+msgid "A complete example"
+msgstr "完全な例"
+
+#: src\schema-authoring.md:145
+msgid "stage_demo"
+msgstr ""
+
+#: src\schema-authoring.md:163
+msgid "active"
+msgstr ""
+
+#: src\schema-authoring.md:163
+msgid "bool"
+msgstr ""
+
+#: src\schema-authoring.md:169
+msgid "thumb"
+msgstr ""
+
+#: src\schema-authoring.md:169
+msgid "bytes"
+msgstr ""
+
+#: src\schema-authoring.md:170
+msgid "note"
+msgstr ""
+
+#: src\schema-authoring.md:170 src\schema-authoring.md:189
+msgid "max_len"
+msgstr ""
+
+#: src\schema-authoring.md:171
+msgid "points"
+msgstr ""
+
+#: src\schema-authoring.md:178
+msgid "pts"
+msgstr ""
+
+#: src\schema-authoring.md:178
+msgid "array"
+msgstr ""
+
+#: src\schema-authoring.md:178 src\schema-authoring.md:179
+msgid "items"
+msgstr ""
+
+#: src\schema-authoring.md:179
+msgid "tags"
+msgstr ""
+
+#: src\schema-authoring.md:179
+msgid "map"
+msgstr ""
+
+#: src\schema-authoring.md:180
+msgid "extra"
+msgstr ""
+
+#: src\schema-authoring.md:180
+msgid "union"
+msgstr ""
+
+#: src\schema-authoring.md:180
+msgid "any_of"
+msgstr ""
+
+#: src\schema-authoring.md:180 src\schema-authoring.md:193
+msgid "int"
+msgstr ""
+
+#: src\schema-authoring.md:185
+msgid "selector"
+msgstr ""
+
+#: src\schema-authoring.md:185
+msgid "latest"
+msgstr ""
+
+#: src\schema-authoring.md:189
+msgid "sel"
+msgstr ""
+
+#: src\schema-authoring.md:193
+msgid "level"
+msgstr ""
+
+#: src\schema-authoring.md:194
+msgid "raw_video"
+msgstr ""
+
+#: src\schema-authoring.md:198
+msgid "any"
+msgstr ""
+
+#: src\schema-authoring.md:198
+msgid "opaque"
+msgstr ""
+
+#: src\schema-authoring.md:198
+msgid "encoding"
+msgstr ""
+
+#: src\schema-authoring.md:198
+msgid "\"video/raw\""
+msgstr ""
+
+#: src\cli-reference.md:3
+msgid ""
+"The `sahou` binary is a single command with subcommands. Run `sahou <cmd> "
+"--help` for the exact, version-specific flags; this page summarizes each "
+"command."
+msgstr "`sahou` バイナリは、サブコマンドを持つ単一のコマンドです。正確でバージョン固有のフラグは `sahou <cmd> --help` を実行してください。このページは各コマンドの要約です。"
+
+#: src\cli-reference.md:6
+msgid "`sahou init`"
+msgstr ""
+
+#: src\cli-reference.md:8
+msgid ""
+"Scaffold a new project — a minimal valid seed to start from an empty "
+"directory."
+msgstr "新しいプロジェクトの雛形を作る — 空のディレクトリから始めるための最小の有効な種。"
+
+#: src\cli-reference.md:14
+msgid ""
+"positional `DIR` — target directory (default: current; created if missing)."
+msgstr "位置引数 `DIR` — 対象ディレクトリ（既定: カレント。無ければ作成）。"
+
+#: src\cli-reference.md:15
+msgid ""
+"`--name <name>` — schema name, also the namespace (default: the directory's "
+"basename)."
+msgstr "`--name <name>` — スキーマ名。名前空間も兼ねる（既定: ディレクトリのベース名）。"
+
+#: src\cli-reference.md:17
+msgid "`--force` — overwrite even if a `schema.sahou.yaml` already exists."
+msgstr "`--force` — `schema.sahou.yaml` が既に存在しても上書きする。"
+
+#: src\cli-reference.md:19
+msgid "`sahou validate`"
+msgstr ""
+
+#: src\cli-reference.md:21
+msgid "Self-validate a contract with positional, structured diagnostics."
+msgstr "契約を、位置情報つきの構造化された診断で自己検証する。"
+
+#: src\cli-reference.md:27
+msgid ""
+"On success it prints `[ok] <file>: valid`. On failure it prints one `[code] "
+"@path: message` line per diagnostic and exits non-zero. See the [diagnostic "
+"codes](schema-authoring.md#diagnostic-codes)."
+msgstr "成功すると `[ok] <file>: valid` を出力します。失敗すると診断ごとに `[code] @path: message` の行を出力し、非ゼロで終了します。[診断コード](schema-authoring.md#diagnostic-codes) を参照してください。"
+
+#: src\cli-reference.md:31
+msgid "`sahou fmt`"
+msgstr ""
+
+#: src\cli-reference.md:33
+msgid "Normalize a contract to deterministic canonical YAML."
+msgstr "契約を決定論的な正規 YAML に正規化する。"
+
+#: src\cli-reference.md:36
+msgid "# print to stdout\n"
+msgstr ""
+
+#: src\cli-reference.md:37
+msgid "# overwrite in place\n"
+msgstr ""
+
+#: src\cli-reference.md:40
+msgid "`--write` — overwrite the file (prints to stdout when omitted)."
+msgstr "`--write` — ファイルを上書きする（省略時は標準出力に表示）。"
+
+#: src\cli-reference.md:41
+msgid ""
+"Comments are **not** preserved (a known limitation); `--write` warns when "
+"the input contained comments."
+msgstr "コメントは **保持されません**（既知の制限）。入力にコメントが含まれていた場合、`--write` は警告します。"
+
+#: src\cli-reference.md:44
+msgid "`sahou gen`"
+msgstr ""
+
+#: src\cli-reference.md:46
+msgid "Turn a contract + endpoints into the full IR, and optionally typed stubs."
+msgstr "契約 + エンドポイントを完全な IR に、任意で型スタブに変換する。"
+
+#: src\cli-reference.md:49
+msgid "# IR only → gen/descriptor.json\n"
+msgstr ""
+
+#: src\cli-reference.md:50
+msgid "# + whole-descriptor typed layer\n"
+msgstr ""
+
+#: src\cli-reference.md:51
+msgid "# TS layer for the browser transport\n"
+msgstr ""
+
+#: src\cli-reference.md:52
+msgid "# + per-node stub → gen/sensor/\n"
+msgstr ""
+
+#: src\cli-reference.md:55
+msgid "positional `schema` — the contract file (default `schema.sahou.yaml`)."
+msgstr "位置引数 `schema` — 契約ファイル（既定 `schema.sahou.yaml`）。"
+
+#: src\cli-reference.md:56
+msgid ""
+"`--endpoints <file>` — an `endpoints.<env>.yaml` (default: the LAN-auto "
+"default, namespace `sahou`)."
+msgstr "`--endpoints <file>` — `endpoints.<env>.yaml`（既定: LAN 自動の既定、名前空間 `sahou`）。"
+
+#: src\cli-reference.md:58
+msgid ""
+"`--out-dir <dir>` — output directory (default `gen`); the IR is written to "
+"`<out-dir>/descriptor.json`."
+msgstr "`--out-dir <dir>` — 出力ディレクトリ（既定 `gen`）。IR は `<out-dir>/descriptor.json` に書き出されます。"
+
+#: src\cli-reference.md:60
+msgid ""
+"`--lang python|ts` — generate a typed layer (opt-in). Alone → a "
+"whole-descriptor typed module; with `--node` → a per-node stub under "
+"`<out-dir>/<node>/`."
+msgstr "`--lang python|ts` — 型付き層を生成する（オプトイン）。単独 → デスクリプタ全体の型付きモジュール。`--node` と併用 → `<out-dir>/<node>/` の下のノード別スタブ。"
+
+#: src\cli-reference.md:63
+msgid "`--node <name>` — generate a per-node stub (requires `--lang`)."
+msgstr "`--node <name>` — ノード別スタブを生成する（`--lang` が必要）。"
+
+#: src\cli-reference.md:64
+msgid ""
+"`--target node|browser` — TS transport for the whole-descriptor stub "
+"(`--lang ts` without `--node`); `node` is the default."
+msgstr "`--target node|browser` — デスクリプタ全体スタブ（`--node` なしの `--lang ts`）向けの TS トランスポート。既定は `node`。"
+
+#: src\cli-reference.md:67
+msgid "See [Runtimes](runtimes/index.md) for how to consume the generated stubs."
+msgstr "生成されたスタブの使い方は [ランタイム](runtimes/index.md) を参照してください。"
+
+#: src\cli-reference.md:69
+msgid "`sahou check`"
+msgstr ""
+
+#: src\cli-reference.md:71
+msgid ""
+"Detect stub ↔ IR drift, for CI. It compares the hashes embedded in a "
+"generated stub against the current descriptor and rejects on mismatch."
+msgstr "スタブと IR のズレを検出する（CI 向け）。生成されたスタブに埋め込まれたハッシュを現在のデスクリプタと比較し、不一致なら拒否します。"
+
+#: src\cli-reference.md:75
+msgid "# all node stubs under gen/\n"
+msgstr ""
+
+#: src\cli-reference.md:76
+msgid "# just one node\n"
+msgstr ""
+
+#: src\cli-reference.md:79
+msgid "positional `descriptor` — the full IR (`descriptor.json`)."
+msgstr "位置引数 `descriptor` — 完全な IR（`descriptor.json`）。"
+
+#: src\cli-reference.md:80
+msgid "`--gen-dir <dir>` — the gen output directory to scan (default `gen`)."
+msgstr "`--gen-dir <dir>` — 走査する gen 出力ディレクトリ（既定 `gen`）。"
+
+#: src\cli-reference.md:81
+msgid "`--node <name>` — check only this node's stub."
+msgstr "`--node <name>` — このノードのスタブだけをチェックする。"
+
+#: src\cli-reference.md:83
+msgid "`sahou tap`"
+msgstr ""
+
+#: src\cli-reference.md:85
+msgid ""
+"Observe or inject traffic without an app: subscribe and show the core's "
+"validation results; `--send` publishes a valid sample."
+msgstr "アプリなしでトラフィックを観察・注入する。購読してコアの検証結果を表示します。`--send` は有効なサンプルを publish します。"
+
+#: src\cli-reference.md:92 src\networking-and-deployment.md:16
+msgid "`sahou link`"
+msgstr ""
+
+#: src\cli-reference.md:94
+msgid ""
+"One relay per machine plus a WebSocket entrypoint for Node/browser runtimes "
+"(built on Zenoh's remote-api). **The engine spawns it automatically** — you "
+"rarely run it by hand. See [Networking & "
+"deployment](networking-and-deployment.md)."
+msgstr "マシンごとに 1 つのリレーと、Node/ブラウザランタイム向けの WebSocket エントリポイント（Zenoh の remote-api の上に構築）。**エンジンが自動的に起動する** ため、手で実行することはめったにありません。[ネットワークとデプロイ](networking-and-deployment.md) を参照してください。"
+
+#: src\cli-reference.md:98 src\networking-and-deployment.md:49
+msgid "`sahou doctor`"
+msgstr ""
+
+#: src\cli-reference.md:100
+msgid ""
+"Environment preflight diagnostics: probe loopback, ping, this binary's real "
+"Zenoh scout, and the link WebSocket."
+msgstr "環境のプリフライト診断。ループバック、ping、このバイナリ自身の実際の Zenoh スカウト、link の WebSocket を調べます。"
+
+#: src\cli-reference.md:107
+msgid "`sahou gui`"
+msgstr ""
+
+#: src\cli-reference.md:109
+msgid ""
+"Open the browser-based node editor on localhost. All contract interpretation "
+"happens in the in-browser core (compiled to WebAssembly); the backend only "
+"moves raw bytes. See [Visual editor (GUI)](gui.md)."
+msgstr "localhost でブラウザベースのノードエディタを開く。契約の解釈はすべてブラウザ内のコア（WebAssembly にコンパイル）で行われ、バックエンドは生のバイトを動かすだけです。[ビジュアルエディタ（GUI）](gui.md) を参照してください。"
+
+#: src\cli-reference.md:117
+msgid ""
+"positional `PATH` — target directory (default: current); it handles "
+"`schema.sahou.yaml` / `layout.sahou.json` / `endpoints.<env>.yaml`."
+msgstr "位置引数 `PATH` — 対象ディレクトリ（既定: カレント）。`schema.sahou.yaml` / `layout.sahou.json` / `endpoints.<env>.yaml` を扱います。"
+
+#: src\cli-reference.md:119
+msgid "`--env <name>` — the endpoints environment (default `dev`)."
+msgstr "`--env <name>` — エンドポイントの環境（既定 `dev`）。"
+
+#: src\cli-reference.md:120
+msgid ""
+"`--port <n>` — listen port, `127.0.0.1` only (default `4649`); if the port "
+"is occupied it stops rather than silently switching."
+msgstr "`--port <n>` — 待ち受けポート。`127.0.0.1` のみ（既定 `4649`）。ポートが使用中の場合、黙って切り替えず停止します。"
+
+#: src\cli-reference.md:122
+msgid ""
+"`--no-open` — do not open a browser on startup (by default an app-mode "
+"window opens automatically)."
+msgstr "`--no-open` — 起動時にブラウザを開かない（既定ではアプリモードのウィンドウが自動的に開きます）。"
+
+#: src\cli-reference.md:125
+msgid "`sahou reference`"
+msgstr ""
+
+#: src\cli-reference.md:127
+msgid "Print a compact schema-authoring reference intended for AI coding agents."
+msgstr "AI コーディングエージェント向けの、簡潔なスキーマ記述リファレンスを出力する。"
+
+#: src\cli-reference.md:133
+msgid "`sahou licenses`"
+msgstr ""
+
+#: src\cli-reference.md:135
+msgid ""
+"Print the bundled third-party license notices (retained for redistribution)."
+msgstr "同梱のサードパーティライセンス表示を出力する（再配布のために保持）。"
+
+#: src\runtimes/index.md:3
+msgid ""
+"A runtime is the small, hand-written library your app imports to send and "
+"receive messages over a Sahou contract. Every runtime is **thin**: "
+"validation, envelopes, and handshake verdicts are delegated to the shared "
+"Rust core (as a native library or as WebAssembly), so a boundary NO is "
+"**byte-identical** across languages."
+msgstr "ランタイムは、Sahou の契約を介してメッセージを送受信するためにアプリが取り込む、小さな手書きのライブラリです。どのランタイムも **薄い** 層です。検証・エンベロープ・ハンドシェイクの判定は共有された Rust コア（ネイティブライブラリまたは WebAssembly として）に委譲されるので、境界での NO は言語をまたいで **バイト単位で同一** です。"
+
+#: src\runtimes/index.md:8
+msgid "Runtime"
+msgstr "ランタイム"
+
+#: src\runtimes/index.md:8 src\runtimes/python.md:8
+#: src\runtimes/typescript.md:9
+msgid "Install"
+msgstr "インストール"
+
+#: src\runtimes/index.md:8
+msgid "Where it runs"
+msgstr "動作環境"
+
+#: src\runtimes/index.md:10
+msgid "[Python](python.md)"
+msgstr ""
+
+#: src\runtimes/index.md:10
+msgid "`pip install sahou`"
+msgstr ""
+
+#: src\runtimes/index.md:10
+msgid "CPython (PyPI)"
+msgstr "CPython（PyPI）"
+
+#: src\runtimes/index.md:11
+msgid "[TypeScript](typescript.md)"
+msgstr ""
+
+#: src\runtimes/index.md:11
+msgid "`npm install sahou`"
+msgstr ""
+
+#: src\runtimes/index.md:11
+msgid "Node.js & the browser"
+msgstr "Node.js とブラウザ"
+
+#: src\runtimes/index.md:12
+msgid "[Rust](rust.md)"
+msgstr ""
+
+#: src\runtimes/index.md:12
+msgid "`cargo add sahou-core`"
+msgstr ""
+
+#: src\runtimes/index.md:12
+msgid "native (the `sahou` crate is a placeholder)"
+msgstr "ネイティブ（`sahou` クレートはプレースホルダ）"
+
+#: src\runtimes/index.md:13
+msgid "[TouchDesigner](touchdesigner.md)"
+msgstr ""
+
+#: src\runtimes/index.md:13
+msgid "build from source"
+msgstr "ソースからビルド"
+
+#: src\runtimes/index.md:13
+msgid "macOS/arm64, **experimental**"
+msgstr "macOS/arm64、**実験的**"
+
+#: src\runtimes/index.md:15
+msgid "The shared shape"
+msgstr "共通の形"
+
+#: src\runtimes/index.md:17
+msgid "Whatever the language, the flow is the same:"
+msgstr "どの言語でも、流れは同じです。"
+
+#: src\runtimes/index.md:19
+msgid ""
+"**Connect** with a descriptor (the IR) and a node name — discovery is "
+"automatic on the LAN."
+msgstr "デスクリプタ（IR）とノード名で **接続** する — 発見は LAN 上で自動です。"
+
+#: src\runtimes/index.md:21
+msgid "**`publish`** to a `pub_sub` connection, or **`subscribe`** to receive."
+msgstr "`pub_sub` コネクションへ **`publish`** するか、受信のために **`subscribe`** する。"
+
+#: src\runtimes/index.md:22
+msgid ""
+"For `query` connections, **`query_confirmed`** / **`queryConfirmed`** to "
+"ask, and **`answer`** to respond."
+msgstr "`query` コネクションでは、問い合わせに **`query_confirmed`** / **`queryConfirmed`**、応答に **`answer`** を使う。"
+
+#: src\runtimes/index.md:24
+msgid ""
+"A send-boundary NO raises `SahouRejected`; a receive-boundary NO goes to a "
+"reject handler, never to your message handler."
+msgstr "送信境界での NO は `SahouRejected` を送出し、受信境界での NO は拒否ハンドラへ行き、あなたのメッセージハンドラには決して届きません。"
+
+#: src\runtimes/index.md:27
+msgid "Types are opt-in"
+msgstr "型はオプトイン"
+
+#: src\runtimes/index.md:29
+msgid ""
+"The base `connect` is untyped (node/connection names are strings, payloads "
+"are loosely typed). To get editor completion and build-time type checking, "
+"generate a typed layer with `sahou gen --lang <python|ts>` and import its "
+"`connect` instead. The engine behaves identically with or without it, and "
+"`sahou check` catches drift between a stub and the contract. See [Say NO "
+"early](../concepts/say-no-early.md)."
+msgstr "基本の `connect` は型なしです（ノード名・コネクション名は文字列、ペイロードは緩く型付け）。エディタ補完とビルド時型チェックを得るには、`sahou gen --lang <python|ts>` で型付き層を生成し、代わりにその `connect` をインポートします。エンジンの挙動は使っても使わなくても同一で、スタブと契約のズレは `sahou check` が捕捉します。[早期に NO を返す](../concepts/say-no-early.md) を参照してください。"
+
+#: src\runtimes/python.md:3
+msgid ""
+"The Python runtime is [`sahou`](https://pypi.org/project/sahou/) on PyPI. It "
+"gives you typed communication over real Zenoh from just a contract "
+"(`descriptor.json`) plus a node name. Boundary semantics are delegated to "
+"the Rust core; the Python layer only handles transport (zenoh-python) and "
+"threading."
+msgstr "Python ランタイムは PyPI 上の [`sahou`](https://pypi.org/project/sahou/) です。契約（`descriptor.json`）とノード名だけから、本物の Zenoh 上での型付き通信を提供します。境界のセマンティクスは Rust コアに委譲され、Python 層はトランスポート（zenoh-python）とスレッド処理だけを扱います。"
+
+#: src\runtimes/python.md:14
+msgid "Usage"
+msgstr "使い方"
+
+#: src\runtimes/python.md:19
+msgid "\"gen/descriptor.json\""
+msgstr ""
+
+#: src\runtimes/python.md:19
+msgid "\"sensor\""
+msgstr ""
+
+#: src\runtimes/python.md:19
+msgid "# LAN auto-discovery by default\n"
+msgstr ""
+
+#: src\runtimes/python.md:20
+msgid ""
+"# pub_sub — publish. A boundary NO raises SahouRejected (nothing is sent).\n"
+msgstr ""
+
+#: src\runtimes/python.md:22 src\runtimes/python.md:25
+msgid "\"touch\""
+msgstr ""
+
+#: src\runtimes/python.md:22
+msgid "\"x\""
+msgstr ""
+
+#: src\runtimes/python.md:22
+msgid "\"phase\""
+msgstr ""
+
+#: src\runtimes/python.md:22
+msgid "\"move\""
+msgstr ""
+
+#: src\runtimes/python.md:23
+msgid ""
+"# pub_sub — subscribe. A NO never reaches your handler (it goes to "
+"on_reject).\n"
+msgstr ""
+
+#: src\runtimes/python.md:28
+msgid "# query — ask (with smart retry) and answer.\n"
+msgstr ""
+
+#: src\runtimes/python.md:30 src\runtimes/python.md:31
+msgid "\"get_state\""
+msgstr ""
+
+#: src\runtimes/python.md:30
+msgid "\"sel\""
+msgstr ""
+
+#: src\runtimes/python.md:30
+msgid "\"levels\""
+msgstr ""
+
+#: src\runtimes/python.md:31
+msgid "\"level\""
+msgstr ""
+
+#: src\runtimes/python.md:34
+msgid "Typed stubs (opt-in)"
+msgstr "型スタブ（オプトイン）"
+
+#: src\runtimes/python.md:36
+msgid "Generate a typed layer for editor completion and build-time checks:"
+msgstr "エディタ補完とビルド時チェックのために型付き層を生成します。"
+
+#: src\runtimes/python.md:42
+msgid ""
+"Then import the generated `connect` (`from gen.sahou_gen import connect`) "
+"for a node-specific, payload-typed facade. A per-node stub (`sahou gen "
+"--lang python --node <name>` → `typed_node`) is also available. Run `sahou "
+"check` in CI to catch stub↔IR drift."
+msgstr "その後、生成された `connect`（`from gen.sahou_gen import connect`）をインポートすると、ノード固有でペイロードが型付けされたファサードが得られます。ノード別スタブ（`sahou gen --lang python --node <name>` → `typed_node`）も利用できます。スタブと IR のズレを捕捉するには CI で `sahou check` を実行してください。"
+
+#: src\runtimes/python.md:47
+msgid "Notes"
+msgstr "備考"
+
+#: src\runtimes/python.md:49
+msgid ""
+"Contract version differences are settled by a handshake: additive passes, "
+"breaking is a NO, and an unfetchable contract is a conservative NO — there "
+"is no path that silently passes or drops. See [Contract "
+"evolution](../concepts/contract-evolution.md)."
+msgstr "契約のバージョン差はハンドシェイクで決着します。追加は通り、破壊は NO、取得できない契約は保守的に NO です。黙って通したり捨てたりする経路はありません。[契約の進化](../concepts/contract-evolution.md) を参照してください。"
+
+#: src\runtimes/python.md:53
+msgid ""
+"A runnable publisher/subscriber lives in `examples/demo/runtime/` in the "
+"repository."
+msgstr "実行可能なパブリッシャ/サブスクライバがリポジトリの `examples/demo/runtime/` にあります。"
+
+#: src\runtimes/python.md:56
+msgid ""
+"See "
+"[`runtimes/python/README.md`](https://github.com/craf-te/sahou/blob/main/runtimes/python/README.md) "
+"for development details."
+msgstr "開発の詳細は [`runtimes/python/README.md`](https://github.com/craf-te/sahou/blob/main/runtimes/python/README.md) を参照してください。"
+
+#: src\runtimes/typescript.md:3
+msgid ""
+"The TypeScript runtime is [`sahou`](https://www.npmjs.com/package/sahou) on "
+"npm. It has **two entry points** — `sahou` for Node.js and `sahou/browser` "
+"for the browser. Validation, envelopes, and handshake verdicts are delegated "
+"to the bundled Rust core (as WebAssembly), so diagnostics are byte-identical "
+"with Python and TouchDesigner."
+msgstr "TypeScript ランタイムは npm 上の [`sahou`](https://www.npmjs.com/package/sahou) です。**2 つのエントリポイント** を持ちます — Node.js 向けの `sahou` と、ブラウザ向けの `sahou/browser` です。検証・エンベロープ・ハンドシェイクの判定は同梱の Rust コア（WebAssembly として）に委譲されるので、診断は Python や TouchDesigner とバイト単位で同一です。"
+
+#: src\runtimes/typescript.md:15
+msgid "Usage (Node)"
+msgstr "使い方（Node）"
+
+#: src\runtimes/typescript.md:17
+msgid ""
+"On Node, the runtime auto-spawns a [`sahou "
+"link`](../networking-and-deployment.md) if none is running."
+msgstr "Node では、link が動いていなければランタイムが [`sahou link`](../networking-and-deployment.md) を自動的に起動します。"
+
+#: src\runtimes/typescript.md:20
+msgid ""
+"```ts\n"
+"import { connect } from \"sahou\";\n"
+"\n"
+"const node = await connect(\"gen/descriptor.json\", { node: \"visuals\" });\n"
+"\n"
+"await node.subscribe(\"touch\", (p) => { /* ... */ }, {\n"
+"  onReject: (code, detail) => { /* a boundary NO lands here, not in the "
+"handler */ },\n"
+"});\n"
+"await node.publish(\"cue\", { /* ... */ });          // send-boundary NO → "
+"SahouRejected\n"
+"const res = await node.queryConfirmed(\"get_state\", { /* ... */ }, { "
+"retries: 3 });\n"
+"await node.answer(\"get_state\", async (req) => ({ level: 3 }));\n"
+"await node.close();\n"
+"```"
+msgstr ""
+
+#: src\runtimes/typescript.md:34
+msgid "Usage (browser)"
+msgstr "使い方（ブラウザ）"
+
+#: src\runtimes/typescript.md:36
+msgid ""
+"The browser cannot spawn a link; when one is not reachable, `connect` "
+"returns a NO with the startup steps. See [Networking & "
+"deployment](../networking-and-deployment.md) for the browser path (a link on "
+"the LAN, or a BFF in front)."
+msgstr "ブラウザは link を起動できません。到達できない場合、`connect` は起動手順つきの NO を返します。ブラウザ経路（LAN 上の link、または前段の BFF）については [ネットワークとデプロイ](../networking-and-deployment.md) を参照してください。"
+
+#: src\runtimes/typescript.md:41
+msgid ""
+"```ts\n"
+"import { connect } from \"sahou/browser\";\n"
+"const node = await connect(descriptorJson, { node: \"visuals\" });\n"
+"```"
+msgstr ""
+
+#: src\runtimes/typescript.md:46
+msgid "Typed connect (opt-in)"
+msgstr "型付き connect（オプトイン）"
+
+#: src\runtimes/typescript.md:48
+msgid ""
+"The base `connect` is untyped (`node`/`conn` are strings, payloads are "
+"`unknown`). Generate a whole-descriptor typed layer and import its `connect` "
+"for node-name, connection-name, and payload completion:"
+msgstr "基本の `connect` は型なしです（`node`/`conn` は文字列、ペイロードは `unknown`）。デスクリプタ全体の型付き層を生成し、その `connect` をインポートすると、ノード名・コネクション名・ペイロードの補完が得られます。"
+
+#: src\runtimes/typescript.md:53
+msgid "# node target (default)\n"
+msgstr ""
+
+#: src\runtimes/typescript.md:57
+msgid ""
+"```ts\n"
+"import { connect } from \"./gen/sahou.gen.mjs\";   // browser: generate with "
+"--target browser\n"
+"const node = await connect(\"gen/descriptor.json\", { node: \"visuals\" }); "
+"// node name completes\n"
+"await node.subscribe(\"touch\", (p) => { p.phase; });  // conn completes; p "
+"is typed\n"
+"```"
+msgstr ""
+
+#: src\runtimes/typescript.md:63
+msgid ""
+"`sahou.gen.mjs` re-exports the real `connect` at zero runtime cost; `.d.mts` "
+"supplies the types. The engine behaves identically without it, and `sahou "
+"check` catches drift. A per-node stub (`--node <name>` → `typedNode()`) is "
+"also available."
+msgstr "`sahou.gen.mjs` は実際の `connect` を実行時コストゼロで再エクスポートし、`.d.mts` が型を供給します。それなしでもエンジンの挙動は同一で、ズレは `sahou check` が捕捉します。ノード別スタブ（`--node <name>` → `typedNode()`）も利用できます。"
+
+#: src\runtimes/typescript.md:68
+msgid "Environment variables"
+msgstr "環境変数"
+
+#: src\runtimes/typescript.md:70
+msgid ""
+"`SAHOU_LINK_CMD` — the executable to spawn as the link (default: `sahou` on "
+"PATH)."
+msgstr "`SAHOU_LINK_CMD` — link として起動する実行ファイル（既定: PATH 上の `sahou`）。"
+
+#: src\runtimes/typescript.md:72
+msgid ""
+"`SAHOU_LINK_ARGS` — extra arguments when spawning (e.g. `--no-multicast "
+"--grace 4`)."
+msgstr "`SAHOU_LINK_ARGS` — 起動時の追加引数（例: `--no-multicast --grace 4`）。"
+
+#: src\runtimes/typescript.md:74
+msgid ""
+"See "
+"[`runtimes/typescript/README.md`](https://github.com/craf-te/sahou/blob/main/runtimes/typescript/README.md) "
+"for development details."
+msgstr "開発の詳細は [`runtimes/typescript/README.md`](https://github.com/craf-te/sahou/blob/main/runtimes/typescript/README.md) を参照してください。"
+
+#: src\runtimes/rust.md:3
+msgid ""
+"The app-facing Rust runtime — the counterpart of `sahou` on PyPI and npm — "
+"is **not released yet**. The [`sahou`](https://crates.io/crates/sahou) crate "
+"on crates.io is a **placeholder** that reserves the name; it has no "
+"functionality."
+msgstr "アプリ向けの Rust ランタイム — PyPI と npm の `sahou` に相当するもの — は **まだリリースされていません**。crates.io 上の [`sahou`](https://crates.io/crates/sahou) クレートは名前を予約する **プレースホルダ** で、機能はありません。"
+
+#: src\runtimes/rust.md:7
+msgid "For now, build on the core:"
+msgstr "当面はコアの上に構築してください。"
+
+#: src\runtimes/rust.md:13
+msgid ""
+"**`sahou-core`** — the schema core: the IR plus parse / serialize / "
+"validate, and the same pure functions the CLI and the other runtimes use. "
+"This is the crate to depend on today."
+msgstr "**`sahou-core`** — スキーマのコア。IR に加えて parse / serialize / validate、そして CLI や他のランタイムが使うのと同じ純粋関数です。今日依存すべきクレートはこれです。"
+
+#: src\runtimes/rust.md:16
+msgid "**`sahou-cli`** — installs the `sahou` command-line tool."
+msgstr "**`sahou-cli`** — `sahou` コマンドラインツールをインストールします。"
+
+#: src\runtimes/rust.md:18
+msgid ""
+"When the Rust runtime lands, `cargo add sahou` will give you the same "
+"`connect` / `publish` / `subscribe` / `query` surface as the other "
+"languages. Follow the [project "
+"README](https://github.com/craf-te/sahou#readme) for status."
+msgstr "Rust ランタイムが登場すれば、`cargo add sahou` で他の言語と同じ `connect` / `publish` / `subscribe` / `query` の API が得られます。状況は [プロジェクト README](https://github.com/craf-te/sahou#readme) を参照してください。"
+
+#: src\runtimes/touchdesigner.md:3
+msgid ""
+"**Status: experimental.** The Sahou Out CHOP is currently **macOS / arm64 "
+"only**. Building it requires the TouchDesigner C++ SDK vendored into "
+"`runtimes/touchdesigner/vendor/` (Derivative Shared Use License — copy it "
+"from your local TouchDesigner install; it is not redistributed here)."
+msgstr "**ステータス: 実験的。** Sahou Out CHOP は現在 **macOS / arm64 のみ** です。ビルドには TouchDesigner C++ SDK を `runtimes/touchdesigner/vendor/` にベンダリングする必要があります（Derivative Shared Use License — ローカルの TouchDesigner インストールからコピーしてください。ここでは再配布していません）。"
+
+#: src\runtimes/touchdesigner.md:8
+msgid ""
+"Sahou treats TouchDesigner as a first-class node: you send and receive over "
+"the typed contract from custom C++ operators, **without going through TD's "
+"Python** — a thin C++ glue plus the statically-linked Rust core."
+msgstr "Sahou は TouchDesigner を第一級のノードとして扱います。カスタム C++ オペレータから、型付き契約を介して **TD の Python を経由せずに** 送受信します — 薄い C++ グルーと、静的リンクされた Rust コアです。"
+
+#: src\runtimes/touchdesigner.md:12
+msgid "Sahou Out CHOP"
+msgstr "Sahou Out CHOP"
+
+#: src\runtimes/touchdesigner.md:14
+msgid ""
+"Reads the input CHOP's channels, projects them to a JSON payload, and runs "
+"the **send boundary** through the Rust core. On a contract violation the "
+"node goes red with the structured diagnostic — \"say NO in the right "
+"place\", the same boundary behavior as every other runtime."
+msgstr "入力 CHOP のチャンネルを読み取り、JSON ペイロードに射影し、**送信境界** を Rust コアを通して実行します。契約違反があるとノードは構造化された診断とともに赤くなります — 「正しい場所で NO を言う」、他のすべてのランタイムと同じ境界の振る舞いです。"
+
+#: src\runtimes/touchdesigner.md:18
+msgid ""
+"**Test Send** — a pulse that publishes one IR-valid sample of the selected "
+"connection over Zenoh (via the bundled transport), for a quick connectivity "
+"check with `sahou tap`."
+msgstr "**Test Send** — 選択したコネクションの IR 上有効なサンプルを 1 つ、Zenoh 経由（同梱のトランスポート経由）で publish するパルス。`sahou tap` での手早い疎通確認に使います。"
+
+#: src\runtimes/touchdesigner.md:22
+msgid "Not yet"
+msgstr "未対応"
+
+#: src\runtimes/touchdesigner.md:24
+msgid ""
+"Continuous per-frame send, a Sahou In CHOP, DAT operators, a Windows build, "
+"a universal (Intel) binary, and distribution signing are future work."
+msgstr "フレームごとの連続送信、Sahou In CHOP、DAT オペレータ、Windows ビルド、ユニバーサル（Intel）バイナリ、配布用署名は今後の課題です。"
+
+#: src\runtimes/touchdesigner.md:27
+msgid "Building"
+msgstr "ビルド"
+
+#: src\runtimes/touchdesigner.md:29
+msgid ""
+"The C++ op source, the tests, the Rust transport, and the examples are "
+"shared across platforms; only the per-platform build projects differ (Xcode "
+"→ `.plugin` on macOS). See "
+"[`runtimes/touchdesigner/README.md`](https://github.com/craf-te/sahou/blob/main/runtimes/touchdesigner/README.md) "
+"for the SDK prerequisite and the `just build-td-macos` / `just test-td` "
+"tasks."
+msgstr "C++ オペレータのソース、テスト、Rust トランスポート、例はプラットフォーム間で共有され、プラットフォームごとのビルドプロジェクトだけが異なります（macOS では Xcode → `.plugin`）。SDK の前提条件と `just build-td-macos` / `just test-td` タスクについては [`runtimes/touchdesigner/README.md`](https://github.com/craf-te/sahou/blob/main/runtimes/touchdesigner/README.md) を参照してください。"
+
+#: src\networking-and-deployment.md:3
+msgid ""
+"Sahou's transport is built on [Zenoh](https://zenoh.io). You do not "
+"configure addresses or ports in the contract — nodes discover each other by "
+"name on a shared LAN. Transport and encoding are **adapter-swappable**: the "
+"contract and the IR are transport-independent, and encoding is a "
+"per-connection attribute (JSON by default)."
+msgstr "Sahou のトランスポートは [Zenoh](https://zenoh.io) の上に構築されています。契約でアドレスやポートを設定することはありません — ノードは共有 LAN 上で名前によって互いを発見します。トランスポートとエンコーディングは **アダプタで差し替え可能** です。契約と IR はトランスポートに依存せず、エンコーディングはコネクションごとの属性です（既定は JSON）。"
+
+#: src\networking-and-deployment.md:9
+msgid "Zero-IP discovery"
+msgstr "IP なしの発見"
+
+#: src\networking-and-deployment.md:11
+msgid ""
+"On a shared LAN, discovery is automatic. The [endpoints "
+"file](concepts/contract-vs-endpoints.md) is empty or nearly so; you only "
+"name a router or an explicit endpoint when the network requires it. Moving a "
+"node from one machine to another changes the endpoints, never the contract."
+msgstr "共有 LAN では発見は自動です。[エンドポイントファイル](concepts/contract-vs-endpoints.md) は空か、ほぼ空です。ルーターや明示的なエンドポイントを指定するのは、ネットワークが要求するときだけです。ノードをあるマシンから別のマシンへ移すと、エンドポイントは変わりますが、契約は決して変わりません。"
+
+#: src\networking-and-deployment.md:18
+msgid ""
+"`sahou link` is **one relay per machine plus a WebSocket entrypoint** for "
+"the Node and browser runtimes (built on Zenoh's remote-api). Native runtimes "
+"(Python, the core) speak Zenoh directly; Node and browser reach the LAN "
+"through the link's WebSocket."
+msgstr "`sahou link` は、Node とブラウザのランタイム向けの **マシンごとに 1 つのリレーと WebSocket エントリポイント** です（Zenoh の remote-api の上に構築）。ネイティブランタイム（Python、コア）は Zenoh を直接話し、Node とブラウザは link の WebSocket を通して LAN に到達します。"
+
+#: src\networking-and-deployment.md:23
+msgid ""
+"The **Node runtime auto-spawns** a link if one is not already running, so "
+"you rarely start it by hand."
+msgstr "link がまだ動いていなければ **Node ランタイムが自動的に起動** するので、手で起動することはめったにありません。"
+
+#: src\networking-and-deployment.md:25
+msgid ""
+"The **browser cannot spawn** one — it connects to a link that is already "
+"reachable, and returns a NO with startup steps when it is not."
+msgstr "**ブラウザは起動できません** — 既に到達可能な link に接続し、到達できない場合は起動手順つきの NO を返します。"
+
+#: src\networking-and-deployment.md:27
+msgid ""
+"By default the link exits on its own after a grace period with no clients, "
+"so it does not linger."
+msgstr "既定では、link はクライアントのない猶予期間の後に自ら終了するので、居座りません。"
+
+#: src\networking-and-deployment.md:30
+msgid ""
+"Run `sahou link --help` for the WebSocket port (default `10000`), the native "
+"peer port (default `7448`), NIC pinning, and grace/startup timers."
+msgstr "WebSocket ポート（既定 `10000`）、ネイティブピアポート（既定 `7448`）、NIC の固定、猶予/起動タイマーについては `sahou link --help` を実行してください。"
+
+#: src\networking-and-deployment.md:33
+msgid "Exposing the browser path safely"
+msgstr "ブラウザ経路を安全に公開する"
+
+#: src\networking-and-deployment.md:35
+msgid ""
+"The link's WebSocket is a LAN entrypoint, not an authenticated public "
+"endpoint. Two patterns, depending on trust:"
+msgstr "link の WebSocket は LAN のエントリポイントであって、認証された公開エンドポイントではありません。信頼度に応じた 2 つのパターンがあります。"
+
+#: src\networking-and-deployment.md:38
+msgid ""
+"**Trusted LAN (direct).** Browser clients on a network you control connect "
+"to a link on that network."
+msgstr "**信頼できる LAN（直結）。** あなたが管理するネットワーク上のブラウザクライアントが、そのネットワーク上の link に接続します。"
+
+#: src\networking-and-deployment.md:40
+msgid ""
+"**Untrusted or public clients (recommended: a BFF).** Put a "
+"backend-for-frontend in front: a server-side app uses the Node runtime and "
+"speaks Sahou, while the browser talks to that app over your own "
+"authenticated API. The link's WebSocket stays private."
+msgstr "**信頼できない、または公開のクライアント（推奨: BFF）。** 前段に backend-for-frontend を置きます。サーバ側のアプリが Node ランタイムを使って Sahou を話し、ブラウザは自前の認証付き API を通してそのアプリと話します。link の WebSocket は非公開のままです。"
+
+#: src\networking-and-deployment.md:45
+msgid ""
+"The guiding rule: **do not expose the link's WebSocket to an untrusted "
+"network.** Put authentication and network isolation outside Sahou (a gateway "
+"in front, or a segmented network)."
+msgstr "指針となる原則: **link の WebSocket を信頼できないネットワークに晒さないこと。** 認証とネットワーク分離は Sahou の外に置きます（前段のゲートウェイ、または分離されたネットワーク）。"
+
+#: src\networking-and-deployment.md:51
+msgid ""
+"When discovery or connectivity misbehaves, `sahou doctor` runs an "
+"environment preflight: it probes loopback, ping, this binary's real Zenoh "
+"scout (surfacing permission/NIC problems), and the link's WebSocket "
+"reachability."
+msgstr "発見や接続がうまくいかないとき、`sahou doctor` が環境のプリフライトを実行します。ループバック、ping、このバイナリ自身の実際の Zenoh スカウト（権限や NIC の問題を明るみに出す）、link の WebSocket 到達性を調べます。"
+
+#: src\gui.md:3
+msgid "Sahou ships a browser-based node editor. Open it on any contract:"
+msgstr "Sahou はブラウザベースのノードエディタを同梱しています。任意の契約に対して開けます。"
+
+#: src\gui.md:9
+msgid ""
+"By default it opens an app-mode window automatically; pass `--no-open` to "
+"suppress that. It listens on `127.0.0.1` only, and if the port is occupied "
+"it stops rather than silently switching."
+msgstr "既定ではアプリモードのウィンドウが自動的に開きます。抑制するには `--no-open` を渡します。待ち受けは `127.0.0.1` のみで、ポートが使用中の場合は黙って切り替えず停止します。"
+
+#: src\gui.md:13
+msgid "What it does"
+msgstr "何をするか"
+
+#: src\gui.md:15
+msgid ""
+"**Edit the contract visually** — nodes and connections as a graph, with a "
+"details panel for messages and fields."
+msgstr "**契約を視覚的に編集** — ノードとコネクションをグラフとして、メッセージとフィールドの詳細パネルとともに表示します。"
+
+#: src\gui.md:17
+msgid ""
+"**Same validation as the CLI** — all contract interpretation happens in the "
+"in-browser core, compiled to WebAssembly. The Rust backend only moves raw "
+"bytes; it does not re-implement any validation. So a NO in the GUI is the "
+"same NO you get from `sahou validate`."
+msgstr "**CLI と同じ検証** — 契約の解釈はすべて、WebAssembly にコンパイルされたブラウザ内のコアで行われます。Rust バックエンドは生のバイトを動かすだけで、検証を再実装することはありません。そのため GUI での NO は、`sahou validate` で得られる NO と同じです。"
+
+#: src\gui.md:21
+msgid ""
+"**Live with your files** — the GUI reads and writes `schema.sahou.yaml`, "
+"`endpoints.<env>.yaml`, and `layout.sahou.json` in `PATH`. Edits you make in "
+"your text editor and edits you make in the GUI stay in sync."
+msgstr "**ファイルと連動** — GUI は `PATH` 内の `schema.sahou.yaml`・`endpoints.<env>.yaml`・`layout.sahou.json` を読み書きします。テキストエディタでの編集と GUI での編集は同期を保ちます。"
+
+#: src\gui.md:25
+msgid ""
+"Because the GUI runs the exact same core as the CLI and the runtimes, there "
+"is no second implementation to drift: the graph you see, the diagnostics it "
+"shows, and the bytes on the wire all come from one source of truth (the "
+"[IR](concepts/ir-and-round-trip.md))."
+msgstr "GUI は CLI やランタイムとまったく同じコアを実行するので、ズレる second implementation は存在しません。目に見えるグラフ、表示される診断、ワイヤ上のバイトは、すべて 1 つの真実の源（[IR](concepts/ir-and-round-trip.md)）から来ます。"
+
+#: src\faq.md:3
+msgid "Do I have to manage IP addresses and ports?"
+msgstr "IP アドレスやポートを管理しないといけませんか？"
+
+#: src\faq.md:5
+msgid ""
+"No. On a shared LAN, nodes discover each other by name. You declare "
+"connections in the contract; Sahou handles discovery and transport (built on "
+"Zenoh). You only name an explicit endpoint when the network requires it. See "
+"[Networking & deployment](networking-and-deployment.md)."
+msgstr "いいえ。共有 LAN 上では、ノードは名前によって互いを発見します。コネクションは契約で宣言し、発見とトランスポートは Sahou が引き受けます（Zenoh の上に構築）。明示的なエンドポイントを指定するのは、ネットワークが要求するときだけです。[ネットワークとデプロイ](networking-and-deployment.md) を参照してください。"
+
+#: src\faq.md:10
+msgid "What happens when a field has the wrong type?"
+msgstr "フィールドの型が間違っているとどうなりますか？"
+
+#: src\faq.md:12
+msgid ""
+"It is rejected at the boundary. A send-boundary NO raises `SahouRejected` "
+"and nothing is sent; a receive-boundary NO is routed to a reject handler, "
+"never to your message handler. With generated type stubs, many mistakes are "
+"caught even earlier — in your editor at build time. See [Say NO "
+"early](concepts/say-no-early.md)."
+msgstr "境界で拒否されます。送信境界での NO は `SahouRejected` を送出し、何も送信されません。受信境界での NO は拒否ハンドラへ回され、あなたのメッセージハンドラには決して届きません。生成された型スタブを使えば、多くの誤りはさらに早く — エディタ上のビルド時に — 捕捉されます。[早期に NO を返す](concepts/say-no-early.md) を参照してください。"
+
+#: src\faq.md:18
+msgid "Will a typo in a field name be silently ignored?"
+msgstr "フィールド名のタイプミスは黙って無視されますか？"
+
+#: src\faq.md:20
+msgid ""
+"No. Unknown keys (typos) and duplicate keys are rejected, not silently "
+"dropped or resolved \"last-wins\". Run `sahou validate` and fix the reported "
+"`{ code, path, message }`."
+msgstr "いいえ。未知のキー（タイプミス）や重複キーは拒否されます。黙って捨てられたり「後勝ち」で解決されたりしません。`sahou validate` を実行し、報告された `{ code, path, message }` を修正してください。"
+
+#: src\faq.md:24
+msgid "How do I get build-time type checking?"
+msgstr "ビルド時の型チェックを得るには？"
+
+#: src\faq.md:26
+msgid ""
+"Generate a typed stub: `sahou gen --lang python` or `sahou gen --lang ts`. "
+"Import the generated `connect` for node-name, connection-name, and payload "
+"types. The engine behaves identically with or without it."
+msgstr "型スタブを生成します。`sahou gen --lang python` または `sahou gen --lang ts`。生成された `connect` をインポートすると、ノード名・コネクション名・ペイロードの型が得られます。エンジンの挙動は使っても使わなくても同一です。"
+
+#: src\faq.md:30
+msgid "How do I catch a stub that has drifted from the contract?"
+msgstr "契約からズレたスタブを捕まえるには？"
+
+#: src\faq.md:32
+msgid ""
+"Run `sahou check gen/descriptor.json` — it compares the hashes embedded in a "
+"generated stub against the current IR and rejects on mismatch. It is meant "
+"to run in CI."
+msgstr "`sahou check gen/descriptor.json` を実行します。生成されたスタブに埋め込まれたハッシュを現在の IR と比較し、不一致なら拒否します。CI で実行することを意図しています。"
+
+#: src\faq.md:36
+msgid "Which languages and environments are supported?"
+msgstr "どの言語・環境がサポートされていますか？"
+
+#: src\faq.md:38
+msgid ""
+"Python (PyPI), TypeScript for Node and the browser (npm), the Rust core "
+"(`sahou-core`; the app-facing `sahou` crate is a placeholder), and "
+"TouchDesigner (experimental, macOS/arm64). See [Runtimes](runtimes/index.md)."
+msgstr "Python（PyPI）、Node とブラウザ向けの TypeScript（npm）、Rust コア（`sahou-core`。アプリ向けの `sahou` クレートはプレースホルダ）、そして TouchDesigner（実験的、macOS/arm64）です。[ランタイム](runtimes/index.md) を参照してください。"
+
+#: src\faq.md:42
+msgid "How do I see what is actually flowing, without writing an app?"
+msgstr "アプリを書かずに、実際に流れているものを見るには？"
+
+#: src\faq.md:44
+msgid ""
+"Use `sahou tap gen/descriptor.json --node <name>` to observe (and, with "
+"`--send`, inject) traffic from a node's vantage point."
+msgstr "`sahou tap gen/descriptor.json --node <name>` を使うと、あるノードの視点からトラフィックを観察（`--send` で注入）できます。"
+
+#: src\faq.md:47
+msgid "Something can't connect — where do I start?"
+msgstr "何かが接続できません — どこから始めれば？"
+
+#: src\faq.md:49
+msgid ""
+"Run `sahou doctor`. It probes loopback, ping, this binary's real Zenoh scout "
+"(surfacing permission or NIC issues), and the link's WebSocket reachability."
+msgstr "`sahou doctor` を実行してください。ループバック、ping、このバイナリ自身の実際の Zenoh スカウト（権限や NIC の問題を明るみに出す）、link の WebSocket 到達性を調べます。"
+
+#: src\faq.md:52
+msgid "Can I evolve the contract while apps are running?"
+msgstr "アプリの動作中に契約を進化させられますか？"
+
+#: src\faq.md:54
+msgid ""
+"Yes, additively. Compatibility is judged per connection and structurally: "
+"additive changes pass, breaking changes are refused, and the decision is "
+"made by the delivery handshake. See [Contract "
+"evolution](concepts/contract-evolution.md)."
+msgstr "はい、追加的にであれば。互換性はコネクションごとに、構造的に判定されます。追加的な変更は通り、破壊的な変更は拒まれ、その判断は配送ハンドシェイクが行います。[契約の進化](concepts/contract-evolution.md) を参照してください。"
+
+#: src\faq.md:58
+msgid "Can I edit the contract visually?"
+msgstr "契約を視覚的に編集できますか？"
+
+#: src\faq.md:60
+msgid ""
+"Yes — `sahou gui` opens a browser node editor that runs the same core (as "
+"WebAssembly) as the CLI, so its diagnostics match `sahou validate`. See "
+"[Visual editor (GUI)](gui.md)."
+msgstr "はい — `sahou gui` は、CLI と同じコア（WebAssembly として）を実行するブラウザのノードエディタを開くので、その診断は `sahou validate` と一致します。[ビジュアルエディタ（GUI）](gui.md) を参照してください。"
+
 
