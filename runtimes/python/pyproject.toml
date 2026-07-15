@@ -4,7 +4,7 @@ build-backend = "maturin"
 
 [project]
 name = "sahou"
-version = "0.0.1"
+version = "0.0.2"
 description = "Sahou runtime — schema-first typed messaging for creative installations (on Zenoh)"
 requires-python = ">=3.11"
 readme = "README.md"

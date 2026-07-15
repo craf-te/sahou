@@ -1,0 +1,38 @@
+# Publish the Rust crates (`sahou-core`, then `sahou-cli`) to crates.io.
+# cargo-dist has no built-in crates.io publisher, so this is a dedicated workflow.
+# Fires on the same `vX.Y.Z` tag as the cargo-dist GitHub Release (release.yml):
+# crates.io and the prebuilt binaries are two forms of the same CLI artifact.
+#
+# The CLI embeds cli/gui-dist/ via rust-embed; that directory is committed, so the
+# packaged crate is self-contained. Rebuild + commit it (`just gui-build`) before tagging.
+#
+# Requires the `CARGO_REGISTRY_TOKEN` repository secret (a crates.io API token with
+# publish rights for both crates).
+name: crates-release
+
+on:
+  push:
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+*'
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@1.88.0
+      - uses: Swatinem/rust-cache@v2
+      # sahou-core must land first; sahou-cli depends on it by version.
+      # `cargo publish` blocks until the new version is visible on the index,
+      # so the subsequent sahou-cli publish resolves the fresh dependency.
+      - name: Publish sahou-core
+        run: cargo publish -p sahou-core
+        env:
+          CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
+      - name: Publish sahou-cli
+        run: cargo publish -p sahou-cli
+        env:
+          CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}

@@ -1,6 +1,6 @@
 [package]
 name = "sahou-cli"
-version = "0.0.1"
+version = "0.0.2"
 edition = "2021"
 license = "Apache-2.0"
 description = "Sahou CLI (sahou) — a schema-first tool for building the interface layer between systems on a LAN."
@@ -23,7 +23,7 @@ name = "sahou"
 path = "src/main.rs"
 
 [dependencies]
-sahou-core = { path = "../core", version = "0.0.1" }
+sahou-core = { path = "../core", version = "0.0.2" }
 clap = { version = "4", features = ["derive"] }
 tokio = { version = "1", features = ["rt-multi-thread", "time", "macros"] }
 zenoh = { version = "1.9", features = ["unstable", "internal", "plugins"] }

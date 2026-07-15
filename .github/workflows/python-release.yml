@@ -1,10 +1,15 @@
 # Build platform wheels for the `sahou` Python runtime (runtimes/python, pyo3 via maturin)
-# and publish to PyPI. Triggered manually (workflow_dispatch) so it is decoupled from the
-# CLI's cargo-dist tag release. Publishing uses PyPI Trusted Publishing (OIDC, no token).
+# and publish to PyPI. Decoupled from the CLI release: fires on its own `py-vX.Y.Z` tag
+# (so a Python-only release doesn't rebuild the CLI/crates/npm), with a manual
+# workflow_dispatch retained as a fallback. Publishing uses PyPI Trusted Publishing
+# (OIDC, no token).
 name: python-release
 
 on:
   workflow_dispatch:
+  push:
+    tags:
+      - 'py-v[0-9]+.[0-9]+.[0-9]+*'
 
 permissions:
   contents: read

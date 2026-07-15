@@ -13,3 +13,6 @@ installers = ["shell", "powershell"]
 targets = ["aarch64-apple-darwin", "aarch64-unknown-linux-gnu", "x86_64-apple-darwin", "x86_64-unknown-linux-gnu", "x86_64-pc-windows-msvc"]
 # Where to host releases
 hosting = "github"
+# Keep our hand-edited release.yml trigger (narrowed to `v*` so runtime tags don't
+# cross-fire). Without this, `dist generate` would reset the `on: push: tags` pattern.
+allow-dirty = ["ci"]

@@ -3037,7 +3037,7 @@ version = "0.0.0"
 
 [[package]]
 name = "sahou-cli"
-version = "0.0.1"
+version = "0.0.2"
 dependencies = [
  "assert_cmd",
  "clap",
@@ -3061,7 +3061,7 @@ dependencies = [
 
 [[package]]
 name = "sahou-core"
-version = "0.0.1"
+version = "0.0.2"
 dependencies = [
  "base64",
  "hex",

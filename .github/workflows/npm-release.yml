@@ -1,0 +1,45 @@
+# Build and publish the `sahou` TypeScript runtime (runtimes/typescript) to npm.
+# The package bundles the core IR compiled to wasm (node + web) plus the tsc output.
+# Decoupled from the CLI release: fires on its own `npm-vX.Y.Z` tag so a TS-only
+# fix doesn't rebuild the CLI/crates/PyPI, with a manual dispatch fallback.
+#
+# Requires the `NPM_TOKEN` repository secret (an npm automation/granular token with
+# publish rights for the `sahou` package).
+name: npm-release
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - 'npm-v[0-9]+.[0-9]+.[0-9]+*'
+
+permissions:
+  contents: read
+  id-token: write # for npm publish --provenance
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: runtimes/typescript
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          registry-url: https://registry.npmjs.org
+      - uses: dtolnay/rust-toolchain@1.88.0
+        with:
+          targets: wasm32-unknown-unknown
+      - uses: jetli/wasm-pack-action@v0.4.0
+      - uses: Swatinem/rust-cache@v2
+      - run: npm ci
+      - name: Build wasm core (node + web)
+        run: npm run build:core
+      - name: Build TypeScript
+        run: npm run build
+      - name: Publish to npm
+        run: npm publish --provenance --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

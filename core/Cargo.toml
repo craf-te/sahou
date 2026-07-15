@@ -1,6 +1,6 @@
 [package]
 name = "sahou-core"
-version = "0.0.1"
+version = "0.0.2"
 edition = "2021"
 license = "Apache-2.0"
 description = "Sahou core — the schema-first IR: parse, serialize, and validate a contract, and judge compatibility."
