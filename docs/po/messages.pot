@@ -1,0 +1,2634 @@
+
+msgid ""
+msgstr ""
+"Project-Id-Version: Sahou\n"
+"POT-Creation-Date: 2026-07-15T14:51:30+09:00\n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: en\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#: src\SUMMARY.md:1
+msgid "Summary"
+msgstr ""
+
+#: src\SUMMARY.md:3 src\introduction.md:1
+msgid "Introduction"
+msgstr ""
+
+#: src\SUMMARY.md:5 src\quickstart.md:1
+msgid "Quickstart"
+msgstr ""
+
+#: src\SUMMARY.md:7
+msgid "Concepts"
+msgstr ""
+
+#: src\SUMMARY.md:9 src\SUMMARY.md:23 src\concepts/index.md:1
+#: src\runtimes/index.md:1
+msgid "Overview"
+msgstr ""
+
+#: src\SUMMARY.md:10 src\concepts/node-message-connection.md:1
+msgid "Node, Message, Connection"
+msgstr ""
+
+#: src\SUMMARY.md:11 src\concepts/contract-vs-endpoints.md:1
+msgid "Contract vs Endpoints"
+msgstr ""
+
+#: src\SUMMARY.md:12 src\concepts/ir-and-round-trip.md:1
+msgid "The IR and round-trip"
+msgstr ""
+
+#: src\SUMMARY.md:13 src\concepts/say-no-early.md:1
+msgid "Say NO early"
+msgstr ""
+
+#: src\SUMMARY.md:14 src\concepts/contract-evolution.md:1
+msgid "Contract evolution"
+msgstr ""
+
+#: src\SUMMARY.md:16
+msgid "Authoring"
+msgstr ""
+
+#: src\SUMMARY.md:18 src\schema-authoring.md:1
+msgid "Schema authoring"
+msgstr ""
+
+#: src\SUMMARY.md:19 src\cli-reference.md:1
+msgid "CLI reference"
+msgstr ""
+
+#: src\SUMMARY.md:21
+msgid "Runtimes"
+msgstr ""
+
+#: src\SUMMARY.md:24 src\runtimes/python.md:1
+msgid "Python"
+msgstr ""
+
+#: src\SUMMARY.md:25 src\runtimes/typescript.md:1
+msgid "TypeScript (Node & browser)"
+msgstr ""
+
+#: src\SUMMARY.md:26 src\runtimes/rust.md:1
+msgid "Rust"
+msgstr ""
+
+#: src\SUMMARY.md:27 src\runtimes/touchdesigner.md:1
+msgid "TouchDesigner"
+msgstr ""
+
+#: src\SUMMARY.md:29
+msgid "Operating"
+msgstr ""
+
+#: src\SUMMARY.md:31 src\networking-and-deployment.md:1
+msgid "Networking & deployment"
+msgstr ""
+
+#: src\SUMMARY.md:32 src\gui.md:1
+msgid "Visual editor (GUI)"
+msgstr ""
+
+#: src\SUMMARY.md:33 src\faq.md:1
+msgid "FAQ & troubleshooting"
+msgstr ""
+
+#: src\introduction.md:3
+msgid ""
+"Sahou is a **schema-first tool for building the interface layer between "
+"systems**. You describe your messages and their wiring once, in a schema. "
+"Sahou then lets your apps talk to each other on the same LAN — **without "
+"hand-managing IP addresses or ports** — and rejects wrong types and mistyped "
+"fields at the boundary, instead of letting a mistake propagate and surface "
+"somewhere far away."
+msgstr ""
+
+#: src\introduction.md:10
+msgid ""
+"\"Sahou\" (作法) means _proper form / etiquette_ — the small set of "
+"conventions that let independent programs talk to each other comfortably and "
+"without mistakes."
+msgstr ""
+
+#: src\introduction.md:14
+msgid "What you describe, and what you get"
+msgstr ""
+
+#: src\introduction.md:16
+msgid ""
+"A Sahou schema names three things: the **nodes** that participate, the "
+"**messages** they exchange, and the **connections** that wire them together. "
+"From that one description you get:"
+msgstr ""
+
+#: src\introduction.md:20
+msgid ""
+"**Discovery and transport**, so nodes find each other by name on a shared "
+"LAN."
+msgstr ""
+
+#: src\introduction.md:21
+msgid ""
+"**A boundary that says NO**, so a wrong type or a mistyped field is caught "
+"where it happens."
+msgstr ""
+
+#: src\introduction.md:23
+msgid ""
+"**One contract across many languages** — Rust, Python, Node.js, the browser, "
+"and TouchDesigner all speak the same schema."
+msgstr ""
+
+#: src\introduction.md:26
+msgid "Why Sahou"
+msgstr ""
+
+#: src\introduction.md:28
+msgid ""
+"**No addresses, no ports.** On a shared LAN, nodes discover each other by "
+"name. You declare connections in a schema; Sahou handles discovery and "
+"transport for you (built on [Zenoh](https://zenoh.io))."
+msgstr ""
+
+#: src\introduction.md:31
+msgid ""
+"**Say NO early.** A wrong type or a mistyped field is rejected the moment it "
+"crosses the boundary — and, with generated type stubs, in your editor at "
+"build time — rather than failing later in the hardest place to debug."
+msgstr ""
+
+#: src\introduction.md:34
+msgid ""
+"**One schema, many environments.** The same contract drives Rust, Python, "
+"Node.js, the browser, and TouchDesigner. The core is a neutral data model "
+"(an intermediate representation, or _IR_); the per-language runtimes are "
+"thin."
+msgstr ""
+
+#: src\introduction.md:38
+msgid "Where to go next"
+msgstr ""
+
+#: src\introduction.md:40
+msgid ""
+"**[Quickstart](quickstart.md)** — from zero to a validated contract and a "
+"working LAN message flow."
+msgstr ""
+
+#: src\introduction.md:42
+msgid ""
+"**[Concepts](concepts/index.md)** — the mental model: nodes, messages, "
+"connections, and why the IR sits in the middle."
+msgstr ""
+
+#: src\quickstart.md:3
+msgid ""
+"This walkthrough takes you from zero to a validated contract and a message "
+"flowing on your LAN in about 15 minutes. You will install the `sahou` CLI, "
+"look at a contract, validate it, build its IR, and observe traffic — no app "
+"code required."
+msgstr ""
+
+#: src\quickstart.md:8
+msgid "1. Install the CLI"
+msgstr ""
+
+#: src\quickstart.md:10
+msgid "From crates.io (needs Rust):"
+msgstr ""
+
+#: src\quickstart.md:13
+msgid "# installs the `sahou` command (GUI embedded)\n"
+msgstr ""
+
+#: src\quickstart.md:16
+msgid "Or grab a prebuilt binary — **no Rust needed**:"
+msgstr ""
+
+#: src\quickstart.md:19
+msgid "# macOS / Linux\n"
+msgstr ""
+
+#: src\quickstart.md:20
+msgid "'=https'"
+msgstr ""
+
+#: src\quickstart.md:23
+msgid ""
+"```powershell\n"
+"# Windows (PowerShell)\n"
+"irm "
+"https://github.com/craf-te/sahou/releases/latest/download/sahou-cli-installer.ps1 "
+"| iex\n"
+"```"
+msgstr ""
+
+#: src\quickstart.md:28
+msgid ""
+"Prebuilt binaries for macOS (arm64/x64), Linux (arm64/x64), and Windows "
+"(x64) — with the GUI embedded — are on the [releases "
+"page](https://github.com/craf-te/sahou/releases)."
+msgstr ""
+
+#: src\quickstart.md:32
+msgid "2. Get a contract"
+msgstr ""
+
+#: src\quickstart.md:34
+msgid "Scaffold a fresh project (a minimal valid seed):"
+msgstr ""
+
+#: src\quickstart.md:40
+msgid ""
+"Or follow along with the bundled demo, whose contract lives in "
+"`examples/demo/schema.sahou.yaml`. A contract names its **nodes** and the "
+"**connections** between them. Here is one connection from the demo — a "
+"publish/subscribe stream of typed touch events from `sensor` to `visuals` "
+"and `archive`:"
+msgstr ""
+
+#: src\quickstart.md:47 src\schema-authoring.md:12 src\schema-authoring.md:145
+msgid "schema"
+msgstr ""
+
+#: src\quickstart.md:47
+msgid "demo_installation"
+msgstr ""
+
+#: src\quickstart.md:47 src\schema-authoring.md:145
+msgid "version"
+msgstr ""
+
+#: src\quickstart.md:48 src\concepts/node-message-connection.md:13
+#: src\schema-authoring.md:26 src\schema-authoring.md:146
+msgid "nodes"
+msgstr ""
+
+#: src\quickstart.md:50 src\quickstart.md:56
+#: src\concepts/node-message-connection.md:14
+#: src\concepts/node-message-connection.md:54
+#: src\concepts/node-message-connection.md:59 src\schema-authoring.md:27
+#: src\schema-authoring.md:148 src\schema-authoring.md:155
+#: src\schema-authoring.md:173 src\schema-authoring.md:183
+msgid "sensor"
+msgstr ""
+
+#: src\quickstart.md:50 src\quickstart.md:51 src\quickstart.md:52
+#: src\concepts/node-message-connection.md:14
+#: src\concepts/node-message-connection.md:15
+#: src\concepts/node-message-connection.md:16 src\schema-authoring.md:27
+#: src\schema-authoring.md:28 src\schema-authoring.md:148
+#: src\schema-authoring.md:149 src\schema-authoring.md:150
+#: src\schema-authoring.md:151 src\schema-authoring.md:198
+msgid "kind"
+msgstr ""
+
+#: src\quickstart.md:50 src\quickstart.md:51 src\quickstart.md:52
+#: src\concepts/node-message-connection.md:14
+#: src\concepts/node-message-connection.md:15 src\schema-authoring.md:27
+#: src\schema-authoring.md:148 src\schema-authoring.md:149
+#: src\schema-authoring.md:150
+msgid "sahou"
+msgstr ""
+
+#: src\quickstart.md:51 src\quickstart.md:57
+#: src\concepts/node-message-connection.md:55 src\schema-authoring.md:149
+#: src\schema-authoring.md:156 src\schema-authoring.md:174
+#: src\schema-authoring.md:197
+msgid "visuals"
+msgstr ""
+
+#: src\quickstart.md:52 src\quickstart.md:57
+#: src\concepts/node-message-connection.md:55
+#: src\concepts/node-message-connection.md:60 src\schema-authoring.md:150
+#: src\schema-authoring.md:156 src\schema-authoring.md:184
+msgid "archive"
+msgstr ""
+
+#: src\quickstart.md:52 src\concepts/node-message-connection.md:51
+#: src\schema-authoring.md:36 src\schema-authoring.md:151
+msgid "connections"
+msgstr ""
+
+#: src\quickstart.md:54 src\concepts/node-message-connection.md:52
+#: src\schema-authoring.md:153
+msgid "touch"
+msgstr ""
+
+#: src\quickstart.md:55 src\schema-authoring.md:38 src\schema-authoring.md:154
+#: src\schema-authoring.md:172 src\schema-authoring.md:182
+#: src\schema-authoring.md:195
+msgid "pattern"
+msgstr ""
+
+#: src\quickstart.md:55 src\concepts/node-message-connection.md:53
+#: src\schema-authoring.md:154 src\schema-authoring.md:172
+#: src\schema-authoring.md:195
+msgid "pub_sub"
+msgstr ""
+
+#: src\quickstart.md:56 src\concepts/node-message-connection.md:54
+#: src\concepts/node-message-connection.md:59 src\schema-authoring.md:155
+#: src\schema-authoring.md:173 src\schema-authoring.md:183
+#: src\schema-authoring.md:196
+msgid "from"
+msgstr ""
+
+#: src\quickstart.md:57 src\concepts/node-message-connection.md:55
+#: src\concepts/node-message-connection.md:60 src\schema-authoring.md:40
+#: src\schema-authoring.md:156 src\schema-authoring.md:174
+#: src\schema-authoring.md:184 src\schema-authoring.md:197
+msgid "to"
+msgstr ""
+
+#: src\quickstart.md:58 src\concepts/node-message-connection.md:33
+#: src\concepts/node-message-connection.md:56 src\schema-authoring.md:159
+#: src\schema-authoring.md:175 src\schema-authoring.md:198
+msgid "payload"
+msgstr ""
+
+#: src\quickstart.md:59 src\concepts/node-message-connection.md:34
+#: src\concepts/node-message-connection.md:56
+#: src\concepts/node-message-connection.md:61
+#: src\concepts/node-message-connection.md:62 src\schema-authoring.md:64
+#: src\schema-authoring.md:160 src\schema-authoring.md:176
+#: src\schema-authoring.md:187 src\schema-authoring.md:191
+#: src\schema-authoring.md:198
+msgid "typing"
+msgstr ""
+
+#: src\quickstart.md:59 src\concepts/node-message-connection.md:34
+#: src\concepts/node-message-connection.md:56
+#: src\concepts/node-message-connection.md:61
+#: src\concepts/node-message-connection.md:62 src\schema-authoring.md:160
+#: src\schema-authoring.md:176 src\schema-authoring.md:187
+#: src\schema-authoring.md:191
+msgid "typed"
+msgstr ""
+
+#: src\quickstart.md:60 src\quickstart.md:65
+#: src\concepts/node-message-connection.md:35
+#: src\concepts/node-message-connection.md:56
+#: src\concepts/node-message-connection.md:61
+#: src\concepts/node-message-connection.md:62 src\schema-authoring.md:161
+#: src\schema-authoring.md:167 src\schema-authoring.md:177
+#: src\schema-authoring.md:188 src\schema-authoring.md:192
+msgid "fields"
+msgstr ""
+
+#: src\quickstart.md:61 src\quickstart.md:62 src\quickstart.md:63
+#: src\quickstart.md:66 src\quickstart.md:67
+#: src\concepts/node-message-connection.md:36
+#: src\concepts/node-message-connection.md:37 src\schema-authoring.md:76
+#: src\schema-authoring.md:162 src\schema-authoring.md:163
+#: src\schema-authoring.md:164 src\schema-authoring.md:165
+#: src\schema-authoring.md:168 src\schema-authoring.md:169
+#: src\schema-authoring.md:170 src\schema-authoring.md:178
+#: src\schema-authoring.md:179 src\schema-authoring.md:180
+#: src\schema-authoring.md:189 src\schema-authoring.md:193
+msgid "name"
+msgstr ""
+
+#: src\quickstart.md:61 src\concepts/node-message-connection.md:36
+#: src\schema-authoring.md:162
+msgid "x"
+msgstr ""
+
+#: src\quickstart.md:61 src\quickstart.md:62 src\quickstart.md:64
+#: src\quickstart.md:66 src\quickstart.md:67
+#: src\concepts/node-message-connection.md:36
+#: src\concepts/node-message-connection.md:37 src\schema-authoring.md:76
+#: src\schema-authoring.md:92 src\schema-authoring.md:162
+#: src\schema-authoring.md:163 src\schema-authoring.md:164
+#: src\schema-authoring.md:166 src\schema-authoring.md:168
+#: src\schema-authoring.md:169 src\schema-authoring.md:170
+#: src\schema-authoring.md:178 src\schema-authoring.md:179
+#: src\schema-authoring.md:180 src\schema-authoring.md:189
+#: src\schema-authoring.md:193
+msgid "type"
+msgstr ""
+
+#: src\quickstart.md:61 src\concepts/node-message-connection.md:36
+#: src\schema-authoring.md:162 src\schema-authoring.md:178
+msgid "float"
+msgstr ""
+
+#: src\quickstart.md:61 src\concepts/node-message-connection.md:36
+#: src\schema-authoring.md:80 src\schema-authoring.md:162
+msgid "min"
+msgstr ""
+
+#: src\quickstart.md:61 src\concepts/node-message-connection.md:36
+#: src\schema-authoring.md:162
+msgid "max"
+msgstr ""
+
+#: src\quickstart.md:62 src\concepts/node-message-connection.md:37
+#: src\schema-authoring.md:164
+msgid "phase"
+msgstr ""
+
+#: src\quickstart.md:62 src\concepts/node-message-connection.md:37
+#: src\schema-authoring.md:164
+msgid "enum"
+msgstr ""
+
+#: src\quickstart.md:62 src\concepts/node-message-connection.md:37
+#: src\schema-authoring.md:164
+msgid "values"
+msgstr ""
+
+#: src\quickstart.md:62 src\concepts/node-message-connection.md:37
+#: src\schema-authoring.md:164
+msgid "down"
+msgstr ""
+
+#: src\quickstart.md:62 src\concepts/node-message-connection.md:37
+#: src\schema-authoring.md:164
+msgid "move"
+msgstr ""
+
+#: src\quickstart.md:62 src\concepts/node-message-connection.md:37
+#: src\schema-authoring.md:164
+msgid "up"
+msgstr ""
+
+#: src\quickstart.md:63 src\schema-authoring.md:165
+msgid "meta"
+msgstr ""
+
+#: src\quickstart.md:64 src\schema-authoring.md:166
+msgid "group"
+msgstr ""
+
+#: src\quickstart.md:66 src\schema-authoring.md:168
+msgid "ts"
+msgstr ""
+
+#: src\quickstart.md:66 src\schema-authoring.md:168
+msgid "timestamp"
+msgstr ""
+
+#: src\quickstart.md:67
+msgid "source"
+msgstr ""
+
+#: src\quickstart.md:67 src\schema-authoring.md:170 src\schema-authoring.md:179
+#: src\schema-authoring.md:180 src\schema-authoring.md:189
+msgid "string"
+msgstr ""
+
+#: src\quickstart.md:67 src\schema-authoring.md:77 src\schema-authoring.md:169
+#: src\schema-authoring.md:170
+msgid "required"
+msgstr ""
+
+#: src\quickstart.md:68 src\schema-authoring.md:157
+msgid "reliability"
+msgstr ""
+
+#: src\quickstart.md:68 src\schema-authoring.md:157
+msgid "reliable"
+msgstr ""
+
+#: src\quickstart.md:69 src\schema-authoring.md:158
+msgid "congestion"
+msgstr ""
+
+#: src\quickstart.md:69 src\schema-authoring.md:158
+msgid "block"
+msgstr ""
+
+#: src\quickstart.md:72
+msgid ""
+"You do not manage any IP addresses or ports here — only _who_ talks to "
+"_whom_ and _what shape_ the messages are."
+msgstr ""
+
+#: src\quickstart.md:75
+msgid "3. Contract vs endpoints"
+msgstr ""
+
+#: src\quickstart.md:77
+msgid ""
+"The **contract** (types, names, wiring) lives in `schema.sahou.yaml`. The "
+"**endpoints** — which machine plays which node, and any environment-specific "
+"transport settings — live in a separate `endpoints.<env>.yaml`, so one "
+"contract runs unchanged across environments. The demo's `endpoints.dev.yaml` "
+"is tiny, because LAN auto-discovery is the default:"
+msgstr ""
+
+#: src\quickstart.md:84 src\concepts/contract-vs-endpoints.md:25
+msgid "env"
+msgstr ""
+
+#: src\quickstart.md:84 src\concepts/contract-vs-endpoints.md:25
+msgid "dev"
+msgstr ""
+
+#: src\quickstart.md:84 src\concepts/contract-vs-endpoints.md:25
+msgid "namespace"
+msgstr ""
+
+#: src\quickstart.md:85 src\concepts/contract-vs-endpoints.md:26
+msgid "sahou/demo"
+msgstr ""
+
+#: src\quickstart.md:86 src\concepts/contract-vs-endpoints.md:27
+msgid ""
+"LAN auto-discovery is the default. Only specify a router / explicit endpoint "
+"when needed."
+msgstr ""
+
+#: src\quickstart.md:89
+msgid ""
+"See [Contract vs Endpoints](concepts/contract-vs-endpoints.md) for the full "
+"picture."
+msgstr ""
+
+#: src\quickstart.md:92
+msgid "4. Validate the contract"
+msgstr ""
+
+#: src\quickstart.md:98
+msgid ""
+"Validation returns **positional, structured diagnostics** — it points at the "
+"exact field or connection, and duplicate keys or mistyped (unknown) keys are "
+"rejected rather than silently dropped. See [Say NO "
+"early](concepts/say-no-early.md)."
+msgstr ""
+
+#: src\quickstart.md:102
+msgid "5. Build the IR (and an optional typed stub)"
+msgstr ""
+
+#: src\quickstart.md:108
+msgid ""
+"This writes the full IR to `gen/descriptor.json` and, because you passed "
+"`--lang`/`--node`, a typed stub for the `sensor` node into `gen/sensor/`. "
+"The stub gives your editor build-time type checking for the messages that "
+"node sends and receives — this is the \"say NO in your editor\" half of "
+"Sahou. Drift between a stub and the contract is caught later by `sahou "
+"check`."
+msgstr ""
+
+#: src\quickstart.md:114
+msgid "6. Observe what actually flows"
+msgstr ""
+
+#: src\quickstart.md:116
+msgid ""
+"You do not need an app to see traffic. `sahou tap` can observe (and inject) "
+"messages from a node's vantage point:"
+msgstr ""
+
+#: src\quickstart.md:123
+msgid ""
+"To build real senders and receivers, add a runtime for your language — see "
+"[Runtimes](runtimes/index.md)."
+msgstr ""
+
+#: src\quickstart.md:126
+msgid "7. Open the visual editor"
+msgstr ""
+
+#: src\quickstart.md:128
+msgid "At any point, edit the contract visually in your browser:"
+msgstr ""
+
+#: src\quickstart.md:134
+msgid "Next steps"
+msgstr ""
+
+#: src\quickstart.md:136
+msgid ""
+"**[Concepts](concepts/index.md)** — nodes, messages, connections, and the IR."
+msgstr ""
+
+#: src\quickstart.md:137
+msgid ""
+"**[Schema authoring](schema-authoring.md)** — every field type and "
+"connection option."
+msgstr ""
+
+#: src\quickstart.md:139
+msgid "**[CLI reference](cli-reference.md)** — every command and flag."
+msgstr ""
+
+#: src\concepts/index.md:3
+msgid ""
+"Sahou has a small mental model. Once these pieces click, the rest of the "
+"tool follows from them."
+msgstr ""
+
+#: src\concepts/index.md:6
+msgid ""
+"**[Node, Message, Connection](node-message-connection.md)** — the three "
+"things a schema names."
+msgstr ""
+
+#: src\concepts/index.md:8
+msgid ""
+"**[Contract vs Endpoints](contract-vs-endpoints.md)** — what belongs in the "
+"shared contract, and what is environment-specific."
+msgstr ""
+
+#: src\concepts/index.md:10
+msgid ""
+"**[The IR and round-trip](ir-and-round-trip.md)** — why a neutral "
+"intermediate representation sits between the YAML you write and everything "
+"Sahou generates."
+msgstr ""
+
+#: src\concepts/index.md:13
+msgid ""
+"**[Say NO early](say-no-early.md)** — how, and where, a wrong type or a typo "
+"gets rejected."
+msgstr ""
+
+#: src\concepts/index.md:15
+msgid ""
+"**[Contract evolution](contract-evolution.md)** — what happens when the "
+"contract changes while apps are running."
+msgstr ""
+
+#: src\concepts/index.md:18
+msgid ""
+"The one-paragraph version: you write a **contract** that names **nodes**, "
+"the **messages** they exchange, and the **connections** that wire them. "
+"Sahou parses that into a neutral **IR**, validates it with precise "
+"diagnostics, and uses it to discover peers, carry traffic, and — optionally "
+"— generate typed stubs. Anything that does not fit the contract is rejected "
+"at the boundary rather than allowed to propagate."
+msgstr ""
+
+#: src\concepts/node-message-connection.md:3
+msgid ""
+"The IR — and therefore the schema — is built from three elements. Types are "
+"kept separate from wiring: a Message describes _shape_, a Connection "
+"describes _who talks to whom and how_."
+msgstr ""
+
+#: src\concepts/node-message-connection.md:7
+msgid "Node"
+msgstr ""
+
+#: src\concepts/node-message-connection.md:9
+msgid ""
+"A **participant**: an app, a process, or a device. In the schema, a node has "
+"a `kind`:"
+msgstr ""
+
+#: src\concepts/node-message-connection.md:14
+msgid "# speaks the Sahou contract (the default)\n  visuals"
+msgstr ""
+
+#: src\concepts/node-message-connection.md:16 src\schema-authoring.md:151
+#: src\schema-authoring.md:196
+msgid "legacy_console"
+msgstr ""
+
+#: src\concepts/node-message-connection.md:16 src\schema-authoring.md:28
+#: src\schema-authoring.md:151
+msgid "external"
+msgstr ""
+
+#: src\concepts/node-message-connection.md:16
+msgid "# a non-Sahou device\n"
+msgstr ""
+
+#: src\concepts/node-message-connection.md:19
+msgid ""
+"`kind: sahou` — a device or process that speaks the Sahou contract. This is "
+"the default when `kind` is omitted."
+msgstr ""
+
+#: src\concepts/node-message-connection.md:21
+msgid ""
+"`kind: external` — a non-Sahou device. It can be a wiring target (something "
+"a connection sends _to_) but it does not itself speak the contract."
+msgstr ""
+
+#: src\concepts/node-message-connection.md:24
+msgid "Message"
+msgstr ""
+
+#: src\concepts/node-message-connection.md:26
+msgid ""
+"A named, reusable **shape of data** — its fields and their types. A Field "
+"belongs to a Message. Sahou supports eleven field types (`int`, `float`, "
+"`bool`, `string`, `bytes`, `timestamp`, `enum`, `array`, `map`, `group`, "
+"`union`); see [Schema authoring](../schema-authoring.md) for each. In the "
+"schema, a message shape appears inside a connection's slot (`payload`, or "
+"`request`/`response`):"
+msgstr ""
+
+#: src\concepts/node-message-connection.md:40
+msgid "Connection"
+msgstr ""
+
+#: src\concepts/node-message-connection.md:42
+msgid ""
+"The **wiring**: which message, from which node to which, and how it is "
+"carried. The transport-related settings (reliability, congestion, encoding, "
+"and so on) are Connection attributes. Sahou has two patterns:"
+msgstr ""
+
+#: src\concepts/node-message-connection.md:46
+msgid "**`pub_sub`** — one-to-many distribution. Its only slot is `payload`."
+msgstr ""
+
+#: src\concepts/node-message-connection.md:47
+msgid ""
+"**`query`** — one-to-one request/response. Its slots are `request` and "
+"`response`."
+msgstr ""
+
+#: src\concepts/node-message-connection.md:52
+msgid "# pub_sub\n    pattern"
+msgstr ""
+
+#: src\concepts/node-message-connection.md:57 src\schema-authoring.md:181
+msgid "get_level"
+msgstr ""
+
+#: src\concepts/node-message-connection.md:57
+msgid "# query\n    pattern"
+msgstr ""
+
+#: src\concepts/node-message-connection.md:58 src\schema-authoring.md:182
+msgid "query"
+msgstr ""
+
+#: src\concepts/node-message-connection.md:61 src\schema-authoring.md:186
+msgid "request"
+msgstr ""
+
+#: src\concepts/node-message-connection.md:62 src\schema-authoring.md:190
+msgid "response"
+msgstr ""
+
+#: src\concepts/node-message-connection.md:65
+msgid ""
+"The `pattern` determines which slots are allowed — using `payload` on a "
+"`query`, or `request` on a `pub_sub`, is rejected. `to` may only reference "
+"nodes defined in `nodes`, and cannot equal `from`."
+msgstr ""
+
+#: src\concepts/contract-vs-endpoints.md:3
+msgid "Sahou keeps three concerns in three separate files. Do not conflate them."
+msgstr ""
+
+#: src\concepts/contract-vs-endpoints.md:5
+msgid "File"
+msgstr ""
+
+#: src\concepts/contract-vs-endpoints.md:5
+msgid "What it holds"
+msgstr ""
+
+#: src\concepts/contract-vs-endpoints.md:5
+msgid "Who edits it"
+msgstr ""
+
+#: src\concepts/contract-vs-endpoints.md:7
+msgid "`schema.sahou.yaml`"
+msgstr ""
+
+#: src\concepts/contract-vs-endpoints.md:7
+msgid "The **contract** — meaning, types, wiring. The single source to edit."
+msgstr ""
+
+#: src\concepts/contract-vs-endpoints.md:7
+msgid "Humans / AI / the GUI"
+msgstr ""
+
+#: src\concepts/contract-vs-endpoints.md:8
+msgid "`endpoints.<env>.yaml`"
+msgstr ""
+
+#: src\concepts/contract-vs-endpoints.md:8
+msgid "**Deployment** — per-environment connection settings. Empty by default."
+msgstr ""
+
+#: src\concepts/contract-vs-endpoints.md:8
+msgid "Per environment"
+msgstr ""
+
+#: src\concepts/contract-vs-endpoints.md:9
+msgid "`layout.sahou.json`"
+msgstr ""
+
+#: src\concepts/contract-vs-endpoints.md:9
+msgid "GUI **coordinates** only. No bearing on the contract's meaning."
+msgstr ""
+
+#: src\concepts/contract-vs-endpoints.md:9
+msgid "The GUI"
+msgstr ""
+
+#: src\concepts/contract-vs-endpoints.md:11
+msgid "The contract"
+msgstr ""
+
+#: src\concepts/contract-vs-endpoints.md:13
+msgid ""
+"`schema.sahou.yaml` is the one file that defines _what_ the system "
+"communicates: the nodes, the messages, and the connections between them. It "
+"is transport- and environment-independent. This is the file you version, "
+"review, and share."
+msgstr ""
+
+#: src\concepts/contract-vs-endpoints.md:17
+msgid "The endpoints"
+msgstr ""
+
+#: src\concepts/contract-vs-endpoints.md:19
+msgid ""
+"`endpoints.<env>.yaml` says _which machine plays which node_ and carries any "
+"environment-specific settings, so the **same contract runs unchanged across "
+"environments** (dev, staging, an installation on site). It is deliberately "
+"small — often just a namespace — because **LAN auto-discovery is the "
+"default**:"
+msgstr ""
+
+#: src\concepts/contract-vs-endpoints.md:30
+msgid ""
+"When you omit endpoints entirely, Sahou uses the LAN-auto default (namespace "
+"`sahou`)."
+msgstr ""
+
+#: src\concepts/contract-vs-endpoints.md:33
+msgid "Why the split matters"
+msgstr ""
+
+#: src\concepts/contract-vs-endpoints.md:35
+msgid ""
+"Because deployment lives outside the contract, moving from your laptop to a "
+"gallery network, or from one machine to three, does not touch the contract. "
+"You change _where_ nodes run without changing _what_ they say. See "
+"[Networking & deployment](../networking-and-deployment.md) for how discovery "
+"and transport use these files."
+msgstr ""
+
+#: src\concepts/ir-and-round-trip.md:3
+msgid ""
+"At the center of Sahou is a neutral data model called the **IR** "
+"(intermediate representation). The surface you write (YAML) is never wired "
+"directly to the output (codegen, transport, the GUI). The IR always sits in "
+"between."
+msgstr ""
+
+#: src\concepts/ir-and-round-trip.md:15
+msgid "Why an IR"
+msgstr ""
+
+#: src\concepts/ir-and-round-trip.md:17
+msgid ""
+"Wiring surface syntax straight to output couples the two: every consumer "
+"would have to re-parse YAML and re-implement validation, and they would "
+"drift. With the IR as the single neutral model, parsing, validation, and "
+"every output share one source of truth. The CLI, the browser GUI, and the "
+"language runtimes all consume the same IR."
+msgstr ""
+
+#: src\concepts/ir-and-round-trip.md:23
+msgid "The three properties the core guarantees"
+msgstr ""
+
+#: src\concepts/ir-and-round-trip.md:25
+msgid ""
+"The core (`sahou-core`, written in Rust and WASM-capable) keeps three "
+"properties so the same logic can back a CLI, a browser GUI, and future "
+"tooling:"
+msgstr ""
+
+#: src\concepts/ir-and-round-trip.md:28
+msgid ""
+"**Parse _and_ serialize** — reading a contract into the IR and writing it "
+"back out is round-trip stable. (Comments are the one known exception; `sahou "
+"fmt` notes this.)"
+msgstr ""
+
+#: src\concepts/ir-and-round-trip.md:31
+msgid ""
+"**Structured diagnostics** — validation returns positional, structured "
+"results: a `code`, a `path` to the exact location, and a `message`. Not a "
+"single opaque error string. See [Say NO early](say-no-early.md)."
+msgstr ""
+
+#: src\concepts/ir-and-round-trip.md:34
+msgid ""
+"**Pure and WASM-capable** — parse / serialize / validate are pure functions "
+"with no I/O, so they run identically in the CLI and in the browser (the GUI "
+"runs the core compiled to WebAssembly)."
+msgstr ""
+
+#: src\concepts/ir-and-round-trip.md:38
+msgid ""
+"Everything under `gen/` — `descriptor.json` (the full IR) and any typed "
+"stubs — is produced from the IR by `sahou gen`. Treat it as generated "
+"output; edit the contract, not `gen/`."
+msgstr ""
+
+#: src\concepts/say-no-early.md:3
+msgid ""
+"The core idea of Sahou: a wrong type or a mistyped field should be rejected "
+"**the moment it crosses the boundary** — and, with generated type stubs, "
+"**in your editor at build time** — rather than failing later, somewhere far "
+"away, in the hardest place to debug."
+msgstr ""
+
+#: src\concepts/say-no-early.md:8
+msgid "Two boundaries where NO happens"
+msgstr ""
+
+#: src\concepts/say-no-early.md:10
+msgid ""
+"**At build time, in your editor (opt-in).** Generate a typed stub with "
+"`sahou gen --lang <python|ts>` and your editor type-checks the messages a "
+"node sends and receives before anything runs. This is the earliest possible "
+"NO."
+msgstr ""
+
+#: src\concepts/say-no-early.md:13
+msgid ""
+"**At runtime, at the boundary.** When a message is sent or received, the "
+"core validates it against the contract. A send-boundary rejection raises an "
+"error (`SahouRejected`); a receive-boundary rejection is routed to a reject "
+"handler, never to your message handler. Either way the bad value does not "
+"propagate."
+msgstr ""
+
+#: src\concepts/say-no-early.md:18
+msgid "Never silently fold the contract"
+msgstr ""
+
+#: src\concepts/say-no-early.md:20
+msgid ""
+"Sahou refuses the quiet failure modes that serde-style parsing defaults to:"
+msgstr ""
+
+#: src\concepts/say-no-early.md:22
+msgid "**Duplicate keys** are rejected, not silently resolved \"last one wins\"."
+msgstr ""
+
+#: src\concepts/say-no-early.md:23
+msgid "**Unknown keys** (typos) are rejected, not silently dropped."
+msgstr ""
+
+#: src\concepts/say-no-early.md:25
+msgid ""
+"This is enforced with `deny_unknown_fields` and unique-map checks. A typo in "
+"a field name is a boundary NO, not a field that silently vanishes."
+msgstr ""
+
+#: src\concepts/say-no-early.md:28
+msgid "Structured diagnostics"
+msgstr ""
+
+#: src\concepts/say-no-early.md:30
+msgid ""
+"`sahou validate` returns a list of `{ code, path, message }` — each pointing "
+"at the exact place. A few common codes:"
+msgstr ""
+
+#: src\concepts/say-no-early.md:33 src\schema-authoring.md:118
+msgid "code"
+msgstr ""
+
+#: src\concepts/say-no-early.md:33 src\schema-authoring.md:118
+msgid "meaning"
+msgstr ""
+
+#: src\concepts/say-no-early.md:35 src\schema-authoring.md:121
+msgid "`unknown_node`"
+msgstr ""
+
+#: src\concepts/say-no-early.md:35
+msgid "`from`/`to` references an identifier not in `nodes`"
+msgstr ""
+
+#: src\concepts/say-no-early.md:36 src\schema-authoring.md:122
+msgid "`self_loop`"
+msgstr ""
+
+#: src\concepts/say-no-early.md:36
+msgid "`from` and `to` are the same node"
+msgstr ""
+
+#: src\concepts/say-no-early.md:37
+msgid "`missing_slot` / `unexpected_slot`"
+msgstr ""
+
+#: src\concepts/say-no-early.md:37
+msgid "slots don't match the `pattern`"
+msgstr ""
+
+#: src\concepts/say-no-early.md:38 src\schema-authoring.md:126
+msgid "`duplicate_field`"
+msgstr ""
+
+#: src\concepts/say-no-early.md:38 src\schema-authoring.md:126
+msgid "a field name repeats within one slot"
+msgstr ""
+
+#: src\concepts/say-no-early.md:39 src\schema-authoring.md:130
+msgid "`missing_items`"
+msgstr ""
+
+#: src\concepts/say-no-early.md:39
+msgid "`array`/`map` omitted its element/value type"
+msgstr ""
+
+#: src\concepts/say-no-early.md:40 src\schema-authoring.md:132
+msgid "`invalid_default`"
+msgstr ""
+
+#: src\concepts/say-no-early.md:40 src\schema-authoring.md:132
+msgid "a `default` violates its own type/constraints"
+msgstr ""
+
+#: src\concepts/say-no-early.md:42
+msgid "The full list is in [Schema authoring](../schema-authoring.md)."
+msgstr ""
+
+#: src\concepts/say-no-early.md:44
+msgid "Runtime interprets the IR; stubs are opt-in"
+msgstr ""
+
+#: src\concepts/say-no-early.md:46
+msgid ""
+"At runtime, the engine plus its interpretation of the IR does the validation "
+"— so the boundary NO exists whether or not you generated stubs. Static types "
+"are an **opt-in, consumer-side** convenience layer; the engine never reads "
+"them. Because a stub is generated and code drifts, `sahou check` compares a "
+"stub against the current IR and rejects on drift — a natural CI gate."
+msgstr ""
+
+#: src\concepts/contract-evolution.md:3
+msgid ""
+"Contracts change. A node gains a field; a new receiver is added; a message "
+"grows. Sahou decides, per connection, whether a change is safe to roll out "
+"while peers are still running."
+msgstr ""
+
+#: src\concepts/contract-evolution.md:7
+msgid "Additive passes, breaking is a NO"
+msgstr ""
+
+#: src\concepts/contract-evolution.md:9
+msgid "Compatibility is judged **per connection** and **structurally**:"
+msgstr ""
+
+#: src\concepts/contract-evolution.md:11
+msgid ""
+"**Additive changes pass.** Adding an optional field, or otherwise widening "
+"in a structurally-compatible way, is allowed — old and new peers can coexist."
+msgstr ""
+
+#: src\concepts/contract-evolution.md:13
+msgid ""
+"**Breaking changes are a NO.** Removing or retyping a field in a way that "
+"would make existing messages invalid is rejected."
+msgstr ""
+
+#: src\concepts/contract-evolution.md:16
+msgid ""
+"Because the judgement is structural and per-connection, one connection "
+"evolving does not force every peer to upgrade in lockstep."
+msgstr ""
+
+#: src\concepts/contract-evolution.md:19
+msgid "The delivery handshake"
+msgstr ""
+
+#: src\concepts/contract-evolution.md:21
+msgid ""
+"The compatibility decision is made by the **delivery handshake**. When peers "
+"meet, they compare their views of a connection's contract and decide whether "
+"they are compatible before traffic flows. A compatible (additive) difference "
+"is accepted; an incompatible (breaking) one is refused — the same \"say NO "
+"early\" principle, applied to two peers that were built against different "
+"versions of the contract rather than to a single bad message."
+msgstr ""
+
+#: src\concepts/contract-evolution.md:28
+msgid ""
+"This is why you can evolve a running system additively with confidence: the "
+"handshake, not luck, decides that an old subscriber and a newer publisher "
+"still agree."
+msgstr ""
+
+#: src\schema-authoring.md:3
+msgid ""
+"This page is the reference for writing `schema.sahou.yaml` by hand. (The CLI "
+"can print a compact version of the same reference for AI coding agents with "
+"`sahou reference`.)"
+msgstr ""
+
+#: src\schema-authoring.md:7
+msgid "File shape"
+msgstr ""
+
+#: src\schema-authoring.md:9
+msgid "Top level:"
+msgstr ""
+
+#: src\schema-authoring.md:12
+msgid "my_installation   # required; also the namespace\nversion"
+msgstr ""
+
+#: src\schema-authoring.md:13
+msgid "# default \"1\"\nnodes"
+msgstr ""
+
+#: src\schema-authoring.md:14
+msgid "# required; may be an empty map\nconnections"
+msgstr ""
+
+#: src\schema-authoring.md:15
+msgid "# required; may be an empty map\n"
+msgstr ""
+
+#: src\schema-authoring.md:18
+msgid ""
+"Remember the [three-file separation](concepts/contract-vs-endpoints.md): the "
+"contract goes here, deployment goes in `endpoints.<env>.yaml`, and GUI "
+"coordinates go in `layout.sahou.json`. Never write deployment or coordinates "
+"in the contract."
+msgstr ""
+
+#: src\schema-authoring.md:23
+msgid "Nodes"
+msgstr ""
+
+#: src\schema-authoring.md:27
+msgid "# default when kind is omitted\n  legacy_console"
+msgstr ""
+
+#: src\schema-authoring.md:28
+msgid "# a wiring target that doesn't speak the contract\n"
+msgstr ""
+
+#: src\schema-authoring.md:31
+msgid "Connections"
+msgstr ""
+
+#: src\schema-authoring.md:33
+msgid "A connection's `pattern` decides which slots it has."
+msgstr ""
+
+#: src\schema-authoring.md:37
+msgid "<id>"
+msgstr ""
+
+#: src\schema-authoring.md:38
+msgid "pub_sub | query    # determines the slots\n    from"
+msgstr ""
+
+#: src\schema-authoring.md:39 src\schema-authoring.md:40
+msgid "<node_id>"
+msgstr ""
+
+#: src\schema-authoring.md:40
+msgid ""
+"# a single value may be a bare string; must be in nodes; cannot equal from\n"
+"    key"
+msgstr ""
+
+#: src\schema-authoring.md:41
+msgid ""
+"<keyexpr>              # optional; auto-derived from namespace + connection "
+"id when omitted\n"
+"    selector"
+msgstr ""
+
+#: src\schema-authoring.md:42
+msgid ""
+"<string>          # query only (on pub_sub → unexpected_selector)\n"
+"    reliability"
+msgstr ""
+
+#: src\schema-authoring.md:43
+msgid "best_effort | reliable   # default best_effort\n    congestion"
+msgstr ""
+
+#: src\schema-authoring.md:44
+msgid "drop | block              # default drop\n    priority"
+msgstr ""
+
+#: src\schema-authoring.md:45
+msgid ""
+"realtime | interactive_high | interactive_low | data_high | data | data_low "
+"| background  # default data\n"
+"    express"
+msgstr ""
+
+#: src\schema-authoring.md:46
+msgid "true | false       # default false\n    encoding"
+msgstr ""
+
+#: src\schema-authoring.md:47
+msgid ""
+"json              # a contract attribute; currently json only; default json\n"
+"    validate"
+msgstr ""
+
+#: src\schema-authoring.md:48
+msgid ""
+"full | sampled | off  # default full\n"
+"    # slots (pattern-dependent):\n"
+"    payload"
+msgstr ""
+
+#: src\schema-authoring.md:50
+msgid "<Slot>            # pub_sub only\n    request"
+msgstr ""
+
+#: src\schema-authoring.md:51
+msgid "<Slot>            # query only\n    response"
+msgstr ""
+
+#: src\schema-authoring.md:52
+msgid "<Slot>            # query only\n"
+msgstr ""
+
+#: src\schema-authoring.md:55
+msgid "**`pub_sub`** — one-to-many. Only `payload`."
+msgstr ""
+
+#: src\schema-authoring.md:56
+msgid "**`query`** — one-to-one request/response. Only `request` + `response`."
+msgstr ""
+
+#: src\schema-authoring.md:58
+msgid ""
+"Using the wrong slot for the pattern is rejected (`missing_slot` / "
+"`unexpected_slot`)."
+msgstr ""
+
+#: src\schema-authoring.md:61
+msgid "Slots"
+msgstr ""
+
+#: src\schema-authoring.md:64
+msgid ""
+"any | typed     # any = unvalidated (no type safety; the GUI marks it red)\n"
+"kind"
+msgstr ""
+
+#: src\schema-authoring.md:65
+msgid ""
+"record | opaque   # default record; opaque is raw data with no fields\n"
+"fields"
+msgstr ""
+
+#: src\schema-authoring.md:66 src\schema-authoring.md:87
+msgid "<Field>"
+msgstr ""
+
+#: src\schema-authoring.md:66
+msgid "# kind: record only\nencoding"
+msgstr ""
+
+#: src\schema-authoring.md:67
+msgid "<string>      # free-form text for kind: opaque (e.g. \"video/raw\")\n"
+msgstr ""
+
+#: src\schema-authoring.md:70
+msgid ""
+"Use `typing: typed` for anything whose shape you want guaranteed. `typing: "
+"any` turns off validation for that slot."
+msgstr ""
+
+#: src\schema-authoring.md:73
+msgid "Fields and types"
+msgstr ""
+
+#: src\schema-authoring.md:76 src\schema-authoring.md:84
+msgid "<string>"
+msgstr ""
+
+#: src\schema-authoring.md:77
+msgid ""
+"int | float | bool | string | bytes | timestamp | enum | array | map | group "
+"| union"
+msgstr ""
+
+#: src\schema-authoring.md:78
+msgid "true | false   # default true\ndefault"
+msgstr ""
+
+#: src\schema-authoring.md:79
+msgid "<value>         # must match the type/constraints, else invalid_default\n"
+msgstr ""
+
+#: src\schema-authoring.md:80
+msgid "type-specific attributes"
+msgstr ""
+
+#: src\schema-authoring.md:81
+msgid "<number>            # int/float\nmax"
+msgstr ""
+
+#: src\schema-authoring.md:82
+msgid "<number>            # int/float\nmax_len"
+msgstr ""
+
+#: src\schema-authoring.md:83
+msgid "<uint>          # string (character-count limit)\nvalues"
+msgstr ""
+
+#: src\schema-authoring.md:84
+msgid "# enum (empty → empty_enum)\nitems"
+msgstr ""
+
+#: src\schema-authoring.md:85
+msgid ""
+"<TypeSpec>        # array element type / map value type (omitting → "
+"missing_items)\n"
+"any_of"
+msgstr ""
+
+#: src\schema-authoring.md:86
+msgid "<TypeSpec>"
+msgstr ""
+
+#: src\schema-authoring.md:86
+msgid "# union candidates (empty → empty_union)\nfields"
+msgstr ""
+
+#: src\schema-authoring.md:87
+msgid "# group (anonymous inline hierarchy)\n"
+msgstr ""
+
+#: src\schema-authoring.md:90
+msgid "The eleven types:"
+msgstr ""
+
+#: src\schema-authoring.md:92
+msgid "notes"
+msgstr ""
+
+#: src\schema-authoring.md:94
+msgid "`int`"
+msgstr ""
+
+#: src\schema-authoring.md:94
+msgid "`min`/`max`. `int` → `float` is a compatible promotion."
+msgstr ""
+
+#: src\schema-authoring.md:95
+msgid "`float`"
+msgstr ""
+
+#: src\schema-authoring.md:95
+msgid "`min`/`max`."
+msgstr ""
+
+#: src\schema-authoring.md:96
+msgid "`bool`"
+msgstr ""
+
+#: src\schema-authoring.md:96
+msgid "booleans only."
+msgstr ""
+
+#: src\schema-authoring.md:97
+msgid "`string`"
+msgstr ""
+
+#: src\schema-authoring.md:97
+msgid "`max_len` sets the character-count limit."
+msgstr ""
+
+#: src\schema-authoring.md:98
+msgid "`bytes`"
+msgstr ""
+
+#: src\schema-authoring.md:98
+msgid "a base64 string on the wire (JSON)."
+msgstr ""
+
+#: src\schema-authoring.md:99
+msgid "`timestamp`"
+msgstr ""
+
+#: src\schema-authoring.md:99
+msgid "an **integer** of epoch milliseconds (non-integer → `type_mismatch`)."
+msgstr ""
+
+#: src\schema-authoring.md:100
+msgid "`enum`"
+msgstr ""
+
+#: src\schema-authoring.md:100
+msgid "`values` required (empty → `empty_enum`)."
+msgstr ""
+
+#: src\schema-authoring.md:101
+msgid "`array`"
+msgstr ""
+
+#: src\schema-authoring.md:101
+msgid ""
+"`items` required (omit → `missing_items`). Can nest: `array<array<float>>`."
+msgstr ""
+
+#: src\schema-authoring.md:102
+msgid "`map`"
+msgstr ""
+
+#: src\schema-authoring.md:102
+msgid "`items` is the **value** type; required (omit → `missing_items`)."
+msgstr ""
+
+#: src\schema-authoring.md:103
+msgid "`group`"
+msgstr ""
+
+#: src\schema-authoring.md:103
+msgid "anonymous inline hierarchy (an alternative to named nesting)."
+msgstr ""
+
+#: src\schema-authoring.md:104
+msgid "`union`"
+msgstr ""
+
+#: src\schema-authoring.md:104
+msgid ""
+"`any_of` required (empty → `empty_union`). Untagged: accepted if it matches "
+"any candidate."
+msgstr ""
+
+#: src\schema-authoring.md:106
+msgid "What gets rejected"
+msgstr ""
+
+#: src\schema-authoring.md:108
+msgid ""
+"Sahou refuses to silently fold the contract. In addition to the type checks "
+"above:"
+msgstr ""
+
+#: src\schema-authoring.md:111
+msgid "**Duplicate keys** → rejected (not \"last-wins\")."
+msgstr ""
+
+#: src\schema-authoring.md:112
+msgid "**Unknown keys** (typos) → rejected (not silently dropped)."
+msgstr ""
+
+#: src\schema-authoring.md:114
+msgid "Diagnostic codes"
+msgstr ""
+
+#: src\schema-authoring.md:116
+msgid ""
+"`sahou validate` returns a list of `{ code, path, message }`. The main codes:"
+msgstr ""
+
+#: src\schema-authoring.md:120
+msgid "`parse_error`"
+msgstr ""
+
+#: src\schema-authoring.md:120
+msgid "YAML syntax / type mismatch / duplicate key / unknown key"
+msgstr ""
+
+#: src\schema-authoring.md:121
+msgid "`from`/`to` points at an id not in `nodes`"
+msgstr ""
+
+#: src\schema-authoring.md:122
+msgid "`from` equals `to`"
+msgstr ""
+
+#: src\schema-authoring.md:123
+msgid "`missing_slot`"
+msgstr ""
+
+#: src\schema-authoring.md:123
+msgid "a slot the pattern requires is missing"
+msgstr ""
+
+#: src\schema-authoring.md:124
+msgid "`unexpected_slot`"
+msgstr ""
+
+#: src\schema-authoring.md:124
+msgid "a slot the pattern cannot have is present"
+msgstr ""
+
+#: src\schema-authoring.md:125
+msgid "`unexpected_selector`"
+msgstr ""
+
+#: src\schema-authoring.md:125
+msgid "`selector` on a `pub_sub`"
+msgstr ""
+
+#: src\schema-authoring.md:127
+msgid "`non_finite_bound`"
+msgstr ""
+
+#: src\schema-authoring.md:127
+msgid "`min`/`max` is NaN/Inf"
+msgstr ""
+
+#: src\schema-authoring.md:128
+msgid "`invalid_range`"
+msgstr ""
+
+#: src\schema-authoring.md:128
+msgid "`min > max`"
+msgstr ""
+
+#: src\schema-authoring.md:129
+msgid "`empty_enum`"
+msgstr ""
+
+#: src\schema-authoring.md:129
+msgid "`enum` with empty `values`"
+msgstr ""
+
+#: src\schema-authoring.md:130
+msgid "`array`/`map` without `items`"
+msgstr ""
+
+#: src\schema-authoring.md:131
+msgid "`empty_union`"
+msgstr ""
+
+#: src\schema-authoring.md:131
+msgid "`union` with empty `any_of`"
+msgstr ""
+
+#: src\schema-authoring.md:134
+msgid "The edit loop"
+msgstr ""
+
+#: src\schema-authoring.md:136
+msgid "Edit `schema.sahou.yaml`."
+msgstr ""
+
+#: src\schema-authoring.md:137
+msgid "Run `sahou validate <file>`."
+msgstr ""
+
+#: src\schema-authoring.md:138
+msgid "Fix each `{ code, path, message }` at the location its `path` points to."
+msgstr ""
+
+#: src\schema-authoring.md:139
+msgid "Repeat until there are zero rejections."
+msgstr ""
+
+#: src\schema-authoring.md:140
+msgid "If `sahou gui` is open, edits are reflected immediately."
+msgstr ""
+
+#: src\schema-authoring.md:142
+msgid "A complete example"
+msgstr ""
+
+#: src\schema-authoring.md:145
+msgid "stage_demo"
+msgstr ""
+
+#: src\schema-authoring.md:163
+msgid "active"
+msgstr ""
+
+#: src\schema-authoring.md:163
+msgid "bool"
+msgstr ""
+
+#: src\schema-authoring.md:169
+msgid "thumb"
+msgstr ""
+
+#: src\schema-authoring.md:169
+msgid "bytes"
+msgstr ""
+
+#: src\schema-authoring.md:170
+msgid "note"
+msgstr ""
+
+#: src\schema-authoring.md:170 src\schema-authoring.md:189
+msgid "max_len"
+msgstr ""
+
+#: src\schema-authoring.md:171
+msgid "points"
+msgstr ""
+
+#: src\schema-authoring.md:178
+msgid "pts"
+msgstr ""
+
+#: src\schema-authoring.md:178
+msgid "array"
+msgstr ""
+
+#: src\schema-authoring.md:178 src\schema-authoring.md:179
+msgid "items"
+msgstr ""
+
+#: src\schema-authoring.md:179
+msgid "tags"
+msgstr ""
+
+#: src\schema-authoring.md:179
+msgid "map"
+msgstr ""
+
+#: src\schema-authoring.md:180
+msgid "extra"
+msgstr ""
+
+#: src\schema-authoring.md:180
+msgid "union"
+msgstr ""
+
+#: src\schema-authoring.md:180
+msgid "any_of"
+msgstr ""
+
+#: src\schema-authoring.md:180 src\schema-authoring.md:193
+msgid "int"
+msgstr ""
+
+#: src\schema-authoring.md:185
+msgid "selector"
+msgstr ""
+
+#: src\schema-authoring.md:185
+msgid "latest"
+msgstr ""
+
+#: src\schema-authoring.md:189
+msgid "sel"
+msgstr ""
+
+#: src\schema-authoring.md:193
+msgid "level"
+msgstr ""
+
+#: src\schema-authoring.md:194
+msgid "raw_video"
+msgstr ""
+
+#: src\schema-authoring.md:198
+msgid "any"
+msgstr ""
+
+#: src\schema-authoring.md:198
+msgid "opaque"
+msgstr ""
+
+#: src\schema-authoring.md:198
+msgid "encoding"
+msgstr ""
+
+#: src\schema-authoring.md:198
+msgid "\"video/raw\""
+msgstr ""
+
+#: src\cli-reference.md:3
+msgid ""
+"The `sahou` binary is a single command with subcommands. Run `sahou <cmd> "
+"--help` for the exact, version-specific flags; this page summarizes each "
+"command."
+msgstr ""
+
+#: src\cli-reference.md:6
+msgid "`sahou init`"
+msgstr ""
+
+#: src\cli-reference.md:8
+msgid ""
+"Scaffold a new project — a minimal valid seed to start from an empty "
+"directory."
+msgstr ""
+
+#: src\cli-reference.md:14
+msgid ""
+"positional `DIR` — target directory (default: current; created if missing)."
+msgstr ""
+
+#: src\cli-reference.md:15
+msgid ""
+"`--name <name>` — schema name, also the namespace (default: the directory's "
+"basename)."
+msgstr ""
+
+#: src\cli-reference.md:17
+msgid "`--force` — overwrite even if a `schema.sahou.yaml` already exists."
+msgstr ""
+
+#: src\cli-reference.md:19
+msgid "`sahou validate`"
+msgstr ""
+
+#: src\cli-reference.md:21
+msgid "Self-validate a contract with positional, structured diagnostics."
+msgstr ""
+
+#: src\cli-reference.md:27
+msgid ""
+"On success it prints `[ok] <file>: valid`. On failure it prints one `[code] "
+"@path: message` line per diagnostic and exits non-zero. See the [diagnostic "
+"codes](schema-authoring.md#diagnostic-codes)."
+msgstr ""
+
+#: src\cli-reference.md:31
+msgid "`sahou fmt`"
+msgstr ""
+
+#: src\cli-reference.md:33
+msgid "Normalize a contract to deterministic canonical YAML."
+msgstr ""
+
+#: src\cli-reference.md:36
+msgid "# print to stdout\n"
+msgstr ""
+
+#: src\cli-reference.md:37
+msgid "# overwrite in place\n"
+msgstr ""
+
+#: src\cli-reference.md:40
+msgid "`--write` — overwrite the file (prints to stdout when omitted)."
+msgstr ""
+
+#: src\cli-reference.md:41
+msgid ""
+"Comments are **not** preserved (a known limitation); `--write` warns when "
+"the input contained comments."
+msgstr ""
+
+#: src\cli-reference.md:44
+msgid "`sahou gen`"
+msgstr ""
+
+#: src\cli-reference.md:46
+msgid "Turn a contract + endpoints into the full IR, and optionally typed stubs."
+msgstr ""
+
+#: src\cli-reference.md:49
+msgid "# IR only → gen/descriptor.json\n"
+msgstr ""
+
+#: src\cli-reference.md:50
+msgid "# + whole-descriptor typed layer\n"
+msgstr ""
+
+#: src\cli-reference.md:51
+msgid "# TS layer for the browser transport\n"
+msgstr ""
+
+#: src\cli-reference.md:52
+msgid "# + per-node stub → gen/sensor/\n"
+msgstr ""
+
+#: src\cli-reference.md:55
+msgid "positional `schema` — the contract file (default `schema.sahou.yaml`)."
+msgstr ""
+
+#: src\cli-reference.md:56
+msgid ""
+"`--endpoints <file>` — an `endpoints.<env>.yaml` (default: the LAN-auto "
+"default, namespace `sahou`)."
+msgstr ""
+
+#: src\cli-reference.md:58
+msgid ""
+"`--out-dir <dir>` — output directory (default `gen`); the IR is written to "
+"`<out-dir>/descriptor.json`."
+msgstr ""
+
+#: src\cli-reference.md:60
+msgid ""
+"`--lang python|ts` — generate a typed layer (opt-in). Alone → a "
+"whole-descriptor typed module; with `--node` → a per-node stub under "
+"`<out-dir>/<node>/`."
+msgstr ""
+
+#: src\cli-reference.md:63
+msgid "`--node <name>` — generate a per-node stub (requires `--lang`)."
+msgstr ""
+
+#: src\cli-reference.md:64
+msgid ""
+"`--target node|browser` — TS transport for the whole-descriptor stub "
+"(`--lang ts` without `--node`); `node` is the default."
+msgstr ""
+
+#: src\cli-reference.md:67
+msgid "See [Runtimes](runtimes/index.md) for how to consume the generated stubs."
+msgstr ""
+
+#: src\cli-reference.md:69
+msgid "`sahou check`"
+msgstr ""
+
+#: src\cli-reference.md:71
+msgid ""
+"Detect stub ↔ IR drift, for CI. It compares the hashes embedded in a "
+"generated stub against the current descriptor and rejects on mismatch."
+msgstr ""
+
+#: src\cli-reference.md:75
+msgid "# all node stubs under gen/\n"
+msgstr ""
+
+#: src\cli-reference.md:76
+msgid "# just one node\n"
+msgstr ""
+
+#: src\cli-reference.md:79
+msgid "positional `descriptor` — the full IR (`descriptor.json`)."
+msgstr ""
+
+#: src\cli-reference.md:80
+msgid "`--gen-dir <dir>` — the gen output directory to scan (default `gen`)."
+msgstr ""
+
+#: src\cli-reference.md:81
+msgid "`--node <name>` — check only this node's stub."
+msgstr ""
+
+#: src\cli-reference.md:83
+msgid "`sahou tap`"
+msgstr ""
+
+#: src\cli-reference.md:85
+msgid ""
+"Observe or inject traffic without an app: subscribe and show the core's "
+"validation results; `--send` publishes a valid sample."
+msgstr ""
+
+#: src\cli-reference.md:92 src\networking-and-deployment.md:16
+msgid "`sahou link`"
+msgstr ""
+
+#: src\cli-reference.md:94
+msgid ""
+"One relay per machine plus a WebSocket entrypoint for Node/browser runtimes "
+"(built on Zenoh's remote-api). **The engine spawns it automatically** — you "
+"rarely run it by hand. See [Networking & "
+"deployment](networking-and-deployment.md)."
+msgstr ""
+
+#: src\cli-reference.md:98 src\networking-and-deployment.md:49
+msgid "`sahou doctor`"
+msgstr ""
+
+#: src\cli-reference.md:100
+msgid ""
+"Environment preflight diagnostics: probe loopback, ping, this binary's real "
+"Zenoh scout, and the link WebSocket."
+msgstr ""
+
+#: src\cli-reference.md:107
+msgid "`sahou gui`"
+msgstr ""
+
+#: src\cli-reference.md:109
+msgid ""
+"Open the browser-based node editor on localhost. All contract interpretation "
+"happens in the in-browser core (compiled to WebAssembly); the backend only "
+"moves raw bytes. See [Visual editor (GUI)](gui.md)."
+msgstr ""
+
+#: src\cli-reference.md:117
+msgid ""
+"positional `PATH` — target directory (default: current); it handles "
+"`schema.sahou.yaml` / `layout.sahou.json` / `endpoints.<env>.yaml`."
+msgstr ""
+
+#: src\cli-reference.md:119
+msgid "`--env <name>` — the endpoints environment (default `dev`)."
+msgstr ""
+
+#: src\cli-reference.md:120
+msgid ""
+"`--port <n>` — listen port, `127.0.0.1` only (default `4649`); if the port "
+"is occupied it stops rather than silently switching."
+msgstr ""
+
+#: src\cli-reference.md:122
+msgid ""
+"`--no-open` — do not open a browser on startup (by default an app-mode "
+"window opens automatically)."
+msgstr ""
+
+#: src\cli-reference.md:125
+msgid "`sahou reference`"
+msgstr ""
+
+#: src\cli-reference.md:127
+msgid "Print a compact schema-authoring reference intended for AI coding agents."
+msgstr ""
+
+#: src\cli-reference.md:133
+msgid "`sahou licenses`"
+msgstr ""
+
+#: src\cli-reference.md:135
+msgid ""
+"Print the bundled third-party license notices (retained for redistribution)."
+msgstr ""
+
+#: src\runtimes/index.md:3
+msgid ""
+"A runtime is the small, hand-written library your app imports to send and "
+"receive messages over a Sahou contract. Every runtime is **thin**: "
+"validation, envelopes, and handshake verdicts are delegated to the shared "
+"Rust core (as a native library or as WebAssembly), so a boundary NO is "
+"**byte-identical** across languages."
+msgstr ""
+
+#: src\runtimes/index.md:8
+msgid "Runtime"
+msgstr ""
+
+#: src\runtimes/index.md:8 src\runtimes/python.md:8
+#: src\runtimes/typescript.md:9
+msgid "Install"
+msgstr ""
+
+#: src\runtimes/index.md:8
+msgid "Where it runs"
+msgstr ""
+
+#: src\runtimes/index.md:10
+msgid "[Python](python.md)"
+msgstr ""
+
+#: src\runtimes/index.md:10
+msgid "`pip install sahou`"
+msgstr ""
+
+#: src\runtimes/index.md:10
+msgid "CPython (PyPI)"
+msgstr ""
+
+#: src\runtimes/index.md:11
+msgid "[TypeScript](typescript.md)"
+msgstr ""
+
+#: src\runtimes/index.md:11
+msgid "`npm install sahou`"
+msgstr ""
+
+#: src\runtimes/index.md:11
+msgid "Node.js & the browser"
+msgstr ""
+
+#: src\runtimes/index.md:12
+msgid "[Rust](rust.md)"
+msgstr ""
+
+#: src\runtimes/index.md:12
+msgid "`cargo add sahou-core`"
+msgstr ""
+
+#: src\runtimes/index.md:12
+msgid "native (the `sahou` crate is a placeholder)"
+msgstr ""
+
+#: src\runtimes/index.md:13
+msgid "[TouchDesigner](touchdesigner.md)"
+msgstr ""
+
+#: src\runtimes/index.md:13
+msgid "build from source"
+msgstr ""
+
+#: src\runtimes/index.md:13
+msgid "macOS/arm64, **experimental**"
+msgstr ""
+
+#: src\runtimes/index.md:15
+msgid "The shared shape"
+msgstr ""
+
+#: src\runtimes/index.md:17
+msgid "Whatever the language, the flow is the same:"
+msgstr ""
+
+#: src\runtimes/index.md:19
+msgid ""
+"**Connect** with a descriptor (the IR) and a node name — discovery is "
+"automatic on the LAN."
+msgstr ""
+
+#: src\runtimes/index.md:21
+msgid "**`publish`** to a `pub_sub` connection, or **`subscribe`** to receive."
+msgstr ""
+
+#: src\runtimes/index.md:22
+msgid ""
+"For `query` connections, **`query_confirmed`** / **`queryConfirmed`** to "
+"ask, and **`answer`** to respond."
+msgstr ""
+
+#: src\runtimes/index.md:24
+msgid ""
+"A send-boundary NO raises `SahouRejected`; a receive-boundary NO goes to a "
+"reject handler, never to your message handler."
+msgstr ""
+
+#: src\runtimes/index.md:27
+msgid "Types are opt-in"
+msgstr ""
+
+#: src\runtimes/index.md:29
+msgid ""
+"The base `connect` is untyped (node/connection names are strings, payloads "
+"are loosely typed). To get editor completion and build-time type checking, "
+"generate a typed layer with `sahou gen --lang <python|ts>` and import its "
+"`connect` instead. The engine behaves identically with or without it, and "
+"`sahou check` catches drift between a stub and the contract. See [Say NO "
+"early](../concepts/say-no-early.md)."
+msgstr ""
+
+#: src\runtimes/python.md:3
+msgid ""
+"The Python runtime is [`sahou`](https://pypi.org/project/sahou/) on PyPI. It "
+"gives you typed communication over real Zenoh from just a contract "
+"(`descriptor.json`) plus a node name. Boundary semantics are delegated to "
+"the Rust core; the Python layer only handles transport (zenoh-python) and "
+"threading."
+msgstr ""
+
+#: src\runtimes/python.md:14
+msgid "Usage"
+msgstr ""
+
+#: src\runtimes/python.md:19
+msgid "\"gen/descriptor.json\""
+msgstr ""
+
+#: src\runtimes/python.md:19
+msgid "\"sensor\""
+msgstr ""
+
+#: src\runtimes/python.md:19
+msgid "# LAN auto-discovery by default\n"
+msgstr ""
+
+#: src\runtimes/python.md:20
+msgid ""
+"# pub_sub — publish. A boundary NO raises SahouRejected (nothing is sent).\n"
+msgstr ""
+
+#: src\runtimes/python.md:22 src\runtimes/python.md:25
+msgid "\"touch\""
+msgstr ""
+
+#: src\runtimes/python.md:22
+msgid "\"x\""
+msgstr ""
+
+#: src\runtimes/python.md:22
+msgid "\"phase\""
+msgstr ""
+
+#: src\runtimes/python.md:22
+msgid "\"move\""
+msgstr ""
+
+#: src\runtimes/python.md:23
+msgid ""
+"# pub_sub — subscribe. A NO never reaches your handler (it goes to "
+"on_reject).\n"
+msgstr ""
+
+#: src\runtimes/python.md:28
+msgid "# query — ask (with smart retry) and answer.\n"
+msgstr ""
+
+#: src\runtimes/python.md:30 src\runtimes/python.md:31
+msgid "\"get_state\""
+msgstr ""
+
+#: src\runtimes/python.md:30
+msgid "\"sel\""
+msgstr ""
+
+#: src\runtimes/python.md:30
+msgid "\"levels\""
+msgstr ""
+
+#: src\runtimes/python.md:31
+msgid "\"level\""
+msgstr ""
+
+#: src\runtimes/python.md:34
+msgid "Typed stubs (opt-in)"
+msgstr ""
+
+#: src\runtimes/python.md:36
+msgid "Generate a typed layer for editor completion and build-time checks:"
+msgstr ""
+
+#: src\runtimes/python.md:42
+msgid ""
+"Then import the generated `connect` (`from gen.sahou_gen import connect`) "
+"for a node-specific, payload-typed facade. A per-node stub (`sahou gen "
+"--lang python --node <name>` → `typed_node`) is also available. Run `sahou "
+"check` in CI to catch stub↔IR drift."
+msgstr ""
+
+#: src\runtimes/python.md:47
+msgid "Notes"
+msgstr ""
+
+#: src\runtimes/python.md:49
+msgid ""
+"Contract version differences are settled by a handshake: additive passes, "
+"breaking is a NO, and an unfetchable contract is a conservative NO — there "
+"is no path that silently passes or drops. See [Contract "
+"evolution](../concepts/contract-evolution.md)."
+msgstr ""
+
+#: src\runtimes/python.md:53
+msgid ""
+"A runnable publisher/subscriber lives in `examples/demo/runtime/` in the "
+"repository."
+msgstr ""
+
+#: src\runtimes/python.md:56
+msgid ""
+"See "
+"[`runtimes/python/README.md`](https://github.com/craf-te/sahou/blob/main/runtimes/python/README.md) "
+"for development details."
+msgstr ""
+
+#: src\runtimes/typescript.md:3
+msgid ""
+"The TypeScript runtime is [`sahou`](https://www.npmjs.com/package/sahou) on "
+"npm. It has **two entry points** — `sahou` for Node.js and `sahou/browser` "
+"for the browser. Validation, envelopes, and handshake verdicts are delegated "
+"to the bundled Rust core (as WebAssembly), so diagnostics are byte-identical "
+"with Python and TouchDesigner."
+msgstr ""
+
+#: src\runtimes/typescript.md:15
+msgid "Usage (Node)"
+msgstr ""
+
+#: src\runtimes/typescript.md:17
+msgid ""
+"On Node, the runtime auto-spawns a [`sahou "
+"link`](../networking-and-deployment.md) if none is running."
+msgstr ""
+
+#: src\runtimes/typescript.md:20
+msgid ""
+"```ts\n"
+"import { connect } from \"sahou\";\n"
+"\n"
+"const node = await connect(\"gen/descriptor.json\", { node: \"visuals\" });\n"
+"\n"
+"await node.subscribe(\"touch\", (p) => { /* ... */ }, {\n"
+"  onReject: (code, detail) => { /* a boundary NO lands here, not in the "
+"handler */ },\n"
+"});\n"
+"await node.publish(\"cue\", { /* ... */ });          // send-boundary NO → "
+"SahouRejected\n"
+"const res = await node.queryConfirmed(\"get_state\", { /* ... */ }, { "
+"retries: 3 });\n"
+"await node.answer(\"get_state\", async (req) => ({ level: 3 }));\n"
+"await node.close();\n"
+"```"
+msgstr ""
+
+#: src\runtimes/typescript.md:34
+msgid "Usage (browser)"
+msgstr ""
+
+#: src\runtimes/typescript.md:36
+msgid ""
+"The browser cannot spawn a link; when one is not reachable, `connect` "
+"returns a NO with the startup steps. See [Networking & "
+"deployment](../networking-and-deployment.md) for the browser path (a link on "
+"the LAN, or a BFF in front)."
+msgstr ""
+
+#: src\runtimes/typescript.md:41
+msgid ""
+"```ts\n"
+"import { connect } from \"sahou/browser\";\n"
+"const node = await connect(descriptorJson, { node: \"visuals\" });\n"
+"```"
+msgstr ""
+
+#: src\runtimes/typescript.md:46
+msgid "Typed connect (opt-in)"
+msgstr ""
+
+#: src\runtimes/typescript.md:48
+msgid ""
+"The base `connect` is untyped (`node`/`conn` are strings, payloads are "
+"`unknown`). Generate a whole-descriptor typed layer and import its `connect` "
+"for node-name, connection-name, and payload completion:"
+msgstr ""
+
+#: src\runtimes/typescript.md:53
+msgid "# node target (default)\n"
+msgstr ""
+
+#: src\runtimes/typescript.md:57
+msgid ""
+"```ts\n"
+"import { connect } from \"./gen/sahou.gen.mjs\";   // browser: generate with "
+"--target browser\n"
+"const node = await connect(\"gen/descriptor.json\", { node: \"visuals\" }); "
+"// node name completes\n"
+"await node.subscribe(\"touch\", (p) => { p.phase; });  // conn completes; p "
+"is typed\n"
+"```"
+msgstr ""
+
+#: src\runtimes/typescript.md:63
+msgid ""
+"`sahou.gen.mjs` re-exports the real `connect` at zero runtime cost; `.d.mts` "
+"supplies the types. The engine behaves identically without it, and `sahou "
+"check` catches drift. A per-node stub (`--node <name>` → `typedNode()`) is "
+"also available."
+msgstr ""
+
+#: src\runtimes/typescript.md:68
+msgid "Environment variables"
+msgstr ""
+
+#: src\runtimes/typescript.md:70
+msgid ""
+"`SAHOU_LINK_CMD` — the executable to spawn as the link (default: `sahou` on "
+"PATH)."
+msgstr ""
+
+#: src\runtimes/typescript.md:72
+msgid ""
+"`SAHOU_LINK_ARGS` — extra arguments when spawning (e.g. `--no-multicast "
+"--grace 4`)."
+msgstr ""
+
+#: src\runtimes/typescript.md:74
+msgid ""
+"See "
+"[`runtimes/typescript/README.md`](https://github.com/craf-te/sahou/blob/main/runtimes/typescript/README.md) "
+"for development details."
+msgstr ""
+
+#: src\runtimes/rust.md:3
+msgid ""
+"The app-facing Rust runtime — the counterpart of `sahou` on PyPI and npm — "
+"is **not released yet**. The [`sahou`](https://crates.io/crates/sahou) crate "
+"on crates.io is a **placeholder** that reserves the name; it has no "
+"functionality."
+msgstr ""
+
+#: src\runtimes/rust.md:7
+msgid "For now, build on the core:"
+msgstr ""
+
+#: src\runtimes/rust.md:13
+msgid ""
+"**`sahou-core`** — the schema core: the IR plus parse / serialize / "
+"validate, and the same pure functions the CLI and the other runtimes use. "
+"This is the crate to depend on today."
+msgstr ""
+
+#: src\runtimes/rust.md:16
+msgid "**`sahou-cli`** — installs the `sahou` command-line tool."
+msgstr ""
+
+#: src\runtimes/rust.md:18
+msgid ""
+"When the Rust runtime lands, `cargo add sahou` will give you the same "
+"`connect` / `publish` / `subscribe` / `query` surface as the other "
+"languages. Follow the [project "
+"README](https://github.com/craf-te/sahou#readme) for status."
+msgstr ""
+
+#: src\runtimes/touchdesigner.md:3
+msgid ""
+"**Status: experimental.** The Sahou Out CHOP is currently **macOS / arm64 "
+"only**. Building it requires the TouchDesigner C++ SDK vendored into "
+"`runtimes/touchdesigner/vendor/` (Derivative Shared Use License — copy it "
+"from your local TouchDesigner install; it is not redistributed here)."
+msgstr ""
+
+#: src\runtimes/touchdesigner.md:8
+msgid ""
+"Sahou treats TouchDesigner as a first-class node: you send and receive over "
+"the typed contract from custom C++ operators, **without going through TD's "
+"Python** — a thin C++ glue plus the statically-linked Rust core."
+msgstr ""
+
+#: src\runtimes/touchdesigner.md:12
+msgid "Sahou Out CHOP"
+msgstr ""
+
+#: src\runtimes/touchdesigner.md:14
+msgid ""
+"Reads the input CHOP's channels, projects them to a JSON payload, and runs "
+"the **send boundary** through the Rust core. On a contract violation the "
+"node goes red with the structured diagnostic — \"say NO in the right "
+"place\", the same boundary behavior as every other runtime."
+msgstr ""
+
+#: src\runtimes/touchdesigner.md:18
+msgid ""
+"**Test Send** — a pulse that publishes one IR-valid sample of the selected "
+"connection over Zenoh (via the bundled transport), for a quick connectivity "
+"check with `sahou tap`."
+msgstr ""
+
+#: src\runtimes/touchdesigner.md:22
+msgid "Not yet"
+msgstr ""
+
+#: src\runtimes/touchdesigner.md:24
+msgid ""
+"Continuous per-frame send, a Sahou In CHOP, DAT operators, a Windows build, "
+"a universal (Intel) binary, and distribution signing are future work."
+msgstr ""
+
+#: src\runtimes/touchdesigner.md:27
+msgid "Building"
+msgstr ""
+
+#: src\runtimes/touchdesigner.md:29
+msgid ""
+"The C++ op source, the tests, the Rust transport, and the examples are "
+"shared across platforms; only the per-platform build projects differ (Xcode "
+"→ `.plugin` on macOS). See "
+"[`runtimes/touchdesigner/README.md`](https://github.com/craf-te/sahou/blob/main/runtimes/touchdesigner/README.md) "
+"for the SDK prerequisite and the `just build-td-macos` / `just test-td` "
+"tasks."
+msgstr ""
+
+#: src\networking-and-deployment.md:3
+msgid ""
+"Sahou's transport is built on [Zenoh](https://zenoh.io). You do not "
+"configure addresses or ports in the contract — nodes discover each other by "
+"name on a shared LAN. Transport and encoding are **adapter-swappable**: the "
+"contract and the IR are transport-independent, and encoding is a "
+"per-connection attribute (JSON by default)."
+msgstr ""
+
+#: src\networking-and-deployment.md:9
+msgid "Zero-IP discovery"
+msgstr ""
+
+#: src\networking-and-deployment.md:11
+msgid ""
+"On a shared LAN, discovery is automatic. The [endpoints "
+"file](concepts/contract-vs-endpoints.md) is empty or nearly so; you only "
+"name a router or an explicit endpoint when the network requires it. Moving a "
+"node from one machine to another changes the endpoints, never the contract."
+msgstr ""
+
+#: src\networking-and-deployment.md:18
+msgid ""
+"`sahou link` is **one relay per machine plus a WebSocket entrypoint** for "
+"the Node and browser runtimes (built on Zenoh's remote-api). Native runtimes "
+"(Python, the core) speak Zenoh directly; Node and browser reach the LAN "
+"through the link's WebSocket."
+msgstr ""
+
+#: src\networking-and-deployment.md:23
+msgid ""
+"The **Node runtime auto-spawns** a link if one is not already running, so "
+"you rarely start it by hand."
+msgstr ""
+
+#: src\networking-and-deployment.md:25
+msgid ""
+"The **browser cannot spawn** one — it connects to a link that is already "
+"reachable, and returns a NO with startup steps when it is not."
+msgstr ""
+
+#: src\networking-and-deployment.md:27
+msgid ""
+"By default the link exits on its own after a grace period with no clients, "
+"so it does not linger."
+msgstr ""
+
+#: src\networking-and-deployment.md:30
+msgid ""
+"Run `sahou link --help` for the WebSocket port (default `10000`), the native "
+"peer port (default `7448`), NIC pinning, and grace/startup timers."
+msgstr ""
+
+#: src\networking-and-deployment.md:33
+msgid "Exposing the browser path safely"
+msgstr ""
+
+#: src\networking-and-deployment.md:35
+msgid ""
+"The link's WebSocket is a LAN entrypoint, not an authenticated public "
+"endpoint. Two patterns, depending on trust:"
+msgstr ""
+
+#: src\networking-and-deployment.md:38
+msgid ""
+"**Trusted LAN (direct).** Browser clients on a network you control connect "
+"to a link on that network."
+msgstr ""
+
+#: src\networking-and-deployment.md:40
+msgid ""
+"**Untrusted or public clients (recommended: a BFF).** Put a "
+"backend-for-frontend in front: a server-side app uses the Node runtime and "
+"speaks Sahou, while the browser talks to that app over your own "
+"authenticated API. The link's WebSocket stays private."
+msgstr ""
+
+#: src\networking-and-deployment.md:45
+msgid ""
+"The guiding rule: **do not expose the link's WebSocket to an untrusted "
+"network.** Put authentication and network isolation outside Sahou (a gateway "
+"in front, or a segmented network)."
+msgstr ""
+
+#: src\networking-and-deployment.md:51
+msgid ""
+"When discovery or connectivity misbehaves, `sahou doctor` runs an "
+"environment preflight: it probes loopback, ping, this binary's real Zenoh "
+"scout (surfacing permission/NIC problems), and the link's WebSocket "
+"reachability."
+msgstr ""
+
+#: src\gui.md:3
+msgid "Sahou ships a browser-based node editor. Open it on any contract:"
+msgstr ""
+
+#: src\gui.md:9
+msgid ""
+"By default it opens an app-mode window automatically; pass `--no-open` to "
+"suppress that. It listens on `127.0.0.1` only, and if the port is occupied "
+"it stops rather than silently switching."
+msgstr ""
+
+#: src\gui.md:13
+msgid "What it does"
+msgstr ""
+
+#: src\gui.md:15
+msgid ""
+"**Edit the contract visually** — nodes and connections as a graph, with a "
+"details panel for messages and fields."
+msgstr ""
+
+#: src\gui.md:17
+msgid ""
+"**Same validation as the CLI** — all contract interpretation happens in the "
+"in-browser core, compiled to WebAssembly. The Rust backend only moves raw "
+"bytes; it does not re-implement any validation. So a NO in the GUI is the "
+"same NO you get from `sahou validate`."
+msgstr ""
+
+#: src\gui.md:21
+msgid ""
+"**Live with your files** — the GUI reads and writes `schema.sahou.yaml`, "
+"`endpoints.<env>.yaml`, and `layout.sahou.json` in `PATH`. Edits you make in "
+"your text editor and edits you make in the GUI stay in sync."
+msgstr ""
+
+#: src\gui.md:25
+msgid ""
+"Because the GUI runs the exact same core as the CLI and the runtimes, there "
+"is no second implementation to drift: the graph you see, the diagnostics it "
+"shows, and the bytes on the wire all come from one source of truth (the "
+"[IR](concepts/ir-and-round-trip.md))."
+msgstr ""
+
+#: src\faq.md:3
+msgid "Do I have to manage IP addresses and ports?"
+msgstr ""
+
+#: src\faq.md:5
+msgid ""
+"No. On a shared LAN, nodes discover each other by name. You declare "
+"connections in the contract; Sahou handles discovery and transport (built on "
+"Zenoh). You only name an explicit endpoint when the network requires it. See "
+"[Networking & deployment](networking-and-deployment.md)."
+msgstr ""
+
+#: src\faq.md:10
+msgid "What happens when a field has the wrong type?"
+msgstr ""
+
+#: src\faq.md:12
+msgid ""
+"It is rejected at the boundary. A send-boundary NO raises `SahouRejected` "
+"and nothing is sent; a receive-boundary NO is routed to a reject handler, "
+"never to your message handler. With generated type stubs, many mistakes are "
+"caught even earlier — in your editor at build time. See [Say NO "
+"early](concepts/say-no-early.md)."
+msgstr ""
+
+#: src\faq.md:18
+msgid "Will a typo in a field name be silently ignored?"
+msgstr ""
+
+#: src\faq.md:20
+msgid ""
+"No. Unknown keys (typos) and duplicate keys are rejected, not silently "
+"dropped or resolved \"last-wins\". Run `sahou validate` and fix the reported "
+"`{ code, path, message }`."
+msgstr ""
+
+#: src\faq.md:24
+msgid "How do I get build-time type checking?"
+msgstr ""
+
+#: src\faq.md:26
+msgid ""
+"Generate a typed stub: `sahou gen --lang python` or `sahou gen --lang ts`. "
+"Import the generated `connect` for node-name, connection-name, and payload "
+"types. The engine behaves identically with or without it."
+msgstr ""
+
+#: src\faq.md:30
+msgid "How do I catch a stub that has drifted from the contract?"
+msgstr ""
+
+#: src\faq.md:32
+msgid ""
+"Run `sahou check gen/descriptor.json` — it compares the hashes embedded in a "
+"generated stub against the current IR and rejects on mismatch. It is meant "
+"to run in CI."
+msgstr ""
+
+#: src\faq.md:36
+msgid "Which languages and environments are supported?"
+msgstr ""
+
+#: src\faq.md:38
+msgid ""
+"Python (PyPI), TypeScript for Node and the browser (npm), the Rust core "
+"(`sahou-core`; the app-facing `sahou` crate is a placeholder), and "
+"TouchDesigner (experimental, macOS/arm64). See [Runtimes](runtimes/index.md)."
+msgstr ""
+
+#: src\faq.md:42
+msgid "How do I see what is actually flowing, without writing an app?"
+msgstr ""
+
+#: src\faq.md:44
+msgid ""
+"Use `sahou tap gen/descriptor.json --node <name>` to observe (and, with "
+"`--send`, inject) traffic from a node's vantage point."
+msgstr ""
+
+#: src\faq.md:47
+msgid "Something can't connect — where do I start?"
+msgstr ""
+
+#: src\faq.md:49
+msgid ""
+"Run `sahou doctor`. It probes loopback, ping, this binary's real Zenoh scout "
+"(surfacing permission or NIC issues), and the link's WebSocket reachability."
+msgstr ""
+
+#: src\faq.md:52
+msgid "Can I evolve the contract while apps are running?"
+msgstr ""
+
+#: src\faq.md:54
+msgid ""
+"Yes, additively. Compatibility is judged per connection and structurally: "
+"additive changes pass, breaking changes are refused, and the decision is "
+"made by the delivery handshake. See [Contract "
+"evolution](concepts/contract-evolution.md)."
+msgstr ""
+
+#: src\faq.md:58
+msgid "Can I edit the contract visually?"
+msgstr ""
+
+#: src\faq.md:60
+msgid ""
+"Yes — `sahou gui` opens a browser node editor that runs the same core (as "
+"WebAssembly) as the CLI, so its diagnostics match `sahou validate`. See "
+"[Visual editor (GUI)](gui.md)."
+msgstr ""
+

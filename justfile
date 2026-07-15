@@ -108,3 +108,18 @@ package-td-macos version="0.0.1": build-td-macos
     cp cli/licenses/THIRD-PARTY-LICENSES.md dist/sahou-td-macos/
     ditto -c -k --keepParent dist/sahou-td-macos "dist/sahou-td-macos-arm64-{{version}}.zip"
     @echo "packaged dist/sahou-td-macos-arm64-{{version}}.zip"
+
+# --- Docs (mdBook + i18n) ---
+
+# Live-preview the English book at http://localhost:3000.
+docs-serve:
+    cd docs && mdbook serve
+
+# Build both languages into docs/book/html (English at /, Japanese at /ja/).
+docs-build:
+    cd docs && mdbook build -d book/html && MDBOOK_BOOK__LANGUAGE=ja mdbook build -d book/html/ja
+
+# Re-extract the translation template and merge into po/ja.po after editing English.
+# (Needs GNU gettext: msgmerge. CI/Linux have it; on native Windows it may be absent.)
+docs-i18n-update:
+    cd docs && MDBOOK_OUTPUT='{"xgettext": {}}' mdbook build -d po && msgmerge --update po/ja.po po/messages.pot

@@ -1,0 +1,21 @@
+[book]
+title = "Sahou"
+authors = ["Sahou contributors"]
+description = "Schema-first tool for building the interface layer between systems."
+language = "en"
+src = "src"
+
+[output.html]
+git-repository-url = "https://github.com/craf-te/sahou"
+edit-url-template = "https://github.com/craf-te/sahou/edit/main/docs/{path}"
+additional-css = ["theme/lang-switcher.css"]
+additional-js = ["theme/lang-switcher.js"]
+
+[output.html.fold]
+enable = true
+level = 1
+
+# gettext runs after link preprocessing. It is a no-op when building the source
+# language (English) and swaps in translations when MDBOOK_BOOK__LANGUAGE is set.
+[preprocessor.gettext]
+after = ["links"]

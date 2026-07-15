@@ -30,3 +30,6 @@ gui/src/core-wasm/
 # so release CI and `cargo publish` bundle the GUI without needing node/wasm-pack. Rebuild it
 # with `just gui-build && just gui-embed` and commit when the GUI changes.
 docs/superpowers
+
+# Docs book (mdBook build output). Sources under docs/src, docs/po, docs/theme are tracked.
+docs/book/
