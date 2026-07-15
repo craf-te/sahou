@@ -1,0 +1,61 @@
+name: docs
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "docs/**"
+      - ".github/workflows/docs.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      MDBOOK_VERSION: "0.5.4"
+      I18N_HELPERS_VERSION: "0.4.0"
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Cache cargo bin
+        uses: actions/cache@v4
+        with:
+          path: ~/.cargo/bin
+          key: mdbook-${{ env.MDBOOK_VERSION }}-i18n-${{ env.I18N_HELPERS_VERSION }}
+
+      - name: Install mdbook + i18n-helpers
+        run: |
+          which mdbook || cargo install mdbook --version "${MDBOOK_VERSION}" --locked
+          # The gettext preprocessor ships in mdbook-i18n-helpers as `mdbook-gettext`.
+          which mdbook-gettext || cargo install mdbook-i18n-helpers --version "${I18N_HELPERS_VERSION}" --locked
+
+      - name: Build English (site root)
+        run: cd docs && mdbook build -d book/html
+
+      - name: Build Japanese (/ja/)
+        run: cd docs && MDBOOK_BOOK__LANGUAGE=ja mdbook build -d book/html/ja
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs/book/html
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

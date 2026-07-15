@@ -92,7 +92,7 @@ picture.
 ## 4. Validate the contract
 
 ```bash
-sahou validate
+sahou validate schema.sahou.yaml
 ```
 
 Validation returns **positional, structured diagnostics** — it points at the
