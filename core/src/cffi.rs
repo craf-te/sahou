@@ -147,6 +147,117 @@ pub unsafe extern "C" fn sahou_connections_from(
     into_c(out)
 }
 
+/// List the nodes that can receive (are a `to` of a pub_sub connection), for a receiver-node
+/// selector (Sahou In CHOP). JSON string array `["node",...]`. Free with `sahou_free`.
+///
+/// # Safety
+/// `handle` is null or a live runtime from `sahou_runtime_new`.
+#[no_mangle]
+pub unsafe extern "C" fn sahou_subscribing_nodes(handle: *mut SahouRuntime) -> *mut c_char {
+    let out = std::panic::catch_unwind(|| {
+        let Some(rt_ref) = (unsafe { handle.as_ref() }) else {
+            return "[]".to_string();
+        };
+        serde_json::to_string(&rt::subscribing_nodes(&rt_ref.desc))
+            .unwrap_or_else(|_| "[]".to_string())
+    })
+    .unwrap_or_else(|_| "[]".to_string());
+    into_c(out)
+}
+
+/// List the pub_sub connections `node` can receive, for a connection selector. JSON string array
+/// `["conn",...]` (empty for a null handle / unknown node). Free with `sahou_free`.
+///
+/// # Safety
+/// `handle` is null or a live runtime; `node` is null or a valid NUL-terminated C string.
+#[no_mangle]
+pub unsafe extern "C" fn sahou_connections_to(
+    handle: *mut SahouRuntime,
+    node: *const c_char,
+) -> *mut c_char {
+    let out = std::panic::catch_unwind(|| {
+        let (Some(rt_ref), Some(node)) = (unsafe { handle.as_ref() }, unsafe { cstr(node) }) else {
+            return "[]".to_string();
+        };
+        serde_json::to_string(&rt::connections_to(&rt_ref.desc, node))
+            .unwrap_or_else(|_| "[]".to_string())
+    })
+    .unwrap_or_else(|_| "[]".to_string());
+    into_c(out)
+}
+
+/// The resolved keyexpr of `conn` (e.g. "sahou/motion"), for a receiver to subscribe. Empty string
+/// for a null handle / unknown connection. Free with `sahou_free`.
+///
+/// # Safety
+/// `handle` is null or a live runtime; `conn` is null or a valid NUL-terminated C string.
+#[no_mangle]
+pub unsafe extern "C" fn sahou_connection_key(
+    handle: *mut SahouRuntime,
+    conn: *const c_char,
+) -> *mut c_char {
+    let out = std::panic::catch_unwind(|| {
+        let (Some(rt_ref), Some(conn)) = (unsafe { handle.as_ref() }, unsafe { cstr(conn) }) else {
+            return String::new();
+        };
+        rt::connection_key(&rt_ref.desc, conn).unwrap_or_default()
+    })
+    .unwrap_or_default();
+    into_c(out)
+}
+
+/// Decode a validated payload's numeric fields into a flat JSON string array of
+/// `name, count, v0, v1, …` groups (Sahou In CHOP channels). Free with `sahou_free`.
+///
+/// # Safety
+/// `handle` is null or a live runtime; `conn`/`payload_json` are null or valid NUL-terminated C strings.
+#[no_mangle]
+pub unsafe extern "C" fn sahou_decode_channels(
+    handle: *mut SahouRuntime,
+    conn: *const c_char,
+    payload_json: *const c_char,
+) -> *mut c_char {
+    let out = std::panic::catch_unwind(|| {
+        let (Some(rt_ref), Some(conn), Some(payload)) =
+            (unsafe { handle.as_ref() }, unsafe { cstr(conn) }, unsafe {
+                cstr(payload_json)
+            })
+        else {
+            return "[]".to_string();
+        };
+        serde_json::to_string(&rt::decode_channels(&rt_ref.desc, conn, payload))
+            .unwrap_or_else(|_| "[]".to_string())
+    })
+    .unwrap_or_else(|_| "[]".to_string());
+    into_c(out)
+}
+
+/// Decode all payload fields into a flat JSON string array of `name, kind, value` triples
+/// (Sahou In CHOP Info DAT decoded-payload table). Free with `sahou_free`.
+///
+/// # Safety
+/// `handle` is null or a live runtime; `conn`/`payload_json` are null or valid NUL-terminated C strings.
+#[no_mangle]
+pub unsafe extern "C" fn sahou_decode_fields(
+    handle: *mut SahouRuntime,
+    conn: *const c_char,
+    payload_json: *const c_char,
+) -> *mut c_char {
+    let out = std::panic::catch_unwind(|| {
+        let (Some(rt_ref), Some(conn), Some(payload)) =
+            (unsafe { handle.as_ref() }, unsafe { cstr(conn) }, unsafe {
+                cstr(payload_json)
+            })
+        else {
+            return "[]".to_string();
+        };
+        serde_json::to_string(&rt::decode_fields(&rt_ref.desc, conn, payload))
+            .unwrap_or_else(|_| "[]".to_string())
+    })
+    .unwrap_or_else(|_| "[]".to_string());
+    into_c(out)
+}
+
 /// Payload schema of `conn` as display rows, for a "what should I send?" panel. Returns a heap JSON
 /// array of `[name, type, required, detail]` string rows: `[["x","float","yes","0..1"],...]`
 /// (empty array for a null handle / unknown / any-typed connection). Free with `sahou_free`.
