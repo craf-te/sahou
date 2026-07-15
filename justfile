@@ -94,3 +94,17 @@ build-td-macos: build-ffi
     cp target/release/libsahou_transport.dylib "runtimes/touchdesigner/build/Release/SahouIn.plugin/Contents/Frameworks/"
     codesign -f -s - "runtimes/touchdesigner/build/Release/SahouIn.plugin/Contents/Frameworks/libsahou_transport.dylib"
     codesign -f -s - "runtimes/touchdesigner/build/Release/SahouIn.plugin"
+
+# Package the macOS TD plugins into a distributable zip (LOCAL build only — the TD SDK is
+# Derivative "Shared Use License", usable only on a licensed TD machine, so this is intentionally
+# NOT a GitHub-hosted CI job). Bundles the license notices Apache-2.0 requires (incl. Eclipse
+# Zenoh). Version is the arg (defaults to 0.0.1). Output: dist/sahou-td-macos-arm64-<version>.zip.
+package-td-macos version="0.0.1": build-td-macos
+    rm -rf dist/sahou-td-macos "dist/sahou-td-macos-arm64-{{version}}.zip"
+    mkdir -p dist/sahou-td-macos
+    cp -R runtimes/touchdesigner/build/Release/SahouOut.plugin dist/sahou-td-macos/
+    cp -R runtimes/touchdesigner/build/Release/SahouIn.plugin dist/sahou-td-macos/
+    cp LICENSE NOTICE runtimes/touchdesigner/INSTALL.txt dist/sahou-td-macos/
+    cp cli/licenses/THIRD-PARTY-LICENSES.md dist/sahou-td-macos/
+    ditto -c -k --keepParent dist/sahou-td-macos "dist/sahou-td-macos-arm64-{{version}}.zip"
+    @echo "packaged dist/sahou-td-macos-arm64-{{version}}.zip"
