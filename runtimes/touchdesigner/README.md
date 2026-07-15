@@ -1,9 +1,9 @@
 # Sahou × TouchDesigner — custom operators
 
-> **Status: experimental.** The Sahou Out CHOP is currently **macOS / arm64 only** and
-> validates channels against the schema (with optional Zenoh sending). Building it
-> requires the TouchDesigner C++ SDK vendored into `runtimes/touchdesigner/vendor/` (Derivative Shared Use
-> License — not redistributed here; copy it from your local TouchDesigner install).
+> **Status: experimental.** The Sahou Out / In CHOPs are currently **macOS / arm64 only**.
+> Building them requires the TouchDesigner C++ SDK vendored into `runtimes/touchdesigner/vendor/`
+> (Derivative Shared Use License — not redistributed here; copy it from your local TouchDesigner
+> install).
 
 TouchDesigner as a first-class Sahou node: send/receive over the typed contract from custom
 C++ operators, **without going through TD's Python** (thin C++ glue + the Rust core, which is
@@ -12,12 +12,14 @@ statically linked).
 ## Status
 
 - **Sahou Out CHOP** (macOS arm64). Reads the input CHOP's channels, projects them to a JSON
-  payload, and runs the **send boundary** through the Rust core (`sahou_prepare_publish`). On a
-  contract violation the node goes red with the structured diagnostic ("say NO in the right place").
-- **Test Send** — a pulse that publishes one IR-valid sample of the selected connection over
-  **Zenoh** (via the bundled `libsahou_transport`), for a quick connectivity check with `sahou tap`.
-  This is the first real transmit; **continuous per-frame send + QoS mapping + on-change dedup**
-  (the `Active` / `Send Every Cook` toggles) are the next stage.
+  payload, runs the **send boundary** through the Rust core (`sahou_prepare_publish`), and on OK
+  **publishes over Zenoh** (via the bundled `libsahou_transport`). On a contract violation the node
+  goes red with the structured diagnostic ("say NO in the right place"). The send cadence is
+  `Cook Every Frame` (default On): every cook that validates OK transmits.
+- **Test Send** — a pulse that publishes one IR-valid *synthetic* sample of the selected connection
+  (independent of the input), for a quick connectivity check with `sahou tap`.
+- Next stage for Out: **on-change dedup + an explicit `Active` gate + QoS mapping** (avoid
+  re-sending a static input every frame).
 - **Sahou In CHOP** (macOS arm64). Subscribes to a pub_sub connection on which the selected node is
   a **receiver** (`to`), runs each received message through the **receive boundary** in the Rust
   core (`sahou_accept_sample`), and outputs the accepted payload's **numeric fields as channels**

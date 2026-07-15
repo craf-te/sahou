@@ -280,9 +280,13 @@ void SahouOutCHOP::execute(CHOP_Output* output, const OP_Inputs* inputs, void*) 
     myValidated = true;
     myOk = sahou::envelope_ok(envelope);
     if (myOk) {
-        // Validate-only: on OK we would publish over Zenoh here (next stage).
         myKey = sahou::envelope_string(envelope, "key");
         myHash = sahou::envelope_string(envelope, "attachment");
+        // Publish the validated input payload over Zenoh. The Rust core is the single source of
+        // "NO"; on OK we transmit. `Cook Every Frame` (default On) is the send cadence — every cook
+        // that validates OK sends. On-change dedup / an explicit `Active` gate are the next stage.
+        sahou_transport_start(nullptr);  // idempotent; default peer (LAN multicast)
+        sahou_transport_publish(myKey.c_str(), myLastPayload.c_str(), myHash.c_str());
     } else {
         myDiag = sahou::first_diag(envelope);
     }
