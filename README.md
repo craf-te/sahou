@@ -32,6 +32,18 @@ The **contract** (types, names, wiring) lives in `schema.sahou.yaml`. The **endp
 (which machine plays which node) live in a separate `endpoints.<env>.yaml`, so one
 contract runs unchanged across environments.
 
+## Documentation
+
+Full documentation — Introduction, Quickstart, Concepts, Schema authoring, CLI
+reference, Runtimes, and more — is at **https://craf-te.github.io/sahou/**
+(日本語: https://craf-te.github.io/sahou/ja/). Sources live in [`docs/`](docs/)
+and are built with mdBook + [mdbook-i18n-helpers](https://github.com/google/mdbook-i18n-helpers).
+
+To publish, a maintainer sets repo **Settings → Pages → Build and deployment →
+Source = GitHub Actions** once; the `docs` workflow then builds both languages
+and deploys on every push to `main` that touches `docs/**`. Build locally with
+`just docs-serve` (English preview) or `just docs-build` (English + Japanese).
+
 ## Install
 
 ### `sahou` CLI (the tool)
