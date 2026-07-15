@@ -185,17 +185,28 @@ std::string SahouInCHOP::resolveKey() {
 
 void SahouInCHOP::syncSubscription(bool active) {
     const std::string want = active ? myKey : std::string();
-    if (want == mySubscribedKey) {
-        return;
+
+    // Selection changed: drop the old subscription and reset the pending target.
+    if (want != mySubscribedKey) {
+        if (!mySubscribedKey.empty()) {
+            sahou_transport_unsubscribe(mySubscribedKey.c_str());
+        }
+        mySubscribedKey.clear();
+        myPollGen = 0;
+        myWantKey = want;
     }
-    if (!mySubscribedKey.empty()) {
-        sahou_transport_unsubscribe(mySubscribedKey.c_str());
-    }
-    mySubscribedKey = want;
-    myPollGen = 0;
-    if (!mySubscribedKey.empty()) {
+
+    // Try to (re)subscribe until it sticks. The background zenoh session opens asynchronously, so
+    // the first attempt right after start() can lose the race (SESSION not open yet) — subscribe
+    // returns 0 then. We latch mySubscribedKey ONLY on success (1), so a failed attempt is retried
+    // on the next cook (cookEveryFrame = true). This is what makes the In CHOP reconnect on TD
+    // startup, where a cold session opens slower than the first cook.
+    if (!myWantKey.empty() && mySubscribedKey.empty()) {
         sahou_transport_start(nullptr);  // idempotent; default peer (LAN multicast)
-        sahou_transport_subscribe(mySubscribedKey.c_str());
+        if (sahou_transport_subscribe(myWantKey.c_str()) == 1) {
+            mySubscribedKey = myWantKey;
+            myPollGen = 0;
+        }
     }
 }
 

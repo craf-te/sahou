@@ -59,7 +59,8 @@ private:
 
     std::string myNode;
     std::string myConn;
-    std::string mySubscribedKey;  // the key currently subscribed (empty = none)
+    std::string myWantKey;        // the key we want subscribed (retry target until it sticks)
+    std::string mySubscribedKey;  // the key actually subscribed (empty = none / pending)
     uint64_t myPollGen = 0;       // last transport generation consumed
 
     int32_t myExecuteCount = 0;

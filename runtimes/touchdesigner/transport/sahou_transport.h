@@ -16,8 +16,11 @@ void sahou_transport_start(const char* connect);
 /* Queue one message to publish (non-blocking). No-op until started / on null args. */
 void sahou_transport_publish(const char* key, const char* wire, const char* attachment);
 
-/* Declare (ref-counted) a Zenoh subscriber for key, storing the latest sample. Start first. */
-void sahou_transport_subscribe(const char* key);
+/* Declare (ref-counted) a Zenoh subscriber for key, storing the latest sample. Start first.
+ * Returns 1 when declared (or already present), 0 when the session is not open yet / declare failed
+ * — the caller should retry on a later call (the background session opens asynchronously). Only a 1
+ * counts as subscribed (a 0 does not bump the refcount). */
+int sahou_transport_subscribe(const char* key);
 
 /* Latest sample for key newer than since_generation, as JSON
  * {"generation":N,"wire":"...","attachment":"..."}, or "{}". Free with sahou_transport_free. */

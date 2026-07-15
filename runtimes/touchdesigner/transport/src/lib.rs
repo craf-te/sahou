@@ -148,20 +148,25 @@ pub unsafe extern "C" fn sahou_transport_publish(
 /// Declare (ref-counted) a Zenoh subscriber for `key`, storing the latest sample. Idempotent per
 /// key (repeated calls bump a refcount). Requires `sahou_transport_start` first.
 ///
+/// Returns `1` when the subscriber is declared (or already present), `0` when the session is not
+/// open yet or the declaration failed — the caller should **retry** on a later call (the background
+/// session opens asynchronously, so the first attempt after `start` can lose the race). The caller
+/// must only treat a `1` as "subscribed" (a `0` does not bump the refcount).
+///
 /// # Safety
 /// `key` is null or a valid NUL-terminated C string.
 #[no_mangle]
-pub unsafe extern "C" fn sahou_transport_subscribe(key: *const c_char) {
-    let Some(key) = cstr_owned(key) else { return };
+pub unsafe extern "C" fn sahou_transport_subscribe(key: *const c_char) -> i32 {
+    let Some(key) = cstr_owned(key) else { return 0 };
     let Some(session) = SESSION.get() else {
-        set_error("transport not started (call sahou_transport_start first)");
-        return;
+        // Session not open yet (zenoh::open runs on the background thread). Not an error — retry.
+        return 0;
     };
-    let Ok(mut guard) = SUBS.lock() else { return };
+    let Ok(mut guard) = SUBS.lock() else { return 0 };
     let map = guard.get_or_insert_with(HashMap::new);
     if let Some(entry) = map.get_mut(&key) {
         entry.refs += 1;
-        return;
+        return 1;
     }
     let latest = Arc::new(Mutex::new(RawSample::default()));
     let latest_cb = Arc::clone(&latest);
@@ -184,7 +189,7 @@ pub unsafe extern "C" fn sahou_transport_subscribe(key: *const c_char) {
         Ok(s) => s,
         Err(e) => {
             set_error(format!("declare_subscriber failed: {e}"));
-            return;
+            return 0;
         }
     };
     map.insert(
@@ -195,6 +200,7 @@ pub unsafe extern "C" fn sahou_transport_subscribe(key: *const c_char) {
             refs: 1,
         },
     );
+    1
 }
 
 /// Return the latest sample for `key` if its generation is newer than `since_generation`, as JSON
