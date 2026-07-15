@@ -25,12 +25,24 @@ $CXX $CXXFLAGS runtimes/touchdesigner/src/envelope.cpp runtimes/touchdesigner/te
 "$OUT/envelope_test"
 
 echo
+echo "== outcome_test =="
+$CXX $CXXFLAGS runtimes/touchdesigner/src/outcome.cpp runtimes/touchdesigner/src/envelope.cpp runtimes/touchdesigner/test/outcome_test.cpp -o "$OUT/outcome_test"
+"$OUT/outcome_test"
+
+echo
 echo "== ffi_smoke =="
 if [ -f target/release/libsahou_core.a ] && [ -f runtimes/touchdesigner/examples/gen/descriptor.json ]; then
     $CXX $CXXFLAGS -DSAHOU_CAPI -Icore \
         runtimes/touchdesigner/src/payload.cpp runtimes/touchdesigner/src/envelope.cpp runtimes/touchdesigner/test/ffi_smoke.cpp target/release/libsahou_core.a \
         -framework CoreFoundation -framework Security -o "$OUT/ffi_smoke"
     "$OUT/ffi_smoke" runtimes/touchdesigner/examples/gen/descriptor.json
+
+    echo
+    echo "== ffi_in_smoke =="
+    $CXX $CXXFLAGS -DSAHOU_CAPI -Icore \
+        runtimes/touchdesigner/src/outcome.cpp runtimes/touchdesigner/src/envelope.cpp runtimes/touchdesigner/test/ffi_in_smoke.cpp target/release/libsahou_core.a \
+        -framework CoreFoundation -framework Security -o "$OUT/ffi_in_smoke"
+    "$OUT/ffi_in_smoke" runtimes/touchdesigner/examples/gen/descriptor.json
 else
     echo "SKIP: run 'just build-ffi' and"
     echo "      'cargo run -p sahou -- gen runtimes/touchdesigner/examples/schema.sahou.yaml --out-dir runtimes/touchdesigner/examples/gen' first"
