@@ -1,0 +1,557 @@
+
+msgid ""
+msgstr ""
+"Project-Id-Version: Sahou\n"
+"POT-Creation-Date: 2026-07-15T14:41:50+09:00\n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: en\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#: src\SUMMARY.md:1
+msgid "Summary"
+msgstr ""
+
+#: src\SUMMARY.md:3
+msgid "Introduction Quickstart"
+msgstr ""
+
+#: src\SUMMARY.md:6
+msgid "Concepts"
+msgstr ""
+
+#: src\SUMMARY.md:8 src\SUMMARY.md:22 src\concepts/index.md:1
+#: src\runtimes/index.md:1
+msgid "Overview"
+msgstr ""
+
+#: src\SUMMARY.md:9 src\concepts/node-message-connection.md:1
+msgid "Node, Message, Connection"
+msgstr ""
+
+#: src\SUMMARY.md:10 src\concepts/contract-vs-endpoints.md:1
+msgid "Contract vs Endpoints"
+msgstr ""
+
+#: src\SUMMARY.md:11 src\concepts/ir-and-round-trip.md:1
+msgid "The IR and round-trip"
+msgstr ""
+
+#: src\SUMMARY.md:12 src\concepts/say-no-early.md:1
+msgid "Say NO early"
+msgstr ""
+
+#: src\SUMMARY.md:13 src\concepts/contract-evolution.md:1
+msgid "Contract evolution"
+msgstr ""
+
+#: src\SUMMARY.md:15
+msgid "Authoring"
+msgstr ""
+
+#: src\SUMMARY.md:17 src\schema-authoring.md:1
+msgid "Schema authoring"
+msgstr ""
+
+#: src\SUMMARY.md:18 src\cli-reference.md:1
+msgid "CLI reference"
+msgstr ""
+
+#: src\SUMMARY.md:20
+msgid "Runtimes"
+msgstr ""
+
+#: src\SUMMARY.md:23 src\runtimes/python.md:1
+msgid "Python"
+msgstr ""
+
+#: src\SUMMARY.md:24 src\runtimes/typescript.md:1
+msgid "TypeScript (Node & browser)"
+msgstr ""
+
+#: src\SUMMARY.md:25 src\runtimes/rust.md:1
+msgid "Rust"
+msgstr ""
+
+#: src\SUMMARY.md:26 src\runtimes/touchdesigner.md:1
+msgid "TouchDesigner"
+msgstr ""
+
+#: src\SUMMARY.md:28
+msgid "Operating"
+msgstr ""
+
+#: src\SUMMARY.md:30 src\networking-and-deployment.md:1
+msgid "Networking & deployment"
+msgstr ""
+
+#: src\SUMMARY.md:31 src\gui.md:1
+msgid "Visual editor (GUI)"
+msgstr ""
+
+#: src\SUMMARY.md:32 src\faq.md:1
+msgid "FAQ & troubleshooting"
+msgstr ""
+
+#: src\introduction.md:1
+msgid "Introduction"
+msgstr ""
+
+#: src\introduction.md:3
+msgid ""
+"Sahou is a **schema-first tool for building the interface layer between "
+"systems**. You describe your messages and their wiring once, in a schema. "
+"Sahou then lets your apps talk to each other on the same LAN — **without "
+"hand-managing IP addresses or ports** — and rejects wrong types and mistyped "
+"fields at the boundary, instead of letting a mistake propagate and surface "
+"somewhere far away."
+msgstr ""
+
+#: src\introduction.md:10
+msgid ""
+"\"Sahou\" (作法) means _proper form / etiquette_ — the small set of "
+"conventions that let independent programs talk to each other comfortably and "
+"without mistakes."
+msgstr ""
+
+#: src\introduction.md:14
+msgid "What you describe, and what you get"
+msgstr ""
+
+#: src\introduction.md:16
+msgid ""
+"A Sahou schema names three things: the **nodes** that participate, the "
+"**messages** they exchange, and the **connections** that wire them together. "
+"From that one description you get:"
+msgstr ""
+
+#: src\introduction.md:20
+msgid ""
+"**Discovery and transport**, so nodes find each other by name on a shared "
+"LAN."
+msgstr ""
+
+#: src\introduction.md:21
+msgid ""
+"**A boundary that says NO**, so a wrong type or a mistyped field is caught "
+"where it happens."
+msgstr ""
+
+#: src\introduction.md:23
+msgid ""
+"**One contract across many languages** — Rust, Python, Node.js, the browser, "
+"and TouchDesigner all speak the same schema."
+msgstr ""
+
+#: src\introduction.md:26
+msgid "Why Sahou"
+msgstr ""
+
+#: src\introduction.md:28
+msgid ""
+"**No addresses, no ports.** On a shared LAN, nodes discover each other by "
+"name. You declare connections in a schema; Sahou handles discovery and "
+"transport for you (built on [Zenoh](https://zenoh.io))."
+msgstr ""
+
+#: src\introduction.md:31
+msgid ""
+"**Say NO early.** A wrong type or a mistyped field is rejected the moment it "
+"crosses the boundary — and, with generated type stubs, in your editor at "
+"build time — rather than failing later in the hardest place to debug."
+msgstr ""
+
+#: src\introduction.md:34
+msgid ""
+"**One schema, many environments.** The same contract drives Rust, Python, "
+"Node.js, the browser, and TouchDesigner. The core is a neutral data model "
+"(an intermediate representation, or _IR_); the per-language runtimes are "
+"thin."
+msgstr ""
+
+#: src\introduction.md:38
+msgid "Where to go next"
+msgstr ""
+
+#: src\introduction.md:40
+msgid ""
+"**[Quickstart](quickstart.md)** — from zero to a validated contract and a "
+"working LAN message flow."
+msgstr ""
+
+#: src\introduction.md:42
+msgid ""
+"**[Concepts](concepts/index.md)** — the mental model: nodes, messages, "
+"connections, and why the IR sits in the middle."
+msgstr ""
+
+#: src\quickstart.md:1
+msgid "Quickstart"
+msgstr ""
+
+#: src\quickstart.md:3
+msgid ""
+"This walkthrough takes you from zero to a validated contract and a message "
+"flowing on your LAN in about 15 minutes. You will install the `sahou` CLI, "
+"look at a contract, validate it, build its IR, and observe traffic — no app "
+"code required."
+msgstr ""
+
+#: src\quickstart.md:8
+msgid "1. Install the CLI"
+msgstr ""
+
+#: src\quickstart.md:10
+msgid "From crates.io (needs Rust):"
+msgstr ""
+
+#: src\quickstart.md:13
+msgid "# installs the `sahou` command (GUI embedded)\n"
+msgstr ""
+
+#: src\quickstart.md:16
+msgid "Or grab a prebuilt binary — **no Rust needed**:"
+msgstr ""
+
+#: src\quickstart.md:19
+msgid "# macOS / Linux\n"
+msgstr ""
+
+#: src\quickstart.md:20
+msgid "'=https'"
+msgstr ""
+
+#: src\quickstart.md:23
+msgid ""
+"```powershell\n"
+"# Windows (PowerShell)\n"
+"irm "
+"https://github.com/craf-te/sahou/releases/latest/download/sahou-cli-installer.ps1 "
+"| iex\n"
+"```"
+msgstr ""
+
+#: src\quickstart.md:28
+msgid ""
+"Prebuilt binaries for macOS (arm64/x64), Linux (arm64/x64), and Windows "
+"(x64) — with the GUI embedded — are on the [releases "
+"page](https://github.com/craf-te/sahou/releases)."
+msgstr ""
+
+#: src\quickstart.md:32
+msgid "2. Get a contract"
+msgstr ""
+
+#: src\quickstart.md:34
+msgid "Scaffold a fresh project (a minimal valid seed):"
+msgstr ""
+
+#: src\quickstart.md:40
+msgid ""
+"Or follow along with the bundled demo, whose contract lives in "
+"`examples/demo/schema.sahou.yaml`. A contract names its **nodes** and the "
+"**connections** between them. Here is one connection from the demo — a "
+"publish/subscribe stream of typed touch events from `sensor` to `visuals` "
+"and `archive`:"
+msgstr ""
+
+#: src\quickstart.md:47
+msgid "schema"
+msgstr ""
+
+#: src\quickstart.md:47
+msgid "demo_installation"
+msgstr ""
+
+#: src\quickstart.md:47
+msgid "version"
+msgstr ""
+
+#: src\quickstart.md:48
+msgid "nodes"
+msgstr ""
+
+#: src\quickstart.md:50 src\quickstart.md:56
+msgid "sensor"
+msgstr ""
+
+#: src\quickstart.md:50 src\quickstart.md:51 src\quickstart.md:52
+msgid "kind"
+msgstr ""
+
+#: src\quickstart.md:50 src\quickstart.md:51 src\quickstart.md:52
+msgid "sahou"
+msgstr ""
+
+#: src\quickstart.md:51 src\quickstart.md:57
+msgid "visuals"
+msgstr ""
+
+#: src\quickstart.md:52 src\quickstart.md:57
+msgid "archive"
+msgstr ""
+
+#: src\quickstart.md:52
+msgid "connections"
+msgstr ""
+
+#: src\quickstart.md:54
+msgid "touch"
+msgstr ""
+
+#: src\quickstart.md:55
+msgid "pattern"
+msgstr ""
+
+#: src\quickstart.md:55
+msgid "pub_sub"
+msgstr ""
+
+#: src\quickstart.md:56
+msgid "from"
+msgstr ""
+
+#: src\quickstart.md:57
+msgid "to"
+msgstr ""
+
+#: src\quickstart.md:58
+msgid "payload"
+msgstr ""
+
+#: src\quickstart.md:59
+msgid "typing"
+msgstr ""
+
+#: src\quickstart.md:59
+msgid "typed"
+msgstr ""
+
+#: src\quickstart.md:60 src\quickstart.md:65
+msgid "fields"
+msgstr ""
+
+#: src\quickstart.md:61 src\quickstart.md:62 src\quickstart.md:63
+#: src\quickstart.md:66 src\quickstart.md:67
+msgid "name"
+msgstr ""
+
+#: src\quickstart.md:61
+msgid "x"
+msgstr ""
+
+#: src\quickstart.md:61 src\quickstart.md:62 src\quickstart.md:64
+#: src\quickstart.md:66 src\quickstart.md:67
+msgid "type"
+msgstr ""
+
+#: src\quickstart.md:61
+msgid "float"
+msgstr ""
+
+#: src\quickstart.md:61
+msgid "min"
+msgstr ""
+
+#: src\quickstart.md:61
+msgid "max"
+msgstr ""
+
+#: src\quickstart.md:62
+msgid "phase"
+msgstr ""
+
+#: src\quickstart.md:62
+msgid "enum"
+msgstr ""
+
+#: src\quickstart.md:62
+msgid "values"
+msgstr ""
+
+#: src\quickstart.md:62
+msgid "down"
+msgstr ""
+
+#: src\quickstart.md:62
+msgid "move"
+msgstr ""
+
+#: src\quickstart.md:62
+msgid "up"
+msgstr ""
+
+#: src\quickstart.md:63
+msgid "meta"
+msgstr ""
+
+#: src\quickstart.md:64
+msgid "group"
+msgstr ""
+
+#: src\quickstart.md:66
+msgid "ts"
+msgstr ""
+
+#: src\quickstart.md:66
+msgid "timestamp"
+msgstr ""
+
+#: src\quickstart.md:67
+msgid "source"
+msgstr ""
+
+#: src\quickstart.md:67
+msgid "string"
+msgstr ""
+
+#: src\quickstart.md:67
+msgid "required"
+msgstr ""
+
+#: src\quickstart.md:68
+msgid "reliability"
+msgstr ""
+
+#: src\quickstart.md:68
+msgid "reliable"
+msgstr ""
+
+#: src\quickstart.md:69
+msgid "congestion"
+msgstr ""
+
+#: src\quickstart.md:69
+msgid "block"
+msgstr ""
+
+#: src\quickstart.md:72
+msgid ""
+"You do not manage any IP addresses or ports here — only _who_ talks to "
+"_whom_ and _what shape_ the messages are."
+msgstr ""
+
+#: src\quickstart.md:75
+msgid "3. Contract vs endpoints"
+msgstr ""
+
+#: src\quickstart.md:77
+msgid ""
+"The **contract** (types, names, wiring) lives in `schema.sahou.yaml`. The "
+"**endpoints** — which machine plays which node, and any environment-specific "
+"transport settings — live in a separate `endpoints.<env>.yaml`, so one "
+"contract runs unchanged across environments. The demo's `endpoints.dev.yaml` "
+"is tiny, because LAN auto-discovery is the default:"
+msgstr ""
+
+#: src\quickstart.md:84
+msgid "env"
+msgstr ""
+
+#: src\quickstart.md:84
+msgid "dev"
+msgstr ""
+
+#: src\quickstart.md:84
+msgid "namespace"
+msgstr ""
+
+#: src\quickstart.md:85
+msgid "sahou/demo"
+msgstr ""
+
+#: src\quickstart.md:86
+msgid ""
+"LAN auto-discovery is the default. Only specify a router / explicit endpoint "
+"when needed."
+msgstr ""
+
+#: src\quickstart.md:89
+msgid ""
+"See [Contract vs Endpoints](concepts/contract-vs-endpoints.md) for the full "
+"picture."
+msgstr ""
+
+#: src\quickstart.md:92
+msgid "4. Validate the contract"
+msgstr ""
+
+#: src\quickstart.md:98
+msgid ""
+"Validation returns **positional, structured diagnostics** — it points at the "
+"exact field or connection, and duplicate keys or mistyped (unknown) keys are "
+"rejected rather than silently dropped. See [Say NO "
+"early](concepts/say-no-early.md)."
+msgstr ""
+
+#: src\quickstart.md:102
+msgid "5. Build the IR (and an optional typed stub)"
+msgstr ""
+
+#: src\quickstart.md:108
+msgid ""
+"This writes the full IR to `gen/descriptor.json` and, because you passed "
+"`--lang`/`--node`, a typed stub for the `sensor` node into `gen/sensor/`. "
+"The stub gives your editor build-time type checking for the messages that "
+"node sends and receives — this is the \"say NO in your editor\" half of "
+"Sahou. Drift between a stub and the contract is caught later by `sahou "
+"check`."
+msgstr ""
+
+#: src\quickstart.md:114
+msgid "6. Observe what actually flows"
+msgstr ""
+
+#: src\quickstart.md:116
+msgid ""
+"You do not need an app to see traffic. `sahou tap` can observe (and inject) "
+"messages from a node's vantage point:"
+msgstr ""
+
+#: src\quickstart.md:123
+msgid ""
+"To build real senders and receivers, add a runtime for your language — see "
+"[Runtimes](runtimes/index.md)."
+msgstr ""
+
+#: src\quickstart.md:126
+msgid "7. Open the visual editor"
+msgstr ""
+
+#: src\quickstart.md:128
+msgid "At any point, edit the contract visually in your browser:"
+msgstr ""
+
+#: src\quickstart.md:134
+msgid "Next steps"
+msgstr ""
+
+#: src\quickstart.md:136
+msgid ""
+"**[Concepts](concepts/index.md)** — nodes, messages, connections, and the IR."
+msgstr ""
+
+#: src\quickstart.md:137
+msgid ""
+"**[Schema authoring](schema-authoring.md)** — every field type and "
+"connection option."
+msgstr ""
+
+#: src\quickstart.md:139
+msgid "**[CLI reference](cli-reference.md)** — every command and flag."
+msgstr ""
+
+#: src\concepts/index.md:3 src\concepts/node-message-connection.md:3
+#: src\concepts/contract-vs-endpoints.md:3 src\concepts/ir-and-round-trip.md:3
+#: src\concepts/say-no-early.md:3 src\concepts/contract-evolution.md:3
+#: src\schema-authoring.md:3 src\cli-reference.md:3 src\runtimes/index.md:3
+#: src\runtimes/python.md:3 src\runtimes/typescript.md:3 src\runtimes/rust.md:3
+#: src\runtimes/touchdesigner.md:3 src\networking-and-deployment.md:3
+#: src\gui.md:3 src\faq.md:3
+msgid "_This page is under construction._"
+msgstr ""
+

@@ -89,3 +89,18 @@ build-td-macos: build-ffi
     cp target/release/libsahou_transport.dylib "runtimes/touchdesigner/build/Release/SahouOut.plugin/Contents/Frameworks/"
     codesign -f -s - "runtimes/touchdesigner/build/Release/SahouOut.plugin/Contents/Frameworks/libsahou_transport.dylib"
     codesign -f -s - "runtimes/touchdesigner/build/Release/SahouOut.plugin"
+
+# --- Docs (mdBook + i18n) ---
+
+# Live-preview the English book at http://localhost:3000.
+docs-serve:
+    cd docs && mdbook serve
+
+# Build both languages into docs/book/html (English at /, Japanese at /ja/).
+docs-build:
+    cd docs && mdbook build -d book/html && MDBOOK_BOOK__LANGUAGE=ja mdbook build -d book/html/ja
+
+# Re-extract the translation template and merge into po/ja.po after editing English.
+# (Needs GNU gettext: msgmerge. CI/Linux have it; on native Windows it may be absent.)
+docs-i18n-update:
+    cd docs && MDBOOK_OUTPUT='{"xgettext": {}}' mdbook build -d po && msgmerge --update po/ja.po po/messages.pot
