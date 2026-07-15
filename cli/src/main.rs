@@ -39,7 +39,7 @@ enum Cmd {
         #[arg(long)]
         write: bool,
     },
-    /// Contract + endpoints -> full IR (<out-dir>/descriptor.json). Use --lang/--node to generate opt-in type stubs under <out-dir>/<node>/
+    /// Contract + endpoints -> full IR (<out-dir>/descriptor.json). --lang alone generates a whole-descriptor typed layer (<out-dir>/sahou.gen.* / sahou_gen.*); --lang + --node generates a per-node stub (<out-dir>/<node>/)
     Gen {
         /// Contract file (when omitted, ./schema.sahou.yaml in the current directory)
         #[arg(default_value = "schema.sahou.yaml")]
@@ -47,15 +47,18 @@ enum Cmd {
         /// endpoints.<env>.yaml (when omitted, the LAN-auto default = namespace "sahou")
         #[arg(long)]
         endpoints: Option<PathBuf>,
-        /// Output directory for generated artifacts (IR = <out-dir>/descriptor.json / stub = <out-dir>/<node>/)
+        /// Output directory for generated artifacts (IR = <out-dir>/descriptor.json)
         #[arg(long, default_value = "gen")]
         out_dir: PathBuf,
-        /// Type stub language (opt-in; use together with --node)
-        #[arg(long, value_enum, requires = "node")]
+        /// Type stub language (opt-in). Alone → whole-descriptor typed connect; with --node → per-node stub
+        #[arg(long, value_enum)]
         lang: Option<LangArg>,
-        /// Node to generate a type stub for (use with --lang; stubs only — no sliced IR/ACL: Z27 deferred)
+        /// Node to generate a per-node type stub for (use with --lang; stubs only — no sliced IR/ACL: Z27 deferred)
         #[arg(long, requires = "lang")]
         node: Option<String>,
+        /// TS transport for the whole-descriptor stub (--lang ts, no --node): node (default) or browser
+        #[arg(long, value_enum, requires = "lang")]
+        target: Option<TargetArg>,
     },
     /// One relay per machine + a WS entrypoint for Node/browser (remote-api). The engine spawns it automatically
     Link(link::LinkArgs),
@@ -109,6 +112,21 @@ impl From<LangArg> for sahou_core::stub::StubLang {
         match l {
             LangArg::Python => Self::Python,
             LangArg::Ts => Self::Ts,
+        }
+    }
+}
+
+#[derive(Clone, Copy, clap::ValueEnum)]
+enum TargetArg {
+    Node,
+    Browser,
+}
+
+impl From<TargetArg> for sahou_core::stub::TsTarget {
+    fn from(t: TargetArg) -> Self {
+        match t {
+            TargetArg::Node => Self::Node,
+            TargetArg::Browser => Self::Browser,
         }
     }
 }
@@ -172,6 +190,7 @@ fn run(cli: Cli) -> Result<(), Vec<Diag>> {
             out_dir,
             lang,
             node,
+            target,
         } => {
             let contract = load_valid_contract(&schema)?;
             let eps = match endpoints {
@@ -183,16 +202,45 @@ fn run(cli: Cli) -> Result<(), Vec<Diag>> {
             let ir_path = out_dir.join("descriptor.json");
             std::fs::write(&ir_path, &json).map_err(|e| io_err(&ir_path, e))?;
             println!("[ok] {} -> {}", schema.display(), ir_path.display());
-            if let (Some(lang), Some(node)) = (lang, node) {
+            if let Some(lang) = lang {
                 // Stub generation is a pure function in the core (design §8, D11). The CLI only does file IO.
                 let desc = sahou_core::runtime::load_descriptor(&json)?;
-                let files = sahou_core::stub::gen_stub(&desc, &node, lang.into())?;
-                let node_dir = out_dir.join(&node);
-                std::fs::create_dir_all(&node_dir).map_err(|e| io_err(&node_dir, e))?;
-                for f in &files {
-                    let p = node_dir.join(&f.rel_path);
-                    std::fs::write(&p, &f.content).map_err(|e| io_err(&p, e))?;
-                    println!("[ok] stub -> {}", p.display());
+                match node {
+                    // --lang + --node: per-node stub under <out-dir>/<node>/ (--target is whole-descriptor only)
+                    Some(node) => {
+                        if target.is_some() {
+                            return Err(vec![Diag::new(
+                                "bad_flag",
+                                "--target",
+                                "--target applies only to the whole-descriptor stub (`sahou gen --lang ts` without --node)",
+                            )]);
+                        }
+                        let files = sahou_core::stub::gen_stub(&desc, &node, lang.into())?;
+                        let node_dir = out_dir.join(&node);
+                        std::fs::create_dir_all(&node_dir).map_err(|e| io_err(&node_dir, e))?;
+                        for f in &files {
+                            let p = node_dir.join(&f.rel_path);
+                            std::fs::write(&p, &f.content).map_err(|e| io_err(&p, e))?;
+                            println!("[ok] stub -> {}", p.display());
+                        }
+                    }
+                    // --lang alone: whole-descriptor typed layer under <out-dir>/
+                    None => {
+                        if matches!(lang, LangArg::Python) && target.is_some() {
+                            return Err(vec![Diag::new(
+                                "bad_flag",
+                                "--target",
+                                "--target applies only to --lang ts (Python has a single transport)",
+                            )]);
+                        }
+                        let tgt = target.unwrap_or(TargetArg::Node).into();
+                        let files = sahou_core::stub::gen_stub_all(&desc, lang.into(), tgt)?;
+                        for f in &files {
+                            let p = out_dir.join(&f.rel_path);
+                            std::fs::write(&p, &f.content).map_err(|e| io_err(&p, e))?;
+                            println!("[ok] stub -> {}", p.display());
+                        }
+                    }
                 }
             }
             Ok(())

@@ -66,6 +66,49 @@ fn check_passes_after_gen_and_fails_after_contract_change() {
 }
 
 #[test]
+fn check_detects_whole_descriptor_stub_drift() {
+    let tmp = tempfile::tempdir().unwrap();
+    let schema = tmp.path().join("schema.sahou.yaml");
+    std::fs::write(&schema, DEMO).unwrap();
+    let out_dir = tmp.path().join("gen");
+    gen(&out_dir, &schema, &["--lang", "ts"]); // whole-descriptor (no --node)
+    let desc = out_dir.join("descriptor.json");
+
+    // 1) fresh whole-descriptor stub: no drift
+    Command::cargo_bin("sahou")
+        .unwrap()
+        .args([
+            "check",
+            desc.to_str().unwrap(),
+            "--gen-dir",
+            out_dir.to_str().unwrap(),
+        ])
+        .assert()
+        .success()
+        .stdout(predicate::str::contains("no drift"));
+
+    // 2) contract change -> regenerate only the IR -> whole-descriptor stub is stale = drift rejection
+    let changed = DEMO.replace(
+        "        - { name: x, type: float, min: 0, max: 1 }",
+        "        - { name: x, type: float, min: 0, max: 1 }\n        - { name: pressure, type: float }",
+    );
+    assert_ne!(changed, DEMO, "target line for replacement not found");
+    std::fs::write(&schema, changed).unwrap();
+    gen(&out_dir, &schema, &[]); // update IR only
+    Command::cargo_bin("sahou")
+        .unwrap()
+        .args([
+            "check",
+            desc.to_str().unwrap(),
+            "--gen-dir",
+            out_dir.to_str().unwrap(),
+        ])
+        .assert()
+        .failure()
+        .stdout(predicate::str::contains("[stub_hash_drift]"));
+}
+
+#[test]
 fn check_with_no_stubs_is_structured_no() {
     let tmp = tempfile::tempdir().unwrap();
     let schema = tmp.path().join("schema.sahou.yaml");

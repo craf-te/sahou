@@ -26,3 +26,4 @@ gui/src/core-wasm/
 # NOTE: cli/gui-dist/ (the built GUI embedded into the sahou binary) is committed on purpose,
 # so release CI and `cargo publish` bundle the GUI without needing node/wasm-pack. Rebuild it
 # with `just gui-build && just gui-embed` and commit when the GUI changes.
+docs/superpowers

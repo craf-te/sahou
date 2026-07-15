@@ -7,7 +7,9 @@ use std::path::PathBuf;
 use clap::Args;
 use sahou_core::diag::Diag;
 use sahou_core::ir::Descriptor;
-use sahou_core::stub::{check_drift, parse_stub_hashes, parse_stub_node};
+use sahou_core::stub::{
+    check_drift, check_drift_all, parse_stub_hashes, parse_stub_node, parse_stub_schema,
+};
 
 #[derive(Args)]
 pub struct CheckArgs {
@@ -79,6 +81,49 @@ pub fn check_stub_texts(
     }
 }
 
+/// Pure function that checks a whole-descriptor stub set (schema marker + all-connection drift).
+/// Ok(schema name) = no drift / Err = structured rejection (bad/mixed marker, drift).
+pub fn check_stub_texts_all(
+    desc: &Descriptor,
+    texts: &[(String, String)],
+) -> Result<String, Vec<Diag>> {
+    // schema marker: must match across all files (do not silently accept a partial regeneration)
+    let mut schema: Option<String> = None;
+    for (name, text) in texts {
+        let Some(s) = parse_stub_schema(text) else {
+            return Err(check_err(
+                name.clone(),
+                "no sahou:stub schema= marker (not a whole-descriptor stub, or corrupted)",
+            ));
+        };
+        match &schema {
+            None => schema = Some(s),
+            Some(prev) if *prev != s => {
+                return Err(check_err(
+                    name.clone(),
+                    format!(
+                        "mixed schema markers ('{prev}' and '{s}'). Regenerate the whole-descriptor stub"
+                    ),
+                ))
+            }
+            _ => {}
+        }
+    }
+    let schema = schema.ok_or_else(|| check_err("$", "no whole-descriptor stub files"))?;
+    let all: String = texts
+        .iter()
+        .map(|(_, t)| t.as_str())
+        .collect::<Vec<_>>()
+        .join("\n");
+    let hashes = parse_stub_hashes(&all)?;
+    let diags = check_drift_all(desc, &hashes);
+    if diags.is_empty() {
+        Ok(schema)
+    } else {
+        Err(diags)
+    }
+}
+
 pub fn run(args: CheckArgs) -> Result<(), Vec<Diag>> {
     let json = std::fs::read_to_string(&args.descriptor)
         .map_err(|e| check_err(args.descriptor.display().to_string(), e.to_string()))?;
@@ -125,6 +170,31 @@ pub fn run(args: CheckArgs) -> Result<(), Vec<Diag>> {
             Err(mut d) => all_diags.append(&mut d),
         }
     }
+    // Whole-descriptor stubs live directly under <gen-dir>/ (checked only without a --node filter).
+    if args.node.is_none() {
+        let mut texts: Vec<(String, String)> = Vec::new();
+        if let Ok(rd) = std::fs::read_dir(&args.gen_dir) {
+            let mut files: Vec<PathBuf> = rd
+                .filter_map(|e| e.ok())
+                .map(|e| e.path())
+                .filter(|p| p.is_file())
+                .collect();
+            files.sort(); // deterministic scan order
+            for p in files {
+                let text = std::fs::read_to_string(&p)
+                    .map_err(|e| check_err(p.display().to_string(), e.to_string()))?;
+                if text.contains("sahou:stub schema=") {
+                    texts.push((p.display().to_string(), text));
+                }
+            }
+        }
+        if !texts.is_empty() {
+            match check_stub_texts_all(&desc, &texts) {
+                Ok(schema) => checked.push(format!("schema:{schema}")),
+                Err(mut d) => all_diags.append(&mut d),
+            }
+        }
+    }
     if checked.is_empty() && all_diags.is_empty() {
         return Err(vec![Diag::new(
             "check_no_stubs",
@@ -150,7 +220,7 @@ mod tests {
     use sahou_core::ir::descriptor_json;
     use sahou_core::parse::parse_contract;
     use sahou_core::runtime::load_descriptor;
-    use sahou_core::stub::{gen_stub, StubLang};
+    use sahou_core::stub::{gen_stub, gen_stub_all, StubLang, TsTarget};
 
     const DEMO: &str = include_str!("../../examples/demo/schema.sahou.yaml");
 
@@ -165,6 +235,42 @@ mod tests {
             .into_iter()
             .map(|f| (f.rel_path, f.content))
             .collect()
+    }
+
+    fn stub_texts_all(desc: &Descriptor) -> Vec<(String, String)> {
+        gen_stub_all(desc, StubLang::Ts, TsTarget::Node)
+            .unwrap()
+            .into_iter()
+            .map(|f| (f.rel_path, f.content))
+            .collect()
+    }
+
+    #[test]
+    fn fresh_whole_descriptor_stub_passes() {
+        let desc = demo_desc();
+        let texts = stub_texts_all(&desc);
+        assert_eq!(
+            check_stub_texts_all(&desc, &texts).unwrap(),
+            "demo_installation"
+        );
+    }
+
+    #[test]
+    fn whole_descriptor_hash_drift_is_no() {
+        let desc = demo_desc();
+        let texts = stub_texts_all(&desc);
+        let mut changed = desc.clone();
+        changed.connections.get_mut("touch").unwrap().hash = "ffffffffffffffff".into();
+        let err = check_stub_texts_all(&changed, &texts).unwrap_err();
+        assert_eq!(err[0].code, "stub_hash_drift");
+    }
+
+    #[test]
+    fn whole_descriptor_missing_schema_marker_is_no() {
+        let desc = demo_desc();
+        let texts = vec![("sahou.gen.mjs".to_string(), "// no marker\n".to_string())];
+        let err = check_stub_texts_all(&desc, &texts).unwrap_err();
+        assert_eq!(err[0].code, "check_error");
     }
 
     #[test]

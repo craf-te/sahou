@@ -30,3 +30,20 @@ describe("type stub (tsc --noEmit)", () => {
     expect(r.out).toMatch(/stub_bad\.mts\(7,\d+\)/); // L7: number → string type mismatch
   });
 });
+
+describe("whole-descriptor typed connect (tsc --noEmit)", () => {
+  it("node name, connection, and payload are inferred from a single import", () => {
+    const r = runTsc(fixture("all_ok.mts"));
+    expect(r.out.trim() === "" || r.ok, r.out).toBe(true);
+    expect(r.ok, r.out).toBe(true);
+  });
+
+  it("wrong node name / connection / payload / direction all turn red", () => {
+    const r = runTsc(fixture("all_bad.mts"));
+    expect(r.ok, "broken usage passed clean (the whole-descriptor stub is not working)").toBe(false);
+    expect(r.out).toContain('"ghost"'); // unknown node name in connect()
+    expect(r.out).toContain('"nope"'); // unknown connection in subscribe()
+    expect(r.out).toMatch(/all_bad\.mts\(11,\d+\)/); // L11: number → string payload mismatch
+    expect(r.out).toContain("Property 'subscribe' does not exist on type 'SensorNode'"); // non-participating direction
+  });
+});

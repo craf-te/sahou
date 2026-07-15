@@ -1,4 +1,8 @@
-import { SahouRejected, connect } from "sahou/browser";
+// connect comes from the generated browser-target typed layer (re-exports "sahou/browser", runtime-identical),
+// so `node` completes to a node name and subscribe/payloads are typed in an editor. SahouRejected is the
+// runtime error class, imported directly from the runtime.
+import { SahouRejected } from "sahou/browser";
+import { connect } from "./sahou.gen.mjs";
 
 const out = document.getElementById("out");
 const descriptor = await (await fetch("/gen/descriptor.json")).text();
