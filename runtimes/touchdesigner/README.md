@@ -1,6 +1,7 @@
 # Sahou × TouchDesigner — custom operators
 
-> **Status: experimental.** The Sahou Out / In CHOPs are currently **macOS / arm64 only**.
+> **Status: experimental.** The Sahou Out / In CHOPs build on **macOS / arm64** (Xcode →
+> `.plugin`) and **Windows / x64** (CMake → `.dll`, see [`windows/`](windows/README.md)).
 > Building them requires the TouchDesigner C++ SDK vendored into `runtimes/touchdesigner/vendor/`
 > (Derivative Shared Use License — not redistributed here; copy it from your local TouchDesigner
 > install).
@@ -26,7 +27,7 @@ statically linked).
   (strings appear in the Info DAT). A contract violation goes red with the structured diagnostic.
   **Inject Sample** feeds one IR-valid sample locally (no network) to test downstream wiring with no
   publisher.
-- Not yet: continuous send, DAT operators, Windows build, universal (Intel) binary,
+- Not yet: continuous send, DAT operators, universal (Intel) binary,
   distribution signing (multicast entitlement / Developer ID).
 
 ## Layout
@@ -44,7 +45,7 @@ runtimes/touchdesigner/
 │   ├── ffi_smoke.cpp                          payload -> core -> OK/NO (links the C ABI)
 │   └── run.sh                                 builds & runs all three
 ├── macos/               # macOS build project: SahouOut.xcodeproj + Info.plist -> .plugin (committed)
-├── windows/             # Windows build project: Visual Studio -> SahouOut.dll (planned; placeholder)
+├── windows/             # Windows build project: CMake -> SahouOut.dll / SahouIn.dll (committed)
 ├── transport/           # sahou-transport: zenoh send glue (Rust cdylib, committed) — bundled into
 │                         # the .plugin's Contents/Frameworks and ad-hoc signed by build-td-macos
 ├── examples/            # schema.sahou.yaml (committed); gen/descriptor.json (generated, ignored)
@@ -54,8 +55,7 @@ runtimes/touchdesigner/
 
 The C++ op source (`src/`), the tests (`test/`), the Rust `transport/`, and `examples/` are
 **shared across platforms**. Only `macos/` and `windows/` hold the per-platform build projects
-(Xcode → `.plugin` on macOS; Visual Studio → `.dll` on Windows). Windows is **not implemented yet**
-— the current supported build is macOS/arm64.
+(Xcode → `.plugin` on macOS; CMake → `.dll` on Windows).
 
 ## Prerequisite — vendor the TD C++ SDK (once)
 
