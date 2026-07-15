@@ -49,9 +49,24 @@ just package-td-windows 0.1.0    # custom version
 ## Load in TouchDesigner
 
 Put all three DLLs together in a folder TD scans (per-`.toe` `Plugins/`, the user-global
-`%USERPROFILE%\Documents\Derivative\TouchDesigner\Plugins\`, or `TOUCHDESIGNER_PLUGIN_PATH`),
+`%USERPROFILE%\Documents\Derivative\Plugins\`, or `TOUCHDESIGNER_PLUGIN_PATH`),
 then restart TD. `SahouOut.dll` / `SahouIn.dll` load `sahou_transport.dll` from alongside them,
 so it must be in the same folder.
+
+During development, **symlink** the built DLLs into the user-global Plugins folder instead of
+copying — a rebuild then only needs a TD restart. Needs Windows Developer Mode (or an elevated
+shell) for symlink creation:
+
+```powershell
+$plugins = "$env:USERPROFILE\Documents\Derivative\Plugins"
+$src = "runtimes\touchdesigner\build\win"
+foreach ($dll in 'SahouOut.dll','SahouIn.dll','sahou_transport.dll') {
+    New-Item -ItemType SymbolicLink -Force -Path "$plugins\$dll" -Target "$PWD\$src\$dll" | Out-Null
+}
+```
+
+(If your Documents folder is redirected to OneDrive, `$env:USERPROFILE\Documents` still resolves
+to it.) Then restart TD (a running TD locks loaded DLLs).
 
 ## Supported TD versions
 

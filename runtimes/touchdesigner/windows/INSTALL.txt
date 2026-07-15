@@ -16,7 +16,7 @@ INSTALL
   1. Unzip.
   2. Put ALL THREE DLLs together in the same folder where TouchDesigner scans for plugins:
        - next to your project:  <your .toe folder>\Plugins\
-       - or user-global:        %USERPROFILE%\Documents\Derivative\TouchDesigner\Plugins\
+       - or user-global:        %USERPROFILE%\Documents\Derivative\Plugins\
      SahouOut.dll and SahouIn.dll load sahou_transport.dll from alongside them, so it must
      sit in the same folder.
   3. Restart TouchDesigner (plugins are scanned at startup).
