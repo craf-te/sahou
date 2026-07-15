@@ -34,15 +34,24 @@ contract runs unchanged across environments.
 
 ## Documentation
 
-Full documentation — Introduction, Quickstart, Concepts, Schema authoring, CLI
-reference, Runtimes, and more — is at **https://craf-te.github.io/sahou/**
-(日本語: https://craf-te.github.io/sahou/ja/). Sources live in [`docs/`](docs/)
-and are built with mdBook + [mdbook-i18n-helpers](https://github.com/google/mdbook-i18n-helpers).
+📖 **[craf-te.github.io/sahou](https://craf-te.github.io/sahou/)** ([日本語版](https://craf-te.github.io/sahou/ja/))
 
-To publish, a maintainer sets repo **Settings → Pages → Build and deployment →
-Source = GitHub Actions** once; the `docs` workflow then builds both languages
-and deploys on every push to `main` that touches `docs/**`. Build locally with
-`just docs-serve` (English preview) or `just docs-build` (English + Japanese).
+Covers the Introduction, Quickstart, Concepts, Schema authoring, CLI reference,
+Runtimes, and more.
+
+<details>
+<summary>Working on the docs (maintainers)</summary>
+
+Sources live in [`docs/`](docs/) and are built with mdBook +
+[mdbook-i18n-helpers](https://github.com/google/mdbook-i18n-helpers).
+
+- **Preview locally:** `just docs-serve` (English) or `just docs-build` (English + Japanese).
+- **Publish:** pushes to `main` that touch `docs/**` trigger the `docs` GitHub Actions
+  workflow, which builds both languages and deploys to Pages automatically.
+- **One-time setup** (already done for this repo): **Settings → Pages → Build and
+  deployment → Source = GitHub Actions**.
+
+</details>
 
 ## Install
 
