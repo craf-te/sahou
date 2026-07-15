@@ -2,12 +2,10 @@
 
 namespace sahou {
 
-namespace {
-
 // Extract a JSON string value for `"<key>":"..."`, honoring backslash escapes, and unescape it.
 // Returns "" if the key/opening quote is absent. Handles the escapes serde_json emits for a string
 // (\" \\ \/ \n \t \r \b \f and \uXXXX for the ASCII range); a \u outside ASCII becomes '?'.
-std::string json_string_value(const std::string& json, const std::string& key) {
+std::string json_string_field(const std::string& json, const std::string& key) {
     const std::string pat = "\"" + key + "\":\"";
     const std::size_t p = json.find(pat);
     if (p == std::string::npos) {
@@ -62,8 +60,6 @@ std::string json_string_value(const std::string& json, const std::string& key) {
     return out;
 }
 
-}  // namespace
-
 Accepted accept_result(const std::string& outcome_json) {
     // "result" is a bare identifier value (accept/reject/hash_mismatch) — no escaping to worry about.
     const std::string r = envelope_string(outcome_json, "result");
@@ -74,7 +70,7 @@ Accepted accept_result(const std::string& outcome_json) {
 }
 
 std::string accept_payload(const std::string& outcome_json) {
-    return json_string_value(outcome_json, "payload");
+    return json_string_field(outcome_json, "payload");
 }
 
 std::string accept_sender_hash(const std::string& outcome_json) {

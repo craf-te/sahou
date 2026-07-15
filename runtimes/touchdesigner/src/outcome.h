@@ -27,6 +27,11 @@ std::string accept_payload(const std::string& outcome_json);
 // The sender_hash on HashMismatch ("" otherwise).
 std::string accept_sender_hash(const std::string& outcome_json);
 
+// Extract the JSON string value for `"<key>":"..."`, honoring backslash escapes and unescaping it
+// back to the original text. "" if the key is absent. General-purpose (used for the outcome payload
+// and for the transport poll's `wire` field, both of which are escaped JSON-in-a-string).
+std::string json_string_field(const std::string& json, const std::string& key);
+
 }  // namespace sahou
 
 #endif  // SAHOU_TD_OUTCOME_H
