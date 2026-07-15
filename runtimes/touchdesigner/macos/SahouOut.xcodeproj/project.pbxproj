@@ -10,6 +10,9 @@
 		5A48000100000000000000D1 /* SahouOutCHOP.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5A48000100000000000000C1 /* SahouOutCHOP.cpp */; };
 		5A48000100000000000000D3 /* payload.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5A48000100000000000000C3 /* payload.cpp */; };
 		5A48000100000000000000D5 /* envelope.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5A48000100000000000000C5 /* envelope.cpp */; };
+		5A4800020000000000000001 /* SahouInCHOP.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5A4800020000000000000011 /* SahouInCHOP.cpp */; };
+		5A4800020000000000000002 /* envelope.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5A48000100000000000000C5 /* envelope.cpp */; };
+		5A4800020000000000000003 /* outcome.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5A4800020000000000000013 /* outcome.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -21,10 +24,22 @@
 		5A48000100000000000000C4 /* payload.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = payload.h; path = ../src/payload.h; sourceTree = SOURCE_ROOT; };
 		5A48000100000000000000C5 /* envelope.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = envelope.cpp; path = ../src/envelope.cpp; sourceTree = SOURCE_ROOT; };
 		5A48000100000000000000C6 /* envelope.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = envelope.h; path = ../src/envelope.h; sourceTree = SOURCE_ROOT; };
+		5A4800020000000000000010 /* SahouIn.plugin */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SahouIn.plugin; sourceTree = BUILT_PRODUCTS_DIR; };
+		5A4800020000000000000011 /* SahouInCHOP.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = SahouInCHOP.cpp; path = ../src/SahouInCHOP.cpp; sourceTree = SOURCE_ROOT; };
+		5A4800020000000000000012 /* SahouInCHOP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SahouInCHOP.h; path = ../src/SahouInCHOP.h; sourceTree = SOURCE_ROOT; };
+		5A4800020000000000000013 /* outcome.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = outcome.cpp; path = ../src/outcome.cpp; sourceTree = SOURCE_ROOT; };
+		5A4800020000000000000014 /* outcome.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = outcome.h; path = ../src/outcome.h; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		5A48000100000000000000A8 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		5A4800020000000000000022 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -46,6 +61,7 @@
 			isa = PBXGroup;
 			children = (
 				5A48000100000000000000A6 /* SahouOut.plugin */,
+				5A4800020000000000000010 /* SahouIn.plugin */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -59,6 +75,10 @@
 				5A48000100000000000000C4 /* payload.h */,
 				5A48000100000000000000C5 /* envelope.cpp */,
 				5A48000100000000000000C6 /* envelope.h */,
+				5A4800020000000000000011 /* SahouInCHOP.cpp */,
+				5A4800020000000000000012 /* SahouInCHOP.h */,
+				5A4800020000000000000013 /* outcome.cpp */,
+				5A4800020000000000000014 /* outcome.h */,
 				5A48000100000000000000C0 /* Info.plist */,
 			);
 			name = src;
@@ -84,6 +104,23 @@
 			productReference = 5A48000100000000000000A6 /* SahouOut.plugin */;
 			productType = "com.apple.product-type.bundle";
 		};
+		5A4800020000000000000020 /* SahouIn */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 5A4800020000000000000024 /* Build configuration list for PBXNativeTarget "SahouIn" */;
+			buildPhases = (
+				5A4800020000000000000021 /* Sources */,
+				5A4800020000000000000022 /* Frameworks */,
+				5A4800020000000000000023 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = SahouIn;
+			productName = SahouIn;
+			productReference = 5A4800020000000000000010 /* SahouIn.plugin */;
+			productType = "com.apple.product-type.bundle";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -95,6 +132,10 @@
 				ORGANIZATIONNAME = Sahou;
 				TargetAttributes = {
 					5A48000100000000000000A5 = {
+						CreatedOnToolsVersion = 16.0;
+						ProvisioningStyle = Automatic;
+					};
+					5A4800020000000000000020 = {
 						CreatedOnToolsVersion = 16.0;
 						ProvisioningStyle = Automatic;
 					};
@@ -114,12 +155,20 @@
 			projectRoot = "";
 			targets = (
 				5A48000100000000000000A5 /* SahouOut */,
+				5A4800020000000000000020 /* SahouIn */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
 		5A48000100000000000000A9 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		5A4800020000000000000023 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -136,6 +185,16 @@
 				5A48000100000000000000D1 /* SahouOutCHOP.cpp in Sources */,
 				5A48000100000000000000D3 /* payload.cpp in Sources */,
 				5A48000100000000000000D5 /* envelope.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		5A4800020000000000000021 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5A4800020000000000000001 /* SahouInCHOP.cpp in Sources */,
+				5A4800020000000000000002 /* envelope.cpp in Sources */,
+				5A4800020000000000000003 /* outcome.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -246,6 +305,68 @@
 			};
 			name = Release;
 		};
+		5A4800020000000000000025 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				DEAD_CODE_STRIPPING = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"SAHOU_CAPI",
+					"$(inherited)",
+				);
+				HEADER_SEARCH_PATHS = (
+					"$(SRCROOT)/../vendor",
+					"$(SRCROOT)/../../../core",
+					"$(SRCROOT)/../transport",
+				);
+				INFOPLIST_FILE = "$(SRCROOT)/Info.plist";
+				INSTALL_PATH = /;
+				LD_RUNPATH_SEARCH_PATHS = "@loader_path/../Frameworks";
+				OTHER_LDFLAGS = (
+					"$(SRCROOT)/../../../target/release/libsahou_core.a",
+					"$(SRCROOT)/../../../target/release/libsahou_transport.dylib",
+					"-framework",
+					CoreFoundation,
+					"-framework",
+					Security,
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "io.sahou.td.SahouIn";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = plugin;
+			};
+			name = Debug;
+		};
+		5A4800020000000000000026 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				DEAD_CODE_STRIPPING = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"SAHOU_CAPI",
+					"$(inherited)",
+				);
+				HEADER_SEARCH_PATHS = (
+					"$(SRCROOT)/../vendor",
+					"$(SRCROOT)/../../../core",
+					"$(SRCROOT)/../transport",
+				);
+				INFOPLIST_FILE = "$(SRCROOT)/Info.plist";
+				INSTALL_PATH = /;
+				LD_RUNPATH_SEARCH_PATHS = "@loader_path/../Frameworks";
+				OTHER_LDFLAGS = (
+					"$(SRCROOT)/../../../target/release/libsahou_core.a",
+					"$(SRCROOT)/../../../target/release/libsahou_transport.dylib",
+					"-framework",
+					CoreFoundation,
+					"-framework",
+					Security,
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "io.sahou.td.SahouIn";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = plugin;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -263,6 +384,15 @@
 			buildConfigurations = (
 				5A48000100000000000000B4 /* Debug */,
 				5A48000100000000000000B5 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		5A4800020000000000000024 /* Build configuration list for PBXNativeTarget "SahouIn" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				5A4800020000000000000025 /* Debug */,
+				5A4800020000000000000026 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

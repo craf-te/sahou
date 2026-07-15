@@ -17,6 +17,9 @@ runtimes/python/python/sahou/*.pdb
 examples/demo/runtime/gen/descriptor.json
 examples/demo/runtime/**/node_modules/
 
+# Distributable release artifacts (e.g. the packaged TouchDesigner plugin zip) — generated.
+/dist/
+
 # GUI (gui/): dependencies, build outputs, and wasm-pack artifacts are generated, so they are ignored (.gitkeep keeps just the empty dist container)
 gui/node_modules/
 gui/dist/*

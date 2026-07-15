@@ -1,0 +1,35 @@
+Sahou for TouchDesigner — Out / In CHOP  (experimental, macOS / Apple Silicon)
+==============================================================================
+
+CONTENTS
+  SahouOut.plugin, SahouIn.plugin   the custom operators
+  LICENSE                           Apache-2.0 (Sahou)
+  NOTICE                            attribution (incl. Eclipse Zenoh, used under Apache-2.0)
+  THIRD-PARTY-LICENSES.md           full third-party license texts of bundled dependencies
+
+REQUIREMENTS
+  - macOS on Apple Silicon (arm64). Intel Macs are not supported.
+  - TouchDesigner (Apple Silicon build).
+
+INSTALL
+  1. Unzip.
+  2. Clear the download quarantine. This build is UNSIGNED, so without this step
+     macOS refuses to load the plugins:
+         xattr -cr SahouOut.plugin SahouIn.plugin
+  3. Put the .plugin bundles where TouchDesigner scans for plugins — either:
+       - next to your project:  <your .toe folder>/Plugins/
+       - or user-global:        ~/Library/Application Support/Derivative/TouchDesigner099/Plugins/
+     (copy them in, or symlink them.)
+  4. Restart TouchDesigner (plugins are scanned at startup).
+  5. Add a "Sahou Out" or "Sahou In" CHOP.
+
+NETWORK PERMISSION (important)
+  Sahou talks over your LAN via Zenoh. macOS gates local-network access per app,
+  and the permission is granted to the HOST app (TouchDesigner), not to the plugin.
+  Allow it under:
+      System Settings -> Privacy & Security -> Local Network -> TouchDesigner
+  Without this, discovery and receiving between apps/machines can silently fail.
+
+NOTES
+  - Unsigned & experimental. A signed + notarized build is planned.
+  - Source & issues: https://github.com/craf-te/sahou

@@ -86,6 +86,65 @@ char *sahou_connections_from(SahouRuntime *handle,
 
 #if defined(SAHOU_CAPI)
 /**
+ * List the nodes that can receive (are a `to` of a pub_sub connection), for a receiver-node
+ * selector (Sahou In CHOP). JSON string array `["node",...]`. Free with `sahou_free`.
+ *
+ * # Safety
+ * `handle` is null or a live runtime from `sahou_runtime_new`.
+ */
+char *sahou_subscribing_nodes(SahouRuntime *handle);
+#endif
+
+#if defined(SAHOU_CAPI)
+/**
+ * List the pub_sub connections `node` can receive, for a connection selector. JSON string array
+ * `["conn",...]` (empty for a null handle / unknown node). Free with `sahou_free`.
+ *
+ * # Safety
+ * `handle` is null or a live runtime; `node` is null or a valid NUL-terminated C string.
+ */
+char *sahou_connections_to(SahouRuntime *handle, const char *node);
+#endif
+
+#if defined(SAHOU_CAPI)
+/**
+ * The resolved keyexpr of `conn` (e.g. "sahou/motion"), for a receiver to subscribe. Empty string
+ * for a null handle / unknown connection. Free with `sahou_free`.
+ *
+ * # Safety
+ * `handle` is null or a live runtime; `conn` is null or a valid NUL-terminated C string.
+ */
+char *sahou_connection_key(SahouRuntime *handle, const char *conn);
+#endif
+
+#if defined(SAHOU_CAPI)
+/**
+ * Decode a validated payload's numeric fields into a flat JSON string array of
+ * `name, count, v0, v1, …` groups (Sahou In CHOP channels). Free with `sahou_free`.
+ *
+ * # Safety
+ * `handle` is null or a live runtime; `conn`/`payload_json` are null or valid NUL-terminated C strings.
+ */
+char *sahou_decode_channels(SahouRuntime *handle,
+                            const char *conn,
+                            const char *payload_json);
+#endif
+
+#if defined(SAHOU_CAPI)
+/**
+ * Decode all payload fields into a flat JSON string array of `name, kind, value` triples
+ * (Sahou In CHOP Info DAT decoded-payload table). Free with `sahou_free`.
+ *
+ * # Safety
+ * `handle` is null or a live runtime; `conn`/`payload_json` are null or valid NUL-terminated C strings.
+ */
+char *sahou_decode_fields(SahouRuntime *handle,
+                          const char *conn,
+                          const char *payload_json);
+#endif
+
+#if defined(SAHOU_CAPI)
+/**
  * Payload schema of `conn` as display rows, for a "what should I send?" panel. Returns a heap JSON
  * array of `[name, type, required, detail]` string rows: `[["x","float","yes","0..1"],...]`
  * (empty array for a null handle / unknown / any-typed connection). Free with `sahou_free`.
