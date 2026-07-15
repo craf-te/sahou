@@ -79,8 +79,8 @@ gen-td-demo:
 test-td: build-ffi gen-td-demo
     runtimes/touchdesigner/test/run.sh
 
-# Build the Sahou Out CHOP .plugin (arm64) into runtimes/touchdesigner/build/Release/SahouOut.plugin.
-# Bundles the zenoh transport dylib into the plugin (Contents/Frameworks) and ad-hoc re-signs it.
+# Build the Sahou Out + In CHOP .plugins (arm64) into runtimes/touchdesigner/build/Release/.
+# Each .plugin bundles the zenoh transport dylib (Contents/Frameworks) and is ad-hoc re-signed.
 build-td-macos: build-ffi
     cargo build -p sahou-transport --release
     install_name_tool -id @rpath/libsahou_transport.dylib target/release/libsahou_transport.dylib
@@ -89,3 +89,8 @@ build-td-macos: build-ffi
     cp target/release/libsahou_transport.dylib "runtimes/touchdesigner/build/Release/SahouOut.plugin/Contents/Frameworks/"
     codesign -f -s - "runtimes/touchdesigner/build/Release/SahouOut.plugin/Contents/Frameworks/libsahou_transport.dylib"
     codesign -f -s - "runtimes/touchdesigner/build/Release/SahouOut.plugin"
+    xcodebuild -project runtimes/touchdesigner/macos/SahouOut.xcodeproj -target SahouIn -configuration Release SYMROOT="$PWD/runtimes/touchdesigner/build" build
+    mkdir -p "runtimes/touchdesigner/build/Release/SahouIn.plugin/Contents/Frameworks"
+    cp target/release/libsahou_transport.dylib "runtimes/touchdesigner/build/Release/SahouIn.plugin/Contents/Frameworks/"
+    codesign -f -s - "runtimes/touchdesigner/build/Release/SahouIn.plugin/Contents/Frameworks/libsahou_transport.dylib"
+    codesign -f -s - "runtimes/touchdesigner/build/Release/SahouIn.plugin"
