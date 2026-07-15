@@ -18,7 +18,13 @@ statically linked).
   **Zenoh** (via the bundled `libsahou_transport`), for a quick connectivity check with `sahou tap`.
   This is the first real transmit; **continuous per-frame send + QoS mapping + on-change dedup**
   (the `Active` / `Send Every Cook` toggles) are the next stage.
-- Not yet: continuous send, Sahou In CHOP, DAT operators, Windows build, universal (Intel) binary,
+- **Sahou In CHOP** (macOS arm64). Subscribes to a pub_sub connection on which the selected node is
+  a **receiver** (`to`), runs each received message through the **receive boundary** in the Rust
+  core (`sahou_accept_sample`), and outputs the accepted payload's **numeric fields as channels**
+  (strings appear in the Info DAT). A contract violation goes red with the structured diagnostic.
+  **Inject Sample** feeds one IR-valid sample locally (no network) to test downstream wiring with no
+  publisher.
+- Not yet: continuous send, DAT operators, Windows build, universal (Intel) binary,
   distribution signing (multicast entitlement / Developer ID).
 
 ## Layout
@@ -26,9 +32,11 @@ statically linked).
 ```
 runtimes/touchdesigner/
 ├── src/                 # our code (committed)
-│   ├── SahouOutCHOP.{h,cpp}   the op — thin TD glue
+│   ├── SahouOutCHOP.{h,cpp}   the Out op — thin TD glue (channels -> publish)
+│   ├── SahouInCHOP.{h,cpp}    the In op — thin TD glue (subscribe -> channels)
 │   ├── payload.{h,cpp}        pure: channels -> JSON payload (no TD SDK)
-│   └── envelope.{h,cpp}       pure: read the core's OK/NO envelope for status
+│   ├── envelope.{h,cpp}       pure: read the core's OK/NO envelope for status
+│   └── outcome.{h,cpp}        pure: read the core's AcceptOutcome (receive boundary)
 ├── test/                # TD-independent tests (committed)
 │   ├── payload_test.cpp / envelope_test.cpp   pure unit tests
 │   ├── ffi_smoke.cpp                          payload -> core -> OK/NO (links the C ABI)
@@ -92,6 +100,7 @@ TD restart (no re-copy):
 PLUGINS="$HOME/Library/Application Support/Derivative/TouchDesigner099/Plugins"
 mkdir -p "$PLUGINS"
 ln -s "$PWD/runtimes/touchdesigner/build/Release/SahouOut.plugin" "$PLUGINS/SahouOut.plugin"
+ln -s "$PWD/runtimes/touchdesigner/build/Release/SahouIn.plugin" "$PLUGINS/SahouIn.plugin"
 ```
 
 Then restart TD (plugins are scanned at startup; a running TD locks the loaded bundle) and add a
@@ -152,3 +161,48 @@ just gen-td-demo   # -> runtimes/touchdesigner/examples/gen/descriptor.json
 Set **Node** = `td`, **Connection** = `motion`, and feed a CHOP with channels named `x`, `y`,
 `speed`. Rename one (e.g. drop `speed`) to watch the node go red with `required at
 connections.motion.payload.speed: missing required field 'speed'`.
+
+## Use — Sahou In CHOP
+
+The mirror of the Out CHOP: it **receives**. Add a **Sahou In** CHOP (no input — it is a source).
+
+Parameters:
+
+- **IR File** — path to a Sahou `descriptor.json`.
+- **Node** — receiving node. **Dropdown** of nodes that are the `to` of a pub_sub connection.
+  Disabled until an IR loads.
+- **Connection** — connection to receive on. **Dropdown** of the selected Node's pub_sub
+  connections. Disabled until a Node is picked.
+- **Active** — On (default): the background Zenoh subscriber is running and each new message
+  refreshes the output. Off: ignore the network and hold the last output.
+- **Inject Sample** — feed one IR-valid sample of the selected connection into the output
+  **locally, with no network** (works with no publisher), to test downstream wiring.
+- **Reload** — re-read the IR File.
+
+Output and status:
+
+- Each **numeric field** (float / int / bool→0/1) of the accepted payload becomes a **channel**
+  (channel name = field name; a numeric array becomes one channel with N samples). The channel set
+  is derived from the schema, so it is stable — before the first message the expected numeric
+  channels output `0`.
+- **red error** with `code at path: message` on a rejected message (wrong type, unknown field, …),
+  or a contract-version `hash_mismatch` note (the delivery handshake that resolves this is a later
+  stage). It clears when a good message arrives.
+- a **yellow warning** for not-ready conditions (no IR, no Node/Connection, waiting for the first
+  message — the last also lists the expected channels).
+- an **Info CHOP** (`valid` = 1/0/-1, `seq` = messages received, `execute_count`).
+- an **Info DAT**: the status rows (`status`, `node`, `connection`, `keyexpr`, `schema_hash`,
+  `detail`, `received`), then the **expected schema** table, then the **decoded payload** of the
+  last accepted message (`field | value`) — where **string fields** are visible.
+
+### Sahou In CHOP demo
+
+Same descriptor as the Out CHOP (its `viz` node is the `to` of `motion`). Set In CHOP **Node** =
+`viz`, **Connection** = `motion` → it outputs `x`, `y`, `speed`. Drive it with either:
+
+```sh
+sahou tap runtimes/touchdesigner/examples/gen/descriptor.json --node td --send   # publish one motion sample
+```
+
+or the Out CHOP's **Test Send** (Node = `td`). The In CHOP's channels update and the Info CHOP
+`seq` increments. **Inject Sample** exercises the decode → channel path with no network.
