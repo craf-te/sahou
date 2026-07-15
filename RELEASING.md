@@ -89,6 +89,45 @@ push all three tags together:
 git push origin v0.1.0 py-v0.1.0 npm-v0.1.0
 ```
 
+## TouchDesigner plugins (`td-v*`) — manual, local build
+
+The TD Out / In CHOPs are released **differently from every other channel: by a local
+build on a licensed TouchDesigner machine, not by a GitHub-hosted CI workflow.** Two
+reasons, both deliberate:
+
+- **SDK license.** Building requires the TouchDesigner C++ SDK headers
+  (`CHOP_CPlusPlusBase.h`, `CPlusPlus_Common.h`), which are under Derivative's **Shared
+  Use License** — usable "only in conjunction with TouchDesigner software" and "only if
+  you are a licensee who has accepted the TouchDesigner license." A GitHub-hosted runner
+  (no TD, not a licensee) is a licensing gray area, so we build where the license clearly
+  holds: the maintainer's TD machine. The SDK is never committed (`runtimes/touchdesigner/
+  .gitignore`); vendor it once per `runtimes/touchdesigner/README.md`.
+- **Unsigned, experimental.** The current build is macOS / Apple Silicon only and is not
+  code-signed / notarized (that is the next stage). Users clear the download quarantine
+  per the bundled `INSTALL.txt`.
+
+### How to release
+
+1. Vendor the TD SDK once (see `runtimes/touchdesigner/README.md`).
+2. Package (builds both plugins, bundles the license notices Apache-2.0 requires — incl.
+   Eclipse Zenoh — and `INSTALL.txt`):
+   ```sh
+   just licenses            # refresh cli/licenses/THIRD-PARTY-LICENSES.md if deps changed
+   just package-td-macos 0.0.1
+   # -> dist/sahou-td-macos-arm64-0.0.1.zip
+   ```
+3. Create the GitHub Release and upload the zip (the tag only labels the release; nothing
+   CI-triggered runs off it):
+   ```sh
+   gh release create td-v0.0.1 \
+     dist/sahou-td-macos-arm64-0.0.1.zip \
+     --title "Sahou for TouchDesigner v0.0.1 (macOS/arm64, experimental)" \
+     --notes "Experimental, unsigned, Apple Silicon only. See INSTALL.txt in the zip."
+   ```
+
+Windows (`SahouOut.dll` / `SahouIn.dll`) and macOS signing + notarization are follow-ups;
+when added, the Windows zip becomes a second asset on the same `td-v*` release.
+
 ## After pushing
 
 Watch the runs: `gh run list` (or the Actions tab). Publishing can fail on token
