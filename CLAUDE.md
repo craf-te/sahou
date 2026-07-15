@@ -44,6 +44,12 @@ rather than propagating. The transport is built on Zenoh.
   - `just build-td-macos` / `just test-td` — build/test the TouchDesigner plugin (macOS; needs the TD SDK vendored into `runtimes/touchdesigner/vendor/`).
 - On this machine, `cc` is a shell alias — for C/C++ compilation use `/usr/bin/cc` / `/usr/bin/c++` explicitly.
 
+## Releasing
+
+Each channel ships independently via a prefixed git tag (`v*` → CLI + crates.io,
+`py-v*` → PyPI, `npm-v*` → npm). Full step-by-step, version policy, and the
+required secrets are in [RELEASING.md](RELEASING.md).
+
 ## Non-negotiable design invariants
 
 - **The core is the IR.** Never wire the surface (YAML) directly to output (codegen);
