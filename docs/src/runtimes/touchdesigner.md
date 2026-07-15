@@ -1,7 +1,7 @@
 # TouchDesigner
 
-> **Status: experimental.** The Sahou Out CHOP is currently **macOS / arm64
-> only**. Building it requires the TouchDesigner C++ SDK vendored into
+> **Status: experimental.** The Sahou Out / In CHOPs are currently **macOS / arm64
+> only**. Building them requires the TouchDesigner C++ SDK vendored into
 > `runtimes/touchdesigner/vendor/` (Derivative Shared Use License — copy it from
 > your local TouchDesigner install; it is not redistributed here).
 
@@ -19,10 +19,23 @@ a thin C++ glue plus the statically-linked Rust core.
   connection over Zenoh (via the bundled transport), for a quick connectivity
   check with `sahou tap`.
 
+## Sahou In CHOP
+
+The mirror of the Out CHOP — it **receives**. It subscribes to a `pub_sub`
+connection on which the selected node is a receiver (`to`), runs each message
+through the **receive boundary** in the Rust core, and outputs the accepted
+payload's **numeric fields as channels** (string fields appear in the Info DAT).
+A rejected message turns the node red with the structured diagnostic.
+
+- **Active** — On (default): the background Zenoh subscriber runs and each new
+  message refreshes the output. Off: hold the last output and ignore the network.
+- **Inject Sample** — feed one IR-valid sample into the output **locally, with no
+  network**, to test downstream wiring without a publisher.
+
 ## Not yet
 
-Continuous per-frame send, a Sahou In CHOP, DAT operators, a Windows build, a
-universal (Intel) binary, and distribution signing are future work.
+Continuous per-frame send, DAT operators, a Windows build, a universal (Intel)
+binary, and distribution signing are future work.
 
 ## Building
 

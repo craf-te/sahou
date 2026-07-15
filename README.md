@@ -123,8 +123,10 @@ Thin, hand-written libraries that share the Rust core (install commands above):
 
 ## TouchDesigner (experimental)
 
-A native **Sahou Out CHOP** for TouchDesigner is included. It is **experimental and
-macOS/arm64 only** today, and building it needs the TouchDesigner C++ SDK.
+Native **Sahou Out / In CHOPs** for TouchDesigner are included — the Out CHOP sends an
+input CHOP's channels over the typed contract, and the In CHOP receives a connection and
+outputs the payload's numeric fields as channels. They are **experimental and macOS/arm64
+only** today, and building them needs the TouchDesigner C++ SDK.
 See [`runtimes/touchdesigner/README.md`](runtimes/touchdesigner/README.md).
 
 ## License
