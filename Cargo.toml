@@ -2,7 +2,9 @@
 members = ["core", "cli", "runtimes/touchdesigner/transport", "runtimes/rust"]
 resolver = "2"
 
-# The profile that 'dist' will build with
+# The profile that 'dist' will build with.
+# LTO disabled: it dominated release CI link time (zenoh is large). Trade-off is a
+# slightly larger/slower binary; acceptable for faster releases.
 [profile.dist]
 inherits = "release"
-lto = "thin"
+lto = false

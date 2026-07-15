@@ -132,6 +132,11 @@ jobs:
           fi
       - name: Install dist
         run: ${{ matrix.install_dist.run }}
+      # Cache the (large, zenoh-heavy) target dir across releases. First release after
+      # this was added is still cold; subsequent per-target builds are much faster.
+      # Keyed per runner/target, so each matrix leg gets its own cache.
+      - name: Cache Rust build
+        uses: Swatinem/rust-cache@v2
       # Get the dist-manifest
       - name: Fetch local artifacts
         uses: actions/download-artifact@v8
