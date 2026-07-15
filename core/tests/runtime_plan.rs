@@ -2,7 +2,8 @@ use sahou_core::endpoints::Endpoints;
 use sahou_core::ir::descriptor_json;
 use sahou_core::parse::parse_contract;
 use sahou_core::runtime::{
-    connection_fields, connections_from, load_descriptor, node_plan, publishing_nodes,
+    connection_fields, connection_key, connections_from, connections_to, decode_channels,
+    decode_fields, load_descriptor, node_plan, publishing_nodes, subscribing_nodes,
 };
 
 const DEMO: &str = include_str!("../../examples/demo/schema.sahou.yaml");
@@ -105,4 +106,63 @@ fn connection_fields_render_the_payload_schema() {
     assert!(connection_fields(&d, "debug_tap").is_empty());
     // an unknown connection is empty, not an error (it feeds a panel)
     assert!(connection_fields(&d, "ghost").is_empty());
+}
+
+#[test]
+fn subscribing_nodes_are_the_pub_sub_receivers() {
+    let d = load_descriptor(&demo_descriptor_json()).unwrap();
+    // demo pub_sub `to`s: touch -> [visuals, archive], points/debug_tap -> [visuals].
+    // get_state is a query, so archive's query-only role does not add it here.
+    assert_eq!(subscribing_nodes(&d), vec!["archive", "visuals"]);
+}
+
+#[test]
+fn connections_to_lists_pub_sub_only_sorted() {
+    let d = load_descriptor(&demo_descriptor_json()).unwrap();
+    // visuals receives all three pub_sub connections (sorted by name).
+    assert_eq!(
+        connections_to(&d, "visuals"),
+        vec!["debug_tap", "points", "touch"]
+    );
+    // archive receives only touch (get_state is a query, excluded).
+    assert_eq!(connections_to(&d, "archive"), vec!["touch"]);
+    // a node that only sends receives nothing.
+    assert_eq!(connections_to(&d, "sensor"), Vec::<String>::new());
+    // an unknown node is empty, not an error (it feeds a selector).
+    assert_eq!(connections_to(&d, "ghost"), Vec::<String>::new());
+}
+
+#[test]
+fn connection_key_resolves_the_keyexpr() {
+    let d = load_descriptor(&demo_descriptor_json()).unwrap();
+    assert_eq!(connection_key(&d, "touch").as_deref(), Some("sahou/touch"));
+    assert_eq!(connection_key(&d, "ghost"), None);
+}
+
+#[test]
+fn decode_channels_keeps_numeric_fields_only() {
+    let d = load_descriptor(&demo_descriptor_json()).unwrap();
+    // `touch` has x(float) plus non-numeric fields (an enum + a group) — only x is a channel.
+    let payload = r#"{"x":0.5,"phase":"move","meta":{"ts":1,"source":"a"}}"#;
+    assert_eq!(decode_channels(&d, "touch", payload), vec!["x", "1", "0.5"]);
+}
+
+#[test]
+fn decode_channels_unknown_conn_is_empty() {
+    let d = load_descriptor(&demo_descriptor_json()).unwrap();
+    assert_eq!(decode_channels(&d, "ghost", "{}"), Vec::<String>::new());
+}
+
+#[test]
+fn decode_fields_lists_all_fields_with_kind() {
+    let d = load_descriptor(&demo_descriptor_json()).unwrap();
+    let payload = r#"{"x":0.5,"phase":"move","meta":{"ts":1,"source":"a"}}"#;
+    let rows = decode_fields(&d, "touch", payload);
+    // triples: x is a number, phase decodes as its string value.
+    assert_eq!(rows[0], "x");
+    assert_eq!(rows[1], "number");
+    assert_eq!(rows[2], "0.5");
+    assert_eq!(rows[3], "phase");
+    assert_eq!(rows[4], "string");
+    assert_eq!(rows[5], "move");
 }

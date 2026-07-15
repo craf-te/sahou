@@ -99,6 +99,38 @@ pub fn connections_from(desc: &Descriptor, node: &str) -> Vec<String> {
         .collect()
 }
 
+/// Nodes that can receive on a pub_sub connection (i.e. are a `to` of one). Sorted, deduped.
+/// Used to populate a receiver-node selector (Sahou In CHOP). The mirror of `publishing_nodes`.
+pub fn subscribing_nodes(desc: &Descriptor) -> Vec<String> {
+    let mut nodes: Vec<String> = desc
+        .connections
+        .values()
+        .filter(|c| c.pattern == Pattern::PubSub)
+        .flat_map(|c| c.to.iter().cloned())
+        .collect();
+    nodes.sort();
+    nodes.dedup();
+    nodes
+}
+
+/// pub_sub connections whose `to` includes `node` (the connections `node` receives). Sorted.
+/// Empty for an unknown node or a node that receives nothing (no error — this feeds a selector).
+/// The mirror of `connections_from`.
+pub fn connections_to(desc: &Descriptor, node: &str) -> Vec<String> {
+    // desc.connections is a BTreeMap, so iteration (and thus this list) is already sorted by name.
+    desc.connections
+        .iter()
+        .filter(|(_, c)| c.pattern == Pattern::PubSub && c.to.iter().any(|t| t == node))
+        .map(|(id, _)| id.clone())
+        .collect()
+}
+
+/// The resolved keyexpr of a connection (e.g. "sahou/motion"), or None for an unknown connection.
+/// Lets a receiver (Sahou In CHOP) subscribe without knowing the sender node.
+pub fn connection_key(desc: &Descriptor, conn: &str) -> Option<String> {
+    desc.connections.get(conn).map(|c| c.key.clone())
+}
+
 /// The payload schema of a connection, as display rows `[name, type, required, detail]`, for a
 /// "what should I send?" panel (design §5/§7). Empty for an unknown or `any`-typed connection.
 /// `detail` is a compact human summary (range / enum values / group members) — the rendering lives
@@ -114,6 +146,113 @@ pub fn connection_fields(desc: &Descriptor, conn: &str) -> Vec<[String; 4]> {
         return vec![];
     }
     slot.fields.iter().map(field_row).collect()
+}
+
+/// Is this a field type that maps to a numeric CHOP channel?
+fn is_numeric(t: TypeName) -> bool {
+    matches!(t, TypeName::Int | TypeName::Float | TypeName::Bool)
+}
+
+/// Read one JSON value as an f64 channel sample (bool -> 1.0/0.0). None if not numeric-shaped.
+fn value_as_f64(v: &serde_json::Value) -> Option<f64> {
+    match v {
+        serde_json::Value::Number(n) => n.as_f64(),
+        serde_json::Value::Bool(b) => Some(if *b { 1.0 } else { 0.0 }),
+        _ => None,
+    }
+}
+
+/// Format an f64 stably for a channel value (reuse serde_json's Number formatting, which round-trips).
+fn fmt_f64(x: f64) -> String {
+    serde_json::Value::from(x).to_string()
+}
+
+/// One scalar JSON value as a short display string (for array rendering in decode_fields).
+fn compact_scalar(v: &serde_json::Value) -> String {
+    match v {
+        serde_json::Value::Number(n) => n.to_string(),
+        serde_json::Value::Bool(b) => b.to_string(),
+        serde_json::Value::String(s) => s.clone(),
+        _ => "…".to_string(),
+    }
+}
+
+/// Decode a validated payload's **numeric** fields into flat `name, count, v0, v1, …` groups
+/// (scalar => count "1"; numeric array => its element values). Non-numeric fields are omitted.
+/// Empty for an unknown/any-typed connection or an unparseable payload. Feeds the In CHOP channels.
+pub fn decode_channels(desc: &Descriptor, conn: &str, payload_json: &str) -> Vec<String> {
+    let Some(c) = desc.connections.get(conn) else {
+        return vec![];
+    };
+    let Some(slot) = c.payload.as_ref() else {
+        return vec![];
+    };
+    let Ok(serde_json::Value::Object(obj)) =
+        serde_json::from_str::<serde_json::Value>(payload_json)
+    else {
+        return vec![];
+    };
+    let mut out = Vec::new();
+    for f in &slot.fields {
+        let Some(v) = obj.get(&f.name) else { continue };
+        if is_numeric(f.ty) {
+            if let Some(x) = value_as_f64(v) {
+                out.push(f.name.clone());
+                out.push("1".to_string());
+                out.push(fmt_f64(x));
+            }
+        } else if f.ty == TypeName::Array {
+            // A numeric array becomes one channel with N samples.
+            if let serde_json::Value::Array(items) = v {
+                let nums: Vec<f64> = items.iter().filter_map(value_as_f64).collect();
+                if nums.len() == items.len() && !nums.is_empty() {
+                    out.push(f.name.clone());
+                    out.push(nums.len().to_string());
+                    out.extend(nums.iter().map(|x| fmt_f64(*x)));
+                }
+            }
+        }
+    }
+    out
+}
+
+/// Decode **all** payload fields into flat `name, kind, value` triples for a display table
+/// (the In CHOP Info DAT — where string fields are visible). Value is stringified; arrays render
+/// compact (`0.5, 0.3`). Empty for an unknown/any-typed connection or an unparseable payload.
+pub fn decode_fields(desc: &Descriptor, conn: &str, payload_json: &str) -> Vec<String> {
+    let Some(c) = desc.connections.get(conn) else {
+        return vec![];
+    };
+    let Some(slot) = c.payload.as_ref() else {
+        return vec![];
+    };
+    let Ok(serde_json::Value::Object(obj)) =
+        serde_json::from_str::<serde_json::Value>(payload_json)
+    else {
+        return vec![];
+    };
+    let mut out = Vec::new();
+    for f in &slot.fields {
+        let (kind, value) = match obj.get(&f.name) {
+            Some(serde_json::Value::Number(n)) => ("number", n.to_string()),
+            Some(serde_json::Value::Bool(b)) => ("bool", b.to_string()),
+            Some(serde_json::Value::String(s)) => ("string", s.clone()),
+            Some(serde_json::Value::Array(items)) => (
+                "array",
+                items
+                    .iter()
+                    .map(compact_scalar)
+                    .collect::<Vec<_>>()
+                    .join(", "),
+            ),
+            Some(serde_json::Value::Object(_)) => ("object", "{…}".to_string()),
+            Some(serde_json::Value::Null) | None => ("missing", String::new()),
+        };
+        out.push(f.name.clone());
+        out.push(kind.to_string());
+        out.push(value);
+    }
+    out
 }
 
 fn field_row(f: &Field) -> [String; 4] {
