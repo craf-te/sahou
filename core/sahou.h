@@ -119,6 +119,18 @@ char *sahou_connection_key(SahouRuntime *handle, const char *conn);
 
 #if defined(SAHOU_CAPI)
 /**
+ * The per-connection schema hash of `conn` (the 16-hex handshake attachment), for a receiver-side
+ * "inject sample" to attach what a real sender would. Empty string for a null handle / unknown
+ * connection. Free with `sahou_free`.
+ *
+ * # Safety
+ * `handle` is null or a live runtime; `conn` is null or a valid NUL-terminated C string.
+ */
+char *sahou_connection_hash(SahouRuntime *handle, const char *conn);
+#endif
+
+#if defined(SAHOU_CAPI)
+/**
  * Decode a validated payload's numeric fields into a flat JSON string array of
  * `name, count, v0, v1, …` groups (Sahou In CHOP channels). Free with `sahou_free`.
  *
