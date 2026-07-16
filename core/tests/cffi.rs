@@ -120,7 +120,10 @@ fn c_in_chop_inject_accepts_with_connection_hash() {
 
         // The exact fixed Inject sequence: generate a sample, read the connection hash, accept.
         let sample = take(sahou_sample(rt, conn.as_ptr()));
-        assert!(sample.contains("\"x\""), "sample should be IR-valid: {sample}");
+        assert!(
+            sample.contains("\"x\""),
+            "sample should be IR-valid: {sample}"
+        );
         let hash = take(sahou_connection_hash(rt, conn.as_ptr()));
         assert_eq!(hash.len(), 16, "16-hex per-connection hash, got {hash:?}");
 
