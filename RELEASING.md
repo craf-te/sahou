@@ -102,31 +102,47 @@ reasons, both deliberate:
   (no TD, not a licensee) is a licensing gray area, so we build where the license clearly
   holds: the maintainer's TD machine. The SDK is never committed (`runtimes/touchdesigner/
   .gitignore`); vendor it once per `runtimes/touchdesigner/README.md`.
-- **Unsigned, experimental.** The current build is macOS / Apple Silicon only and is not
-  code-signed / notarized (that is the next stage). Users clear the download quarantine
-  per the bundled `INSTALL.txt`.
+- **Unsigned, experimental.** Two platforms ship: **macOS / Apple Silicon** (`.plugin`) and
+  **Windows / x64** (`.dll`). Neither is code-signed / notarized yet (that is the next stage).
+  macOS users clear the download quarantine per the bundled `INSTALL.txt`; Windows loads
+  unsigned Custom-OP DLLs as-is.
+
+Both platform zips are built from the **same tagged commit** but on **different machines**
+(macOS on a Mac with Xcode, Windows on a Windows box with MSVC), so they are usually produced
+at different times. That is fine: a `td-v*` tag names a **source state**, not a build event —
+upload whichever platform you built now, and add the other platform's zip to the *same* release
+later (GitHub lets you attach assets to an existing release at any time). Because the plugin
+sources changed after `td-v0.0.1` (the In CHOP "Inject Sample" fix), that release stays frozen
+as the historical macOS-only build; the fix ships from `td-v0.0.2` onward on both platforms.
 
 ### How to release
 
-1. Vendor the TD SDK once (see `runtimes/touchdesigner/README.md`).
-2. Package (builds both plugins, bundles the license notices Apache-2.0 requires — incl.
-   Eclipse Zenoh — and `INSTALL.txt`):
+1. Vendor the TD SDK once, per platform (see `runtimes/touchdesigner/README.md` for macOS,
+   `runtimes/touchdesigner/windows/README.md` for Windows).
+2. `just licenses` — refresh `cli/licenses/THIRD-PARTY-LICENSES.md` if deps changed (bundled to
+   satisfy Apache-2.0, incl. Eclipse Zenoh).
+3. Package on each machine (each recipe builds both plugins + bundles the license notices +
+   `INSTALL.txt`):
    ```sh
-   just licenses            # refresh cli/licenses/THIRD-PARTY-LICENSES.md if deps changed
-   just package-td-macos 0.0.1
-   # -> dist/sahou-td-macos-arm64-0.0.1.zip
+   # on a Mac (Xcode):
+   just package-td-macos 0.0.2      # -> dist/sahou-td-macos-arm64-0.0.2.zip
+   # on Windows (MSVC):
+   just package-td-windows 0.0.2    # -> dist/sahou-td-windows-x64-0.0.2.zip
    ```
-3. Create the GitHub Release and upload the zip (the tag only labels the release; nothing
-   CI-triggered runs off it):
+4. Create the GitHub Release and upload whichever zip(s) you built (the tag only labels the
+   release; nothing CI-triggered runs off it):
    ```sh
-   gh release create td-v0.0.1 \
-     dist/sahou-td-macos-arm64-0.0.1.zip \
-     --title "Sahou for TouchDesigner v0.0.1 (macOS/arm64, experimental)" \
-     --notes "Experimental, unsigned, Apple Silicon only. See INSTALL.txt in the zip."
+   gh release create td-v0.0.2 \
+     dist/sahou-td-windows-x64-0.0.2.zip \
+     --title "Sahou for TouchDesigner v0.0.2 (macOS/arm64 + Windows/x64, experimental)" \
+     --notes "Experimental, unsigned. Windows/x64 and macOS/arm64. Fixes the In CHOP 'Inject Sample'. See INSTALL.txt in the zip."
+   ```
+   Built the other platform later? Attach it to the **same** release instead of making a new tag:
+   ```sh
+   gh release upload td-v0.0.2 dist/sahou-td-macos-arm64-0.0.2.zip
    ```
 
-Windows (`SahouOut.dll` / `SahouIn.dll`) and macOS signing + notarization are follow-ups;
-when added, the Windows zip becomes a second asset on the same `td-v*` release.
+macOS signing + notarization and Windows Authenticode signing are follow-ups.
 
 ## After pushing
 

@@ -1,0 +1,32 @@
+Sahou for TouchDesigner — Out / In CHOP  (experimental, Windows / x64)
+======================================================================
+
+CONTENTS
+  SahouOut.dll, SahouIn.dll          the custom operators
+  sahou_transport.dll                the Zenoh transport (loaded by the ops)
+  LICENSE                            Apache-2.0 (Sahou)
+  NOTICE                             attribution (incl. Eclipse Zenoh, used under Apache-2.0)
+  THIRD-PARTY-LICENSES.md            full third-party license texts of bundled dependencies
+
+REQUIREMENTS
+  - Windows 64-bit.
+  - TouchDesigner 2025 (build 2025.32820) or newer.
+
+INSTALL
+  1. Unzip.
+  2. Put ALL THREE DLLs together in the same folder where TouchDesigner scans for plugins:
+       - next to your project:  <your .toe folder>\Plugins\
+       - or user-global:        %USERPROFILE%\Documents\Derivative\Plugins\
+     SahouOut.dll and SahouIn.dll load sahou_transport.dll from alongside them, so it must
+     sit in the same folder.
+  3. Restart TouchDesigner (plugins are scanned at startup).
+  4. Add a "Sahou Out" or "Sahou In" CHOP.
+
+NETWORK PERMISSION (important)
+  Sahou talks over your LAN via Zenoh. On first use Windows Firewall may prompt for
+  TouchDesigner — allow it on the Private network. Without it, discovery and receiving
+  between apps/machines can silently fail.
+
+NOTES
+  - Unsigned & experimental. Windows does not require signing to load a plugin DLL.
+  - Source & issues: https://github.com/craf-te/sahou

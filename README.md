@@ -134,9 +134,12 @@ Thin, hand-written libraries that share the Rust core (install commands above):
 
 Native **Sahou Out / In CHOPs** for TouchDesigner are included — the Out CHOP sends an
 input CHOP's channels over the typed contract, and the In CHOP receives a connection and
-outputs the payload's numeric fields as channels. They are **experimental and macOS/arm64
-only** today, and building them needs the TouchDesigner C++ SDK.
-See [`runtimes/touchdesigner/README.md`](runtimes/touchdesigner/README.md).
+outputs the payload's numeric fields as channels. They are **experimental** and run on
+**macOS / arm64** and **Windows / x64**.
+
+Grab a prebuilt zip from the [`td-v*` releases](https://github.com/craf-te/sahou/releases?q=td)
+(drop the DLLs / `.plugin` into TD's `Plugins` folder — no build needed), or build from source
+(needs the TouchDesigner C++ SDK). See [`runtimes/touchdesigner/README.md`](runtimes/touchdesigner/README.md).
 
 ## License
 

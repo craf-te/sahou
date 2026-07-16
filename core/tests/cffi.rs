@@ -5,8 +5,8 @@
 use std::ffi::{c_char, CStr, CString};
 
 use sahou_core::cffi::{
-    sahou_accept_sample, sahou_free, sahou_prepare_publish, sahou_runtime_free, sahou_runtime_new,
-    sahou_validate_schema,
+    sahou_accept_sample, sahou_connection_hash, sahou_free, sahou_prepare_publish,
+    sahou_runtime_free, sahou_runtime_new, sahou_sample, sahou_validate_schema,
 };
 use sahou_core::endpoints::Endpoints;
 use sahou_core::ir::descriptor_json;
@@ -98,6 +98,54 @@ fn c_runtime_out_boundary_then_in_boundary_roundtrip() {
             std::ptr::null(),
         ));
         assert!(outcome.contains("\"result\":\"accept\""), "{outcome}");
+
+        sahou_runtime_free(rt);
+    }
+}
+
+/// Regression (Sahou In CHOP "Inject Sample"): a receiver can inject an IR-valid sample locally and
+/// have it accepted. The receiver has no sender node, so it must attach the connection's own hash
+/// via `sahou_connection_hash` — NOT mint it through the send boundary (`sahou_prepare_publish`),
+/// whose role check would fail for a receiver node and leave no attachment, making the receive
+/// boundary reject with `missing_schema_hash`.
+#[test]
+fn c_in_chop_inject_accepts_with_connection_hash() {
+    let desc = demo_descriptor();
+    let display = CString::new("display").unwrap(); // a *receiving* node (the In CHOP's node)
+    let conn = CString::new("touch").unwrap();
+    // SAFETY: all pointers are valid C strings; the handle is freed at the end.
+    unsafe {
+        let rt = sahou_runtime_new(desc.as_ptr());
+        assert!(!rt.is_null());
+
+        // The exact fixed Inject sequence: generate a sample, read the connection hash, accept.
+        let sample = take(sahou_sample(rt, conn.as_ptr()));
+        assert!(
+            sample.contains("\"x\""),
+            "sample should be IR-valid: {sample}"
+        );
+        let hash = take(sahou_connection_hash(rt, conn.as_ptr()));
+        assert_eq!(hash.len(), 16, "16-hex per-connection hash, got {hash:?}");
+
+        let hash_c = CString::new(hash).unwrap();
+        let outcome = take(sahou_accept_sample(
+            rt,
+            display.as_ptr(),
+            conn.as_ptr(),
+            sample.as_ptr(),
+            sample.len(),
+            hash_c.as_ptr(),
+            1,
+            std::ptr::null(),
+        ));
+        assert!(
+            outcome.contains("\"result\":\"accept\""),
+            "inject must be accepted, got: {outcome}"
+        );
+
+        // An unknown connection yields an empty hash (no panic / crash across the FFI boundary).
+        let unknown = CString::new("nope").unwrap();
+        assert_eq!(take(sahou_connection_hash(rt, unknown.as_ptr())), "");
 
         sahou_runtime_free(rt);
     }

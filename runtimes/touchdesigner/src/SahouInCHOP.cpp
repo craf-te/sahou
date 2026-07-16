@@ -310,11 +310,13 @@ void SahouInCHOP::execute(CHOP_Output* output, const OP_Inputs* inputs, void*) {
             char* smp = sahou_sample(myRuntime, myConn.c_str());
             const std::string sample = smp ? smp : "{}";
             sahou_free(smp);
-            // The per-connection hash rides on a send-boundary envelope's "attachment".
-            char* env = sahou_prepare_publish(myRuntime, myNode.c_str(), myConn.c_str(),
-                                              sample.c_str(), 0);
-            const std::string att = sahou::envelope_string(env ? env : "", "attachment");
-            sahou_free(env);
+            // Attach the connection's own schema hash — what a real Sahou sender would attach — so
+            // the receive boundary accepts it. We CANNOT go through the send boundary here
+            // (sahou_prepare_publish): this node is a receiver, so its role check would fail and
+            // yield no attachment, and accept would then reject with missing_schema_hash.
+            char* h = sahou_connection_hash(myRuntime, myConn.c_str());
+            const std::string att = h ? h : "";
+            sahou_free(h);
             acceptWire(sample, att);
         } else {
             myWarning = "set 'Node' and 'Connection' first";

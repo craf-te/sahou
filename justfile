@@ -109,6 +109,39 @@ package-td-macos version="0.0.1": build-td-macos
     ditto -c -k --keepParent dist/sahou-td-macos "dist/sahou-td-macos-arm64-{{version}}.zip"
     @echo "packaged dist/sahou-td-macos-arm64-{{version}}.zip"
 
+# --- TouchDesigner op (Windows .dll) ---
+# Needs: MSVC 2022 Build Tools, cmake, and the TD C++ SDK vendored into
+# runtimes/touchdesigner/vendor/. See runtimes/touchdesigner/windows/README.md.
+# The core staticlib + transport cdylib are built for the MSVC target (the repo toolchain is
+# gnu), then CMake (VS generator, self-locates MSVC) links them into SahouOut.dll / SahouIn.dll.
+build-td-windows:
+    rustup target add x86_64-pc-windows-msvc
+    cargo build -p sahou-core --release --features capi --target x86_64-pc-windows-msvc
+    cargo build -p sahou-transport --release --target x86_64-pc-windows-msvc
+    cmake -S runtimes/touchdesigner/windows -B runtimes/touchdesigner/build/win \
+        -G "Visual Studio 17 2022" -A x64 \
+        -DSAHOU_TARGET_DIR="{{justfile_directory()}}/target/x86_64-pc-windows-msvc/release"
+    cmake --build runtimes/touchdesigner/build/win --config Release
+    cp runtimes/touchdesigner/build/win/Release/SahouOut.dll runtimes/touchdesigner/build/win/
+    cp runtimes/touchdesigner/build/win/Release/SahouIn.dll runtimes/touchdesigner/build/win/
+    cp target/x86_64-pc-windows-msvc/release/sahou_transport.dll runtimes/touchdesigner/build/win/
+    @echo "built runtimes/touchdesigner/build/win/{SahouOut,SahouIn,sahou_transport}.dll"
+
+# Package the Windows TD plugins into a distributable zip (LOCAL build only — the TD SDK is
+# Derivative "Shared Use License", usable only on a licensed TD machine). Unsigned (Windows does
+# not require signing to load a plugin DLL). Version is the arg (defaults to 0.0.1).
+# Output: dist/sahou-td-windows-x64-<version>.zip.
+package-td-windows version="0.0.1": build-td-windows
+    rm -rf dist/sahou-td-windows "dist/sahou-td-windows-x64-{{version}}.zip"
+    mkdir -p dist/sahou-td-windows
+    cp runtimes/touchdesigner/build/win/SahouOut.dll dist/sahou-td-windows/
+    cp runtimes/touchdesigner/build/win/SahouIn.dll dist/sahou-td-windows/
+    cp runtimes/touchdesigner/build/win/sahou_transport.dll dist/sahou-td-windows/
+    cp LICENSE NOTICE runtimes/touchdesigner/windows/INSTALL.txt dist/sahou-td-windows/
+    cp cli/licenses/THIRD-PARTY-LICENSES.md dist/sahou-td-windows/
+    powershell.exe -NoProfile -Command "Compress-Archive -Path 'dist/sahou-td-windows/*' -DestinationPath 'dist/sahou-td-windows-x64-{{version}}.zip' -Force"
+    @echo "packaged dist/sahou-td-windows-x64-{{version}}.zip"
+
 # --- Docs (mdBook + i18n) ---
 
 # Live-preview the English book at http://localhost:3000.

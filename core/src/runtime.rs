@@ -131,6 +131,14 @@ pub fn connection_key(desc: &Descriptor, conn: &str) -> Option<String> {
     desc.connections.get(conn).map(|c| c.key.clone())
 }
 
+/// The per-connection schema hash of a connection (the 16-hex handshake attachment), or None for
+/// an unknown connection. Lets a receiver-side "inject sample" (Sahou In CHOP) attach the same hash
+/// a real Sahou sender would, without going through the send boundary — which requires the sender
+/// node and so is unavailable to a receiver.
+pub fn connection_hash(desc: &Descriptor, conn: &str) -> Option<String> {
+    desc.connections.get(conn).map(|c| c.hash.clone())
+}
+
 /// The payload schema of a connection, as display rows `[name, type, required, detail]`, for a
 /// "what should I send?" panel (design §5/§7). Empty for an unknown or `any`-typed connection.
 /// `detail` is a compact human summary (range / enum values / group members) — the rendering lives

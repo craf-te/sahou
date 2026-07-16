@@ -206,6 +206,27 @@ pub unsafe extern "C" fn sahou_connection_key(
     into_c(out)
 }
 
+/// The per-connection schema hash of `conn` (the 16-hex handshake attachment), for a receiver-side
+/// "inject sample" to attach what a real sender would. Empty string for a null handle / unknown
+/// connection. Free with `sahou_free`.
+///
+/// # Safety
+/// `handle` is null or a live runtime; `conn` is null or a valid NUL-terminated C string.
+#[no_mangle]
+pub unsafe extern "C" fn sahou_connection_hash(
+    handle: *mut SahouRuntime,
+    conn: *const c_char,
+) -> *mut c_char {
+    let out = std::panic::catch_unwind(|| {
+        let (Some(rt_ref), Some(conn)) = (unsafe { handle.as_ref() }, unsafe { cstr(conn) }) else {
+            return String::new();
+        };
+        rt::connection_hash(&rt_ref.desc, conn).unwrap_or_default()
+    })
+    .unwrap_or_default();
+    into_c(out)
+}
+
 /// Decode a validated payload's numeric fields into a flat JSON string array of
 /// `name, count, v0, v1, …` groups (Sahou In CHOP channels). Free with `sahou_free`.
 ///

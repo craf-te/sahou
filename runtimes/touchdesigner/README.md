@@ -1,6 +1,7 @@
 # Sahou × TouchDesigner — custom operators
 
-> **Status: experimental.** The Sahou Out / In CHOPs are currently **macOS / arm64 only**.
+> **Status: experimental.** The Sahou Out / In CHOPs build on **macOS / arm64** (Xcode →
+> `.plugin`) and **Windows / x64** (CMake → `.dll`, see [`windows/`](windows/README.md)).
 > Building them requires the TouchDesigner C++ SDK vendored into `runtimes/touchdesigner/vendor/`
 > (Derivative Shared Use License — not redistributed here; copy it from your local TouchDesigner
 > install).
@@ -9,9 +10,22 @@ TouchDesigner as a first-class Sahou node: send/receive over the typed contract 
 C++ operators, **without going through TD's Python** (thin C++ glue + the Rust core, which is
 statically linked).
 
+## Download (prebuilt — no build)
+
+Don't want to build? Grab the platform zip from the
+[`td-v*` releases](https://github.com/craf-te/sahou/releases?q=td) and drop its contents into a
+folder TD scans (see "Load in TouchDesigner" below), then restart TD:
+
+- **macOS / arm64** — `SahouOut.plugin` / `SahouIn.plugin` (clear the download quarantine per the
+  zip's `INSTALL.txt`).
+- **Windows / x64** — `SahouOut.dll`, `SahouIn.dll`, **and** `sahou_transport.dll` (all three, kept
+  in the same folder).
+
+Building from source (below) is only needed to develop the ops or to target an older TD SDK.
+
 ## Status
 
-- **Sahou Out CHOP** (macOS arm64). Reads the input CHOP's channels, projects them to a JSON
+- **Sahou Out CHOP** (macOS arm64 + Windows x64). Reads the input CHOP's channels, projects them to a JSON
   payload, runs the **send boundary** through the Rust core (`sahou_prepare_publish`), and on OK
   **publishes over Zenoh** (via the bundled `libsahou_transport`). On a contract violation the node
   goes red with the structured diagnostic ("say NO in the right place"). The send cadence is
@@ -20,13 +34,13 @@ statically linked).
   (independent of the input), for a quick connectivity check with `sahou tap`.
 - Next stage for Out: **on-change dedup + an explicit `Active` gate + QoS mapping** (avoid
   re-sending a static input every frame).
-- **Sahou In CHOP** (macOS arm64). Subscribes to a pub_sub connection on which the selected node is
+- **Sahou In CHOP** (macOS arm64 + Windows x64). Subscribes to a pub_sub connection on which the selected node is
   a **receiver** (`to`), runs each received message through the **receive boundary** in the Rust
   core (`sahou_accept_sample`), and outputs the accepted payload's **numeric fields as channels**
   (strings appear in the Info DAT). A contract violation goes red with the structured diagnostic.
   **Inject Sample** feeds one IR-valid sample locally (no network) to test downstream wiring with no
   publisher.
-- Not yet: continuous send, DAT operators, Windows build, universal (Intel) binary,
+- Not yet: continuous send, DAT operators, universal (Intel) binary,
   distribution signing (multicast entitlement / Developer ID).
 
 ## Layout
@@ -44,7 +58,7 @@ runtimes/touchdesigner/
 │   ├── ffi_smoke.cpp                          payload -> core -> OK/NO (links the C ABI)
 │   └── run.sh                                 builds & runs all three
 ├── macos/               # macOS build project: SahouOut.xcodeproj + Info.plist -> .plugin (committed)
-├── windows/             # Windows build project: Visual Studio -> SahouOut.dll (planned; placeholder)
+├── windows/             # Windows build project: CMake -> SahouOut.dll / SahouIn.dll (committed)
 ├── transport/           # sahou-transport: zenoh send glue (Rust cdylib, committed) — bundled into
 │                         # the .plugin's Contents/Frameworks and ad-hoc signed by build-td-macos
 ├── examples/            # schema.sahou.yaml (committed); gen/descriptor.json (generated, ignored)
@@ -54,8 +68,7 @@ runtimes/touchdesigner/
 
 The C++ op source (`src/`), the tests (`test/`), the Rust `transport/`, and `examples/` are
 **shared across platforms**. Only `macos/` and `windows/` hold the per-platform build projects
-(Xcode → `.plugin` on macOS; Visual Studio → `.dll` on Windows). Windows is **not implemented yet**
-— the current supported build is macOS/arm64.
+(Xcode → `.plugin` on macOS; CMake → `.dll` on Windows).
 
 ## Prerequisite — vendor the TD C++ SDK (once)
 
