@@ -42,8 +42,8 @@ This builds `sahou_core` (static, capi) and `sahou-transport` (cdylib) for
 ## Package
 
 ```sh
-just package-td-windows          # -> dist/sahou-td-windows-x64-0.0.1.zip
-just package-td-windows 0.1.0    # custom version
+just package-td-windows          # -> dist/sahou-td-windows-x64-0.0.1.zip (default version arg)
+just package-td-windows 0.0.2    # the current TD release version
 ```
 
 ## Load in TouchDesigner
