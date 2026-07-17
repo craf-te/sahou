@@ -4,7 +4,7 @@ import { describe, expect, it } from "vitest";
 import { SahouRejected, connect } from "../src/node.js";
 
 const descBase = readFileSync(
-  fileURLToPath(new URL("../../py/tests/fixtures/descriptor_base.json", import.meta.url)),
+  fileURLToPath(new URL("../../python/tests/fixtures/descriptor_base.json", import.meta.url)),
   "utf-8",
 );
 

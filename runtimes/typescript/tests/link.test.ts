@@ -6,7 +6,7 @@ import { connect, type SahouNode } from "../src/node.js";
 import { SAHOU_BIN, freePort, portOpen, pump, sleep, spawnLink, waitFor } from "./helpers.js";
 
 const fixture = (name: string) =>
-  readFileSync(fileURLToPath(new URL(`../../py/tests/fixtures/${name}`, import.meta.url)), "utf-8");
+  readFileSync(fileURLToPath(new URL(`../../python/tests/fixtures/${name}`, import.meta.url)), "utf-8");
 const descBase = fixture("descriptor_base.json");
 
 afterEach(() => {
