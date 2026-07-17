@@ -199,3 +199,49 @@ fn broken_type_field_skips_default_check() {
     assert_eq!(diags.len(), 1, "{diags:?}");
     assert_eq!(diags[0].code, "missing_items");
 }
+
+#[test]
+fn reserved_sahou_key_prefix_is_rejected() {
+    // '@sahou/...' is the sahou admin space (contract + vitals queryables); a user key
+    // override colliding with it would corrupt the diagnostics space (spec §3).
+    let yaml = "schema: s\nnodes:\n  a: {}\n  b: {}\nconnections:\n  c:\n    pattern: pub_sub\n    from: a\n    to: [b]\n    key: '@sahou/boom'\n    payload: { typing: any }\n";
+    let codes = codes_at(yaml);
+    assert!(
+        codes.contains(&("reserved_key".into(), "connections.c.key".into())),
+        "{codes:?}"
+    );
+}
+
+#[test]
+fn reserved_sahou_chunk_mid_key_is_also_rejected() {
+    // strict rule: a mid-key '@sahou' chunk has no legitimate use and can still
+    // collide with wildcard selectors
+    let yaml = "schema: s\nnodes:\n  a: {}\n  b: {}\nconnections:\n  c:\n    pattern: pub_sub\n    from: a\n    to: [b]\n    key: 'stage/@sahou/boom'\n    payload: { typing: any }\n";
+    let codes = codes_at(yaml);
+    assert!(
+        codes.contains(&("reserved_key".into(), "connections.c.key".into())),
+        "{codes:?}"
+    );
+}
+
+#[test]
+fn ordinary_key_override_is_not_reserved() {
+    let yaml = "schema: s\nnodes:\n  a: {}\n  b: {}\nconnections:\n  c:\n    pattern: pub_sub\n    from: a\n    to: [b]\n    key: 'stage/custom'\n    payload: { typing: any }\n";
+    let codes = codes_at(yaml);
+    assert!(
+        !codes.iter().any(|(code, _)| code == "reserved_key"),
+        "{codes:?}"
+    );
+}
+
+#[test]
+fn reserved_sahou_connection_id_is_rejected() {
+    // the default key is derived as `<ns>/<conn_id>`, so a connection *named* '@sahou/...'
+    // collides with the admin space without any key override (final-review finding)
+    let yaml = "schema: s\nnodes:\n  a: {}\n  b: {}\nconnections:\n  '@sahou/vitals/x':\n    pattern: pub_sub\n    from: a\n    to: [b]\n    payload: { typing: any }\n";
+    let codes = codes_at(yaml);
+    assert!(
+        codes.contains(&("reserved_key".into(), "connections.@sahou/vitals/x".into())),
+        "{codes:?}"
+    );
+}

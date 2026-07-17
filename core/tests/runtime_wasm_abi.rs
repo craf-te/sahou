@@ -107,3 +107,19 @@ fn legacy_gui_abi_still_works() {
     let d: serde_json::Value = serde_json::from_str(&wasm_descriptor(DEMO, "")).unwrap();
     assert_eq!(d["ok"], true);
 }
+
+#[test]
+fn wasm_vitals_payload_mirrors_core() {
+    let rt = WasmRuntime::new(&demo_descriptor_json()).expect("gen output can be loaded");
+    let info = r#"{"lang":"typescript","sahou":"0.0.2","transport":"ws-link"}"#;
+    let json = rt
+        .vitals_payload("sensor", info)
+        .expect("a known node reports vitals");
+    let v: serde_json::Value = serde_json::from_str(&json).unwrap();
+    assert_eq!(v["vitals_format"], 1);
+    assert_eq!(v["node"], "sensor");
+    assert_eq!(v["runtime"]["transport"], "ws-link");
+    assert_eq!(rt.vitals_key("sensor"), "sahou/@sahou/vitals/sensor");
+    // the Err branch (unknown node) is covered natively in core/tests/vitals.rs;
+    // JsError cannot be constructed off-wasm, so no Result<_, JsError> Err path is testable here (same as contract_fragment).
+}

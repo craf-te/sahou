@@ -16,5 +16,6 @@ pub mod sample;
 pub mod schema_check;
 pub mod stub;
 pub mod typespec;
+pub mod vitals;
 #[cfg(feature = "wasm")]
 pub mod wasm;
