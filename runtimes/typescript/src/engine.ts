@@ -182,7 +182,7 @@ export class SahouNode {
     const seed = this.vitalsSeed as VitalsSeed; // only called from declareVitals' handler
     const handshake: Record<string, Record<string, string>> = {};
     for (const [k, v] of this.verdicts) {
-      const sep = k.indexOf(" ");
+      const sep = k.lastIndexOf(" "); // hash is space-free; conn ids are not guaranteed to be
       (handshake[k.slice(0, sep)] ??= {})[k.slice(sep + 1)] = v.verdict;
     }
     return {
