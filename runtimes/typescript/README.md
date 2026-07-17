@@ -43,6 +43,24 @@ await node.subscribe("touch", (p) => { p.phase; });      // conn completes; p is
 `connect` overload per node → the correct facade). The engine behaves identically without it. `sahou check`
 detects stub↔IR drift. A per-node stub (`sahou gen --lang ts --node <name>` → `typedNode()`) is also available.
 
+## Vitals (node self-report)
+
+Each connected node declares, by default, a liveliness token and a small self-report
+queryable at `<namespace>/@sahou/vitals/<node>` — its identity, schema generation
+(per-connection hashes), runtime versions, uptime, and cached handshake verdicts.
+The `sahou doctor --lan` roll call uses these. (Node entry only for now; the browser
+entry does not declare vitals yet.)
+
+```ts
+const node = await connect("descriptor.json", { node: "sensor", vitals: false }); // opt out
+```
+
+**Exposure note, honestly:** the transport carries no authentication or encryption, so
+*any peer on the same LAN can read a node's vitals* — just as it can already read the
+full contract from the contract queryable. Vitals report only state the engine holds
+anyway (versions, hashes, verdicts); if that is still too much for your network, opt
+out with `vitals: false`.
+
 ## Environment variables
 - `SAHOU_LINK_CMD`: the executable to spawn as the link (default: `sahou` on PATH)
 - `SAHOU_LINK_ARGS`: extra arguments when spawning (e.g. `--no-multicast --grace 4`)

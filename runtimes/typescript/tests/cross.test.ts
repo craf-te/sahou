@@ -7,8 +7,8 @@ import { connect, type Diag, type SahouNode } from "../src/node.js";
 import { spawnLink, waitFor, type LinkHandle } from "./helpers.js";
 
 const fixture = (name: string) =>
-  readFileSync(fileURLToPath(new URL(`../../py/tests/fixtures/${name}`, import.meta.url)), "utf-8");
-const pyDir = fileURLToPath(new URL("../../py", import.meta.url));
+  readFileSync(fileURLToPath(new URL(`../../python/tests/fixtures/${name}`, import.meta.url)), "utf-8");
+const pyDir = fileURLToPath(new URL("../../python", import.meta.url));
 const script = (name: string) => fileURLToPath(new URL(`./cross/${name}`, import.meta.url));
 const core = loadCore();
 const enc = new TextEncoder();

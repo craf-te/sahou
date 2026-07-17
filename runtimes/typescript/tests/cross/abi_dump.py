@@ -11,7 +11,7 @@ from sahou._core import SahouRuntime, classify_delivery, parse_reply_err
 # This is an I/O configuration issue in the driver, not in the ABI matrix's inputs/outputs themselves, so pin it here.
 sys.stdout.reconfigure(newline="\n")
 
-FIX = Path(__file__).resolve().parents[3] / "py" / "tests" / "fixtures"
+FIX = Path(__file__).resolve().parents[3] / "python" / "tests" / "fixtures"
 
 base = (FIX / "descriptor_base.json").read_text(encoding="utf-8")
 additive = (FIX / "descriptor_additive.json").read_text(encoding="utf-8")

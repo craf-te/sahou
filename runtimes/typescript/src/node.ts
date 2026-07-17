@@ -2,13 +2,15 @@
 import { spawn } from "node:child_process";
 import { existsSync, readFileSync } from "node:fs";
 import net from "node:net";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
 import type { CoreRuntime } from "./core.js";
 import { loadCore } from "./core-node.js";
-import { SahouNode, toRejected } from "./engine.js";
+import { SahouNode, toRejected, type VitalsSeed } from "./engine.js";
 import { linkUnavailable, openSessionWithTimeout } from "./session.js";
 
 export { SahouNode } from "./engine.js";
-export type { Json, NodePlan, RejectHandler } from "./engine.js";
+export type { Json, NodePlan, RejectHandler, VitalsSeed } from "./engine.js";
 export { SahouError, SahouRejected, SahouUnreachable } from "./diag.js";
 export type { Diag } from "./diag.js";
 
@@ -20,6 +22,49 @@ export interface ConnectOptions {
   port?: number;
   /** Automatic link spawn (default true; false disables both probing and spawning). */
   spawnLink?: boolean;
+  /** Node self-report: liveliness token + vitals queryable at <ns>/@sahou/vitals/<node> (default true).
+   *  Any LAN peer can read it — see README "Vitals". */
+  vitals?: boolean;
+}
+
+const moduleDir = dirname(fileURLToPath(import.meta.url));
+
+/** Version from the nearest package.json at/above `dir` (undefined when unreadable — omitted, not faked). */
+function nearestPkgVersion(dir: string): string | undefined {
+  for (let d = dir; ; ) {
+    const p = join(d, "package.json");
+    if (existsSync(p)) {
+      try {
+        const v = (JSON.parse(readFileSync(p, "utf-8")) as { version?: unknown }).version;
+        if (typeof v === "string") return v;
+      } catch {
+        return undefined;
+      }
+    }
+    const parent = dirname(d);
+    if (parent === d) return undefined;
+    d = parent;
+  }
+}
+
+/** zenoh-ts version via a node_modules walk-up from this module. Plain fs on purpose:
+ *  the package exports no version and hides its package.json behind `exports`, and
+ *  import.meta.resolve is unavailable under vitest. */
+function zenohTsVersion(): string | undefined {
+  for (let d = moduleDir; ; ) {
+    const p = join(d, "node_modules", "@eclipse-zenoh", "zenoh-ts", "package.json");
+    if (existsSync(p)) {
+      try {
+        const v = (JSON.parse(readFileSync(p, "utf-8")) as { version?: unknown }).version;
+        return typeof v === "string" ? v : undefined;
+      } catch {
+        return undefined;
+      }
+    }
+    const parent = dirname(d);
+    if (parent === d) return undefined;
+    d = parent;
+  }
 }
 
 function readDescriptor(descriptor: string | object): string {
@@ -102,5 +147,9 @@ export async function connect(descriptor: string | object, opts: ConnectOptions)
   const locator = opts.locator ?? `ws://127.0.0.1:${port}`;
   if (opts.spawnLink !== false) await ensureLink(locator, port);
   const session = await openSessionWithTimeout(locator, nodeHint(port));
-  return SahouNode.create(core, session, descJson, opts.node);
+  const seed: VitalsSeed | undefined =
+    opts.vitals === false
+      ? undefined
+      : { sahou: nearestPkgVersion(moduleDir) ?? "unknown", zenoh: zenohTsVersion(), transport: "ws-link" };
+  return SahouNode.create(core, session, descJson, opts.node, seed);
 }

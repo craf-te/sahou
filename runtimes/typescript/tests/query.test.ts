@@ -6,7 +6,7 @@ import { SahouRejected, SahouUnreachable, connect, type SahouNode } from "../src
 import { rawSession, sleep, spawnLink, waitFor, type LinkHandle } from "./helpers.js";
 
 const fixture = (name: string) =>
-  readFileSync(fileURLToPath(new URL(`../../py/tests/fixtures/${name}`, import.meta.url)), "utf-8");
+  readFileSync(fileURLToPath(new URL(`../../python/tests/fixtures/${name}`, import.meta.url)), "utf-8");
 const descBase = fixture("descriptor_base.json");
 const core = loadCore();
 

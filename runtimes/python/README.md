@@ -34,7 +34,7 @@ handles the transport (zenoh-python) and threading.
 Each connected node declares, by default, a liveliness token and a small self-report
 queryable at `<namespace>/@sahou/vitals/<node>` — its identity, schema generation
 (per-connection hashes), runtime versions, uptime, and cached handshake verdicts.
-The upcoming `sahou doctor --lan` uses these for a mesh roll call.
+The `sahou doctor --lan` roll call uses these.
 
 ```python
 node = sahou.connect("descriptor.json", "sensor", vitals=False)  # opt out

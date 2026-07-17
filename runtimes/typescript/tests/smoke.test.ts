@@ -5,7 +5,7 @@ import { loadCore } from "../src/core-node.js";
 
 // Test contracts are shared with the Python side (single source; the cross-language premise)
 const fixture = (name: string) =>
-  readFileSync(fileURLToPath(new URL(`../../py/tests/fixtures/${name}`, import.meta.url)), "utf-8");
+  readFileSync(fileURLToPath(new URL(`../../python/tests/fixtures/${name}`, import.meta.url)), "utf-8");
 
 const core = loadCore();
 const descBase = fixture("descriptor_base.json");

@@ -5,7 +5,7 @@ from pathlib import Path
 
 import sahou
 
-FIX = Path(__file__).resolve().parents[3] / "py" / "tests" / "fixtures"
+FIX = Path(__file__).resolve().parents[3] / "python" / "tests" / "fixtures"
 
 p = argparse.ArgumentParser()
 p.add_argument("--desc", default="base", choices=["base", "additive", "breaking"])
