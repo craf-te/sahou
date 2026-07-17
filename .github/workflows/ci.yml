@@ -21,3 +21,34 @@ jobs:
       - run: cargo test -p sahou-core --features wasm
       # Guarantees constraint ③ of the three (wasm-capable): the build passes on the wasm target
       - run: cargo build -p sahou-core --features wasm --target wasm32-unknown-unknown
+
+  node:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@1.88.0
+        with:
+          targets: wasm32-unknown-unknown
+      - uses: Swatinem/rust-cache@v2
+      - uses: taiki-e/install-action@v2
+        with:
+          tool: wasm-pack
+      - uses: astral-sh/setup-uv@v5
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: runtimes/typescript/package-lock.json
+      # The TS integration tests spawn this binary as the link
+      - run: cargo build -p sahou-cli
+      # …and the cross-language tests drive the Python runtime through uv
+      - run: uv sync
+        working-directory: runtimes/python
+      - run: npm ci
+        working-directory: runtimes/typescript
+      - run: npm run build:core
+        working-directory: runtimes/typescript
+      - run: npm run build
+        working-directory: runtimes/typescript
+      - run: npx vitest run
+        working-directory: runtimes/typescript
