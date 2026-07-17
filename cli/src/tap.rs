@@ -143,7 +143,7 @@ fn map_qos(
 }
 
 /// A zenoh peer session for tap (the same config pattern as link.rs; synchronous API).
-fn open_session(
+pub(crate) fn open_session(
     connect: Option<&str>,
     no_multicast: bool,
     iface: Option<&str>,

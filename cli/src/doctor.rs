@@ -21,6 +21,19 @@ pub struct DoctorArgs {
     /// Window (seconds) over which to observe scout egress errors
     #[arg(long, default_value_t = 4)]
     pub scout_secs: u64,
+    /// Also check the LAN: roll call against a descriptor (auto-found in ./gen/descriptor.json
+    /// or ./descriptor.json), or discovery-only without one
+    #[arg(long)]
+    pub lan: bool,
+    /// Descriptor to roll-call against (--lan; overrides auto-discovery)
+    #[arg(long)]
+    pub descriptor: Option<std::path::PathBuf>,
+    /// Explicit endpoint for the LAN stage and the direct-path differential probe (--lan)
+    #[arg(long)]
+    pub connect: Option<String>,
+    /// Grace window (seconds) for the LAN sweep to converge (--lan)
+    #[arg(long, default_value_t = 5)]
+    pub lan_secs: u64,
 }
 
 /// Classification of scout egress (four values hardened by measurements in 013-4).
@@ -338,13 +351,20 @@ pub fn run(args: DoctorArgs) -> Result<(), Vec<Diag>> {
         os: std::env::consts::OS,
         iface_desc: args.iface.clone().unwrap_or_else(|| "auto".into()),
     };
-    match diagnose(&r) {
-        Ok(summary) => {
-            println!("\n{summary}");
-            Ok(())
-        }
-        Err(diags) => Err(diags), // main's print_diags renders {code,path,message} and exits 1
+    let local = diagnose(&r);
+    if let Ok(summary) = &local {
+        println!("\n{summary}");
     }
+    if args.lan {
+        let local_ok = local.is_ok();
+        let lan = crate::doctor_lan::run_lan(&args, local_ok);
+        // the local diagnosis stays authoritative for its own failures; LAN failures also exit 1
+        return match (local, lan) {
+            (Err(d), _) => Err(d),
+            (Ok(_), r) => r,
+        };
+    }
+    local.map(|_| ())
 }
 
 #[cfg(test)]
