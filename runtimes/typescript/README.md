@@ -48,8 +48,8 @@ detects stub↔IR drift. A per-node stub (`sahou gen --lang ts --node <name>` �
 Each connected node declares, by default, a liveliness token and a small self-report
 queryable at `<namespace>/@sahou/vitals/<node>` — its identity, schema generation
 (per-connection hashes), runtime versions, uptime, and cached handshake verdicts.
-The `sahou doctor --lan` roll call uses these. (Node entry only for now; the browser
-entry does not declare vitals yet.)
+The `sahou doctor --lan` roll call uses these. Both entries declare vitals; the browser
+entry reports no zenoh library version (not discoverable in a browser — omitted, not faked).
 
 ```ts
 const node = await connect("descriptor.json", { node: "sensor", vitals: false }); // opt out

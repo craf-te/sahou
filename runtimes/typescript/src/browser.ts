@@ -1,7 +1,8 @@
 // browser entry point: wasm core (web target). Cannot spawn → when not connected, return a NO with startup steps.
 import type { CoreRuntime } from "./core.js";
 import { loadCore } from "./core-browser.js";
-import { SahouNode, toRejected } from "./engine.js";
+import { SahouNode, toRejected, type VitalsSeed } from "./engine.js";
+import { SAHOU_VERSION } from "./version.js";
 import { openSessionWithTimeout } from "./session.js";
 
 export { SahouNode } from "./engine.js";
@@ -13,6 +14,9 @@ export interface ConnectOptions {
   node: string;
   /** Default ws://127.0.0.1:10000 (a link on the same machine). */
   locator?: string;
+  /** Node self-report: liveliness token + vitals queryable at <ns>/@sahou/vitals/<node> (default true).
+   *  Any LAN peer can read it — see README "Vitals". */
+  vitals?: boolean;
 }
 
 /** The browser cannot spawn a link → remediation guidance with startup steps. */
@@ -42,5 +46,8 @@ export async function connect(descriptor: string | object, opts: ConnectOptions)
   // caller must confirm that `sahou link` is running on the target machine and that the locator is correct
   // before calling connect() (do not hammer connect() in a tight loop).
   const session = await openSessionWithTimeout(locator, BROWSER_HINT);
-  return SahouNode.create(core, session, descJson, opts.node);
+  // zenoh-ts's version is not discoverable in a browser (no fs, package.json unexported) — omitted, not faked.
+  const seed: VitalsSeed | undefined =
+    opts.vitals === false ? undefined : { sahou: SAHOU_VERSION, transport: "browser" };
+  return SahouNode.create(core, session, descJson, opts.node, seed);
 }

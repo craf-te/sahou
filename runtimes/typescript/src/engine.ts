@@ -32,6 +32,18 @@ export interface VitalsSeed {
   transport: "ws-link" | "browser";
 }
 
+/** Mirrors VitalsRuntimeInfo in core/src/vitals.rs — the FFI boundary. Field names must
+ *  match the Rust struct exactly; a typo here now fails tsc instead of being silently
+ *  serde-defaulted on the core side. */
+interface VitalsRuntimeInfoWire {
+  lang: "typescript";
+  sahou: string;
+  zenoh?: string;
+  transport: "ws-link" | "browser";
+  uptime_secs: number;
+  handshake: Record<string, Record<string, string>>;
+}
+
 interface QosSpec {
   reliability: string;
   congestion: string;
@@ -178,7 +190,7 @@ export class SahouNode {
   }
 
   /** Runtime facts for the core's vitals_payload (VitalsRuntimeInfo in core/src/vitals.rs). */
-  private runtimeInfo(): Record<string, unknown> {
+  private runtimeInfo(): VitalsRuntimeInfoWire {
     const seed = this.vitalsSeed as VitalsSeed; // only called from declareVitals' handler
     const handshake: Record<string, Record<string, string>> = {};
     for (const [k, v] of this.verdicts) {

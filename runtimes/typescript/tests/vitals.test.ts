@@ -6,7 +6,7 @@ import { Duration, ReplyError, Sample, Session } from "@eclipse-zenoh/zenoh-ts";
 import { afterEach, describe, expect, it } from "vitest";
 import type { CoreRuntime } from "../src/core.js";
 import { loadCore } from "../src/core-node.js";
-import { connect, type SahouNode } from "../src/node.js";
+import { SahouNode, connect } from "../src/node.js";
 import { rawSession, spawnLink, waitFor, type LinkHandle } from "./helpers.js";
 
 const fixture = (name: string) =>
@@ -119,5 +119,32 @@ describe("vitals (node engine via link)", () => {
     const vkey = withCore((rt) => rt.vitals_key("sensor"));
     expect(await fetchOne(observer, vkey)).toBeNull();
     expect(await tokenVisible(observer, vkey)).toBe(false);
+  });
+
+  it("a browser-shaped seed reports transport 'browser' and omits zenoh (engine-level)", async () => {
+    // The browser entry cannot run under vitest; this exercises the same shared-engine path
+    // with the exact seed browser.ts passes ({ sahou, transport: "browser" }, no zenoh key).
+    link = await spawnLink();
+    const core = loadCore();
+    const session = await rawSession(link.port);
+    node = await SahouNode.create(core, session, descBase, "sensor", {
+      sahou: "0.0.0-test",
+      transport: "browser",
+    });
+    raw = await rawSession(link.port);
+    const observer = raw;
+    const vkey = withCore((rt) => rt.vitals_key("sensor"));
+    let payload: string | null = null;
+    expect(
+      await waitFor(async () => {
+        payload = await fetchOne(observer, vkey);
+        return payload !== null;
+      }),
+      "vitals query returned nothing",
+    ).toBe(true);
+    const v = JSON.parse(payload!);
+    expect(v.runtime.transport).toBe("browser");
+    expect(v.runtime.sahou).toBe("0.0.0-test");
+    expect("zenoh" in v.runtime).toBe(false); // omitted, not faked
   });
 });
