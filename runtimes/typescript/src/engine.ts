@@ -23,6 +23,15 @@ export interface NodePlan {
   answers: string[];
 }
 
+/** Node-only facts for the vitals self-report, discovered by the entry point (spec §1.2).
+ *  `zenoh` omitted (never faked) when the entry point cannot learn it. */
+export interface VitalsSeed {
+  /** sahou runtime library version ("unknown" when not discoverable) */
+  sahou: string;
+  zenoh?: string;
+  transport: "ws-link" | "browser";
+}
+
 interface QosSpec {
   reliability: string;
   congestion: string;
@@ -85,8 +94,16 @@ export class SahouNode {
   private readonly verdicts = new Map<string, { verdict: "accepted" | "blocked"; diags: Diag[] }>();
   private readonly pending = new Set<string>();
   private onRejectGlobal: RejectHandler | undefined;
+  private readonly vitalsSeed?: VitalsSeed;
+  private readonly startedMs = performance.now();
 
-  static async create(core: CoreModule, session: Session, descriptorJson: string, node: string): Promise<SahouNode> {
+  static async create(
+    core: CoreModule,
+    session: Session,
+    descriptorJson: string,
+    node: string,
+    vitals?: VitalsSeed,
+  ): Promise<SahouNode> {
     let rt: CoreRuntime;
     let plan: NodePlan;
     try {
@@ -95,18 +112,20 @@ export class SahouNode {
     } catch (e) {
       toRejected(e); // turn the core diagnostics (JSON) into an exception
     }
-    const n = new SahouNode(core, rt, session, node, plan);
+    const n = new SahouNode(core, rt, session, node, plan, vitals);
     await n.declareContracts();
+    if (vitals) await n.declareVitals();
     return n;
   }
 
-  private constructor(core: CoreModule, rt: CoreRuntime, session: Session, node: string, plan: NodePlan) {
+  private constructor(core: CoreModule, rt: CoreRuntime, session: Session, node: string, plan: NodePlan, vitals?: VitalsSeed) {
     this.core = core;
     this.rt = rt;
     this.session = session;
     this.node = node;
     this.plan = plan;
     this.ns = rt.namespace();
+    this.vitalsSeed = vitals;
   }
 
   /** Contract queryable for every connection this node participates in (design §5-1: content-addressed; every participant declares it). */
@@ -135,6 +154,45 @@ export class SahouNode {
       });
       this.handles.push(q);
     }
+  }
+
+  /** Vitals: liveliness token + self-report queryable at <ns>/@sahou/vitals/<node> (spec §1).
+   *  Default ON; any LAN peer can read it — documented honestly, opt-out at the entry point. */
+  private async declareVitals(): Promise<void> {
+    const vkey = this.rt.vitals_key(this.node);
+    this.handles.push(await this.session.liveliness().declareToken(vkey));
+    const q = await this.session.declareQueryable(vkey, {
+      handler: async (query: Query) => {
+        try {
+          // built fresh per query: uptime and the handshake verdict cache move over time
+          const payload = this.rt.vitals_payload(this.node, JSON.stringify(this.runtimeInfo()));
+          await query.reply(vkey, payload);
+        } catch (e) {
+          console.warn(`[sahou] vitals queryable reply failed on ${vkey}`, e); // must not kill the reply path
+        } finally {
+          await query.finalize();
+        }
+      },
+    });
+    this.handles.push(q);
+  }
+
+  /** Runtime facts for the core's vitals_payload (VitalsRuntimeInfo in core/src/vitals.rs). */
+  private runtimeInfo(): Record<string, unknown> {
+    const seed = this.vitalsSeed as VitalsSeed; // only called from declareVitals' handler
+    const handshake: Record<string, Record<string, string>> = {};
+    for (const [k, v] of this.verdicts) {
+      const sep = k.indexOf(" ");
+      (handshake[k.slice(0, sep)] ??= {})[k.slice(sep + 1)] = v.verdict;
+    }
+    return {
+      lang: "typescript",
+      sahou: seed.sahou,
+      ...(seed.zenoh !== undefined && { zenoh: seed.zenoh }),
+      transport: seed.transport,
+      uptime_secs: Math.floor((performance.now() - this.startedMs) / 1000),
+      handshake,
+    };
   }
 
   // ---- Public API -----------------------------------------------------

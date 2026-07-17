@@ -32,6 +32,10 @@ export interface CoreRuntime {
   ): string;
   contract_fragment(conn: string): string;
   handshake(conn: string, senderHash: string, theirsJson: string): string;
+  /** Build this node's vitals payload (vitals_format 1; spec: notes/sahou-vitals-spec.md). Throws Error(message = diags JSON) on failure. */
+  vitals_payload(node: string, infoJson: string): string;
+  /** The key both the liveliness token and the vitals queryable use (one impl in the core). */
+  vitals_key(node: string): string;
   free(): void;
 }
 
