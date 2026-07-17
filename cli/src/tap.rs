@@ -2,7 +2,10 @@
 //! Validation and sample generation go only through the same core functions the engine uses
 //! (prepare_publish / prepare_request / accept_sample / accept_reply / sample_slot)
 //! = no tap-specific validation logic is written (a structural guarantee of byte-identical diagnostics).
+//! watch additionally explains hash mismatches by fetching the sender's contract fragment
+//! (`<ns>/@sahou/contract/<conn>/<hash>`) and judging it with the core handshake_judge.
 
+use std::collections::HashSet;
 use std::path::PathBuf;
 use std::sync::atomic::{AtomicU64, Ordering};
 use std::sync::{mpsc, Arc};
@@ -140,7 +143,7 @@ fn map_qos(
 }
 
 /// A zenoh peer session for tap (the same config pattern as link.rs; synchronous API).
-fn open_session(
+pub(crate) fn open_session(
     connect: Option<&str>,
     no_multicast: bool,
     iface: Option<&str>,
@@ -225,6 +228,43 @@ pub fn watch_targets(
     }
 }
 
+/// One observed sample, reported from the subscriber callback to the main loop.
+/// Exactly one event per received sample, so --count keeps counting samples
+/// regardless of any explanation fetch that follows.
+enum WatchEvent {
+    /// already printed inline; nothing further to do
+    Seen,
+    /// printed inline as NO [hash_mismatch]; the main loop fetches the sender's contract and explains
+    Mismatch { conn: String, sender_hash: String },
+}
+
+/// Fetch the sender's contract fragment from `<ns>/@sahou/contract/<conn>/<sender_hash>`
+/// (the queryable every engine declares). None = no usable reply within the timeout
+/// (sender absent / pre-contract peer / route not converged) — reported as
+/// handshake:unreachable by the caller and NOT cached (retryable on the next mismatch).
+/// Timeout matches the engine's contract fetch (2s).
+fn fetch_fragment(
+    session: &zenoh::Session,
+    ns: &str,
+    conn: &str,
+    sender_hash: &str,
+) -> Option<String> {
+    let sel = format!("{ns}/@sahou/contract/{conn}/{sender_hash}");
+    let replies = session
+        .get(&sel)
+        .timeout(Duration::from_secs(2))
+        .wait()
+        .ok()?;
+    while let Ok(reply) = replies.recv() {
+        if let Ok(sample) = reply.result() {
+            if let Ok(s) = std::str::from_utf8(&sample.payload().to_bytes()) {
+                return Some(s.to_string());
+            }
+        }
+    }
+    None
+}
+
 fn run_watch(desc: Arc<Descriptor>, args: &TapArgs) -> Result<(), Vec<Diag>> {
     let targets = watch_targets(&desc, args.node.as_deref())?;
     let session = open_session(
@@ -232,7 +272,7 @@ fn run_watch(desc: Arc<Descriptor>, args: &TapArgs) -> Result<(), Vec<Diag>> {
         args.no_multicast,
         args.iface.as_deref(),
     )?;
-    let (tx, rx) = mpsc::channel::<()>();
+    let (tx, rx) = mpsc::channel::<WatchEvent>();
     let mut subs = Vec::new();
     for (conn, vantage) in targets {
         let key = desc.connections[&conn].key.clone();
@@ -255,24 +295,55 @@ fn run_watch(desc: Arc<Descriptor>, args: &TapArgs) -> Result<(), Vec<Diag>> {
                     .and_then(|b| std::str::from_utf8(b).ok());
                 let out = rt::accept_sample(&desc2, &vantage, &conn, &wire, att, s, None);
                 println!("{}", format_event(&conn, s, &key2, &out));
-                let _ = tx2.send(());
+                let ev = match &out {
+                    rt::AcceptOutcome::HashMismatch { sender_hash } => WatchEvent::Mismatch {
+                        conn: conn.clone(),
+                        sender_hash: sender_hash.clone(),
+                    },
+                    _ => WatchEvent::Seen,
+                };
+                let _ = tx2.send(ev);
             })
             .wait()
             .map_err(|e| tap_err("$", format!("failed to declare the subscriber: {e}")))?;
         subs.push(sub);
     }
     drop(tx); // all senders live only inside the callback -> rx closes after all subs are dropped
+              // Explanations are resolved once per (conn, sender_hash) and only a delivered verdict
+              // is cached; a failed fetch stays retryable (spec: unreachable is not a final verdict).
+    let mut explained: HashSet<(String, String)> = HashSet::new();
+    let mut handle_event = |ev: WatchEvent| {
+        let WatchEvent::Mismatch { conn, sender_hash } = ev else {
+            return;
+        };
+        let pair = (conn.clone(), sender_hash.clone());
+        if explained.contains(&pair) {
+            return;
+        }
+        match fetch_fragment(&session, &desc.namespace, &conn, &sender_hash) {
+            Some(frag) => {
+                println!("{}", explain_mismatch(&desc, &conn, &sender_hash, &frag));
+                explained.insert(pair);
+            }
+            None => println!(
+                "[{conn}] [handshake:unreachable] sender {sender_hash}: cannot fetch the sender's contract (absent / pre-contract peer / route not converged; retried on the next mismatch)"
+            ),
+        }
+    };
     match args.count {
         Some(n) => {
             for _ in 0..n {
-                if rx.recv().is_err() {
-                    break;
+                match rx.recv() {
+                    Ok(ev) => handle_event(ev),
+                    Err(_) => break,
                 }
             }
         }
         None => {
             // keep receiving until Ctrl+C (process termination)
-            while rx.recv().is_ok() {}
+            while let Ok(ev) = rx.recv() {
+                handle_event(ev);
+            }
         }
     }
     drop(subs);
@@ -340,6 +411,10 @@ fn run_send(desc: &Descriptor, conn: &str, args: &TapArgs) -> Result<(), Vec<Dia
                             None,
                         );
                         println!("{}", format_event(conn, seq, &plan.msg.key, &out));
+                        if matches!(out, rt::AcceptOutcome::HashMismatch { .. }) {
+                            // send-path honesty: only watch fetches the sender's contract and explains (Phase 1 scope)
+                            println!("[{conn}] tap --send does not handshake; run tap watch on this connection to fetch the sender's contract and explain the mismatch");
+                        }
                         seq += 1;
                     }
                     Err(err) => {
@@ -359,6 +434,33 @@ fn run_send(desc: &Descriptor, conn: &str, args: &TapArgs) -> Result<(), Vec<Dia
     Ok(())
 }
 
+/// Explain a delivery-time hash mismatch by judging the sender's fetched contract fragment
+/// with the same core judge the engine uses (rt::handshake_judge = byte-identical diagnostics).
+/// Pure (no I/O) so judgement + formatting are unit-testable without a network.
+/// Every line names its vantage: the judgement is relative to the descriptor tap loaded
+/// (the running apps may hold a different generation).
+pub fn explain_mismatch(
+    desc: &Descriptor,
+    conn: &str,
+    sender_hash: &str,
+    fragment_json: &str,
+) -> String {
+    const VANTAGE: &str = "judged vs the descriptor tap loaded";
+    match rt::handshake_judge(desc, conn, sender_hash, fragment_json) {
+        rt::HandshakeOutcome::Accepted => format!(
+            "[{conn}] [handshake:accepted] sender {sender_hash}: contracts differ but are additive-compatible; delivery would proceed after the handshake ({VANTAGE})"
+        ),
+        rt::HandshakeOutcome::Blocked { diags } => format!(
+            "[{conn}] [handshake:blocked] sender {sender_hash}: {} ({VANTAGE})",
+            fmt_diags(&diags)
+        ),
+        rt::HandshakeOutcome::Unreachable { diags } => format!(
+            "[{conn}] [handshake:unreachable] sender {sender_hash}: {} ({VANTAGE})",
+            fmt_diags(&diags)
+        ),
+    }
+}
+
 /// A human-readable one-liner for a received event. The validation result is formatted directly from the core AcceptOutcome (no custom judgment is inserted).
 /// Both the query reply display (Task 1) and the watch subscription display (Task 2) use this formatting.
 pub fn format_event(conn: &str, seq: u64, key: &str, outcome: &rt::AcceptOutcome) -> String {
@@ -368,7 +470,7 @@ pub fn format_event(conn: &str, seq: u64, key: &str, outcome: &rt::AcceptOutcome
             format!("[{conn}] #{seq} NO {key} {}", fmt_diags(diags))
         }
         rt::AcceptOutcome::HashMismatch { sender_hash } => format!(
-            "[{conn}] #{seq} NO {key} [hash_mismatch] @connections.{conn}: contract version mismatch (sender_hash={sender_hash}; tap does not handshake, it only displays)"
+            "[{conn}] #{seq} NO {key} [hash_mismatch] @connections.{conn}: contract version mismatch (sender_hash={sender_hash})"
         ),
     }
 }
@@ -524,5 +626,93 @@ mod tests {
         assert!(
             format_event("touch", 5, "sahou/touch", &hm).contains("sender_hash=deadbeef00000000")
         );
+    }
+
+    // ---- explain_mismatch (Phase 1: surface "why NO") ----
+    // Fragment fixtures are built with rt::contract_fragment on demo-schema variants,
+    // the same pattern as core/tests/runtime_handshake.rs (byte-identical judge inputs).
+
+    fn norm(s: &str) -> String {
+        s.replace("\r\n", "\n") // guard against CRLF checkout (same lesson as the core handshake tests)
+    }
+
+    fn desc_from_yaml(yaml: &str) -> Descriptor {
+        let c = parse_contract(yaml).unwrap();
+        rt::load_descriptor(&descriptor_json(&c, &Endpoints::default())).unwrap()
+    }
+
+    #[test]
+    fn explain_mismatch_additive_is_accepted_not_an_anomaly() {
+        let demo = norm(DEMO);
+        let base = desc_from_yaml(&demo);
+        let additive_yaml = demo.replace(
+            "        - { name: phase, type: enum, values: [down, move, up] }",
+            "        - { name: phase, type: enum, values: [down, move, up] }\n        - { name: pressure, type: float, required: false }",
+        );
+        let additive = desc_from_yaml(&additive_yaml);
+        let frag = rt::contract_fragment(&additive, "touch").unwrap();
+        let sender = additive.connections["touch"].hash.clone();
+        let line = explain_mismatch(&base, "touch", &sender, &frag);
+        assert!(line.contains("[handshake:accepted]"), "{line}");
+        assert!(line.contains("additive-compatible"), "{line}");
+        assert!(
+            line.contains("judged vs the descriptor tap loaded"),
+            "{line}"
+        );
+    }
+
+    #[test]
+    fn explain_mismatch_breaking_is_blocked_with_structured_diag() {
+        let demo = norm(DEMO);
+        let base = desc_from_yaml(&demo);
+        let breaking_yaml = demo.replace(
+            "        - { name: x, type: float, min: 0, max: 1 }",
+            "        - { name: x, type: string }",
+        );
+        let breaking = desc_from_yaml(&breaking_yaml);
+        let frag = rt::contract_fragment(&breaking, "touch").unwrap();
+        let sender = breaking.connections["touch"].hash.clone();
+        let line = explain_mismatch(&base, "touch", &sender, &frag);
+        assert!(line.contains("[handshake:blocked]"), "{line}");
+        assert!(line.contains("schema_incompatible"), "{line}");
+        assert!(line.contains("touch"), "{line}"); // the diag path names the real connection
+        assert!(
+            line.contains("judged vs the descriptor tap loaded"),
+            "{line}"
+        );
+    }
+
+    #[test]
+    fn explain_mismatch_promotion_is_blocked_conservatively() {
+        let demo = norm(DEMO);
+        let base = desc_from_yaml(&demo);
+        let promoted_yaml = demo.replace(
+            "- { name: level, type: int }",
+            "- { name: level, type: float }",
+        );
+        let promoted = desc_from_yaml(&promoted_yaml);
+        let frag = rt::contract_fragment(&promoted, "get_state").unwrap();
+        let sender = promoted.connections["get_state"].hash.clone();
+        let line = explain_mismatch(&base, "get_state", &sender, &frag);
+        assert!(line.contains("[handshake:blocked]"), "{line}");
+        assert!(line.contains("conservatively NO"), "{line}"); // core wording for promotion (approach A)
+    }
+
+    #[test]
+    fn explain_mismatch_malformed_fragment_is_unreachable() {
+        let base = desc_from_yaml(&norm(DEMO));
+        let line = explain_mismatch(&base, "touch", "deadbeef00000000", "{not json");
+        assert!(line.contains("[handshake:unreachable]"), "{line}");
+        assert!(line.contains("contract_unreachable"), "{line}");
+    }
+
+    #[test]
+    fn explain_mismatch_self_reported_hash_mismatch_is_unreachable() {
+        let demo = norm(DEMO);
+        let base = desc_from_yaml(&demo);
+        let frag = rt::contract_fragment(&base, "touch").unwrap(); // a correct fragment, but…
+        let line = explain_mismatch(&base, "touch", "0000000000000000", &frag);
+        assert!(line.contains("[handshake:unreachable]"), "{line}");
+        assert!(line.contains("does not match"), "{line}"); // core's misdelivery/tampering message
     }
 }

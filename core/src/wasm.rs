@@ -249,6 +249,18 @@ impl WasmRuntime {
             .map_err(|diags| JsError::new(&ffi::diags_json(&diags)))
     }
 
+    /// Build this node's vitals payload (vitals_format 1; spec: notes/sahou-vitals-spec.md).
+    /// info_json = runtime facts (lang / sahou / zenoh / transport / uptime_secs / handshake).
+    pub fn vitals_payload(&self, node: &str, info_json: &str) -> Result<String, JsError> {
+        crate::vitals::vitals_payload(&self.desc, node, info_json)
+            .map_err(|diags| JsError::new(&ffi::diags_json(&diags)))
+    }
+
+    /// The key both the liveliness token and the vitals queryable use (one impl in the core).
+    pub fn vitals_key(&self, node: &str) -> String {
+        crate::vitals::vitals_key(&self.desc, node)
+    }
+
     /// The 3-way handshake judgement. Always returns a verdict envelope (an unknown connection is an unreachable envelope; never throws).
     pub fn handshake(&self, conn: &str, sender_hash: &str, theirs_json: &str) -> String {
         ffi::handshake_json(&rt::handshake_judge(

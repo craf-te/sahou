@@ -1,6 +1,7 @@
 """SahouNode — zenoh glue. All boundary semantics are delegated to the core (sahou._core) (design §1, option B)."""
 from __future__ import annotations
 
+import importlib.metadata
 import json
 import logging
 import threading
@@ -40,6 +41,14 @@ def _fmt_diags(diags: list[dict]) -> str:
     return "; ".join(f"[{d['code']}] @{d['path']}: {d['message']}" for d in diags)
 
 
+def _dist_version(dist: str) -> str | None:
+    """Installed package version, or None — omitted, not faked (spec §1.2)."""
+    try:
+        return importlib.metadata.version(dist)
+    except importlib.metadata.PackageNotFoundError:
+        return None
+
+
 def _decode_attachment(att_z):
     """Decode a wire attachment to str. Non-UTF-8 (a non-sahou sender) becomes None → the core returns missing_schema_hash."""
     if att_z is None:
@@ -50,8 +59,10 @@ def _decode_attachment(att_z):
         return None
 
 
-def connect(descriptor, node: str, *, connect=None, listen=None, multicast: bool = True) -> "SahouNode":
-    """Connect with a descriptor (path / JSON string / dict) plus a node name. Default is automatic LAN discovery (multicast peer)."""
+def connect(descriptor, node: str, *, connect=None, listen=None, multicast: bool = True,
+            vitals: bool = True) -> "SahouNode":
+    """Connect with a descriptor (path / JSON string / dict) plus a node name. Default is automatic LAN discovery (multicast peer).
+    vitals=False opts out of the node's self-report (liveliness token + vitals queryable)."""
     desc_json = _read_descriptor(descriptor)
     try:
         rt = SahouRuntime(desc_json)
@@ -76,11 +87,12 @@ def connect(descriptor, node: str, *, connect=None, listen=None, multicast: bool
             listen_port = int(str(endpoints[0]).rsplit(":", 1)[1])
         except (IndexError, ValueError):
             listen_port = None
-    return SahouNode(rt, node, session, plan, listen_port)
+    return SahouNode(rt, node, session, plan, listen_port, vitals=vitals)
 
 
 class SahouNode:
-    def __init__(self, rt: SahouRuntime, node: str, session, plan: dict, listen_port=None):
+    def __init__(self, rt: SahouRuntime, node: str, session, plan: dict, listen_port=None,
+                 *, vitals: bool = True):
         self._rt = rt
         self._node = node
         self._session = session
@@ -97,6 +109,7 @@ class SahouNode:
         self._lock = threading.Lock()
         self.reject_counts: Counter = Counter()
         self._on_reject_global = None
+        self._started = time.monotonic()
         # contract queryable for every connection this node joins (design §5-1: content-addressed, declared by all participants)
         for conn in set(plan["publishes"]) | set(plan["subscribes"]) | set(plan["queries"]) | set(plan["answers"]):
             frag_json = rt.contract_fragment(conn)
@@ -106,6 +119,12 @@ class SahouNode:
             self._handles.append(
                 self._session.declare_queryable(contract_key, self._make_contract_cb(contract_key, frag_json))
             )
+        # vitals: liveliness token + self-report queryable (spec: notes/sahou-vitals-spec.md §1).
+        # Default ON; any LAN peer can read it — documented honestly, opt-out via vitals=False.
+        if vitals:
+            vkey = rt.vitals_key(node)
+            self._handles.append(self._session.liveliness().declare_token(vkey))
+            self._handles.append(self._session.declare_queryable(vkey, self._make_vitals_cb(vkey)))
 
     # ---- public API -----------------------------------------------------
 
@@ -317,6 +336,34 @@ class SahouNode:
                 query.reply(contract_key, fragment_json.encode())
             except Exception:  # noqa: BLE001 - a failure to reply to the queryable must not kill the zenoh thread
                 log.exception("contract queryable reply failed on %s", contract_key)
+        return cb
+
+    def _runtime_info(self) -> dict:
+        """Runtime facts for the core's vitals_payload. Built fresh per query:
+        uptime and the handshake verdict cache move over time."""
+        info = {
+            "lang": "python",
+            "sahou": _dist_version("sahou") or "unknown",
+            "transport": "native",
+            "uptime_secs": int(time.monotonic() - self._started),
+        }
+        zver = _dist_version("eclipse-zenoh")
+        if zver is not None:
+            info["zenoh"] = zver
+        handshake: dict[str, dict[str, str]] = {}
+        with self._lock:
+            for (conn, sender_hash), (verdict, _diags) in self._verdicts.items():
+                handshake.setdefault(conn, {})[sender_hash] = verdict
+        info["handshake"] = handshake
+        return info
+
+    def _make_vitals_cb(self, vitals_key: str):
+        def cb(query):
+            try:
+                payload = self._rt.vitals_payload(self._node, json.dumps(self._runtime_info()))
+                query.reply(vitals_key, payload.encode())
+            except Exception:  # noqa: BLE001 - a failure to reply must not kill the zenoh thread
+                log.exception("vitals queryable reply failed on %s", vitals_key)
         return cb
 
     def _start_handshake(self, conn: str, sender_hash: str) -> None:

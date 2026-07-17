@@ -7,6 +7,7 @@ pub fn validate_schema(c: &Contract) -> Vec<Diag> {
     let mut diags = Vec::new();
     for (id, conn) in &c.connections {
         check_topology(c, id, conn, &mut diags);
+        check_reserved_key(id, conn, &mut diags);
         check_slots_for_pattern(id, conn, &mut diags);
         for (slot_name, slot) in present_slots(conn) {
             check_slot(&format!("connections.{id}.{slot_name}"), slot, &mut diags);
@@ -35,6 +36,31 @@ fn check_topology(c: &Contract, id: &str, conn: &Connection, diags: &mut Vec<Dia
                 "unknown_node",
                 format!("connections.{id}.to[{i}]"),
                 format!("undefined node '{to}' referenced in to"),
+            ));
+        }
+    }
+}
+
+/// The '@sahou' chunk is the sahou admin space (contract + vitals queryables).
+/// A user claim on it would corrupt the diagnostics space, so it is a boundary NO —
+/// in the key override AND in the connection id itself (the default key is derived
+/// as `<ns>/<conn_id>`, so a connection named '@sahou/...' collides without any override).
+/// This blocks literal '@sahou' chunks only; wildcard selectors that merely intersect
+/// the admin space are a zenoh-level concern, out of scope here.
+fn check_reserved_key(id: &str, conn: &Connection, diags: &mut Vec<Diag>) {
+    if id.split('/').any(|chunk| chunk == "@sahou") {
+        diags.push(Diag::new(
+            "reserved_key",
+            format!("connections.{id}"),
+            format!("connection id '{id}' uses the reserved '@sahou' segment (the sahou admin space); the derived key '<namespace>/{id}' would collide — rename the connection"),
+        ));
+    }
+    if let Some(key) = &conn.key {
+        if key.split('/').any(|chunk| chunk == "@sahou") {
+            diags.push(Diag::new(
+                "reserved_key",
+                format!("connections.{id}.key"),
+                format!("key '{key}' uses the reserved '@sahou' segment (the sahou admin space); choose another key"),
             ));
         }
     }

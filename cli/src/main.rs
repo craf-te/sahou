@@ -3,6 +3,7 @@ use std::process::ExitCode;
 
 mod check;
 mod doctor;
+mod doctor_lan;
 #[cfg(feature = "gui")]
 mod gui;
 mod init;

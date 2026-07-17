@@ -28,3 +28,20 @@ handles the transport (zenoh-python) and threading.
   silently passes or drops.
 - Not yet implemented (planned follow-ups): auto-launch of sahou link (for Node/browser, ②b) /
   tap, doctor, type stubs (②c).
+
+## Vitals (node self-report)
+
+Each connected node declares, by default, a liveliness token and a small self-report
+queryable at `<namespace>/@sahou/vitals/<node>` — its identity, schema generation
+(per-connection hashes), runtime versions, uptime, and cached handshake verdicts.
+The upcoming `sahou doctor --lan` uses these for a mesh roll call.
+
+```python
+node = sahou.connect("descriptor.json", "sensor", vitals=False)  # opt out
+```
+
+**Exposure note, honestly:** the transport carries no authentication or encryption, so
+*any peer on the same LAN can read a node's vitals* — just as it can already read the
+full contract from the contract queryable. Vitals report only state the engine holds
+anyway (versions, hashes, verdicts); if that is still too much for your network, opt
+out with `vitals=False`.
