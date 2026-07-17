@@ -3,6 +3,9 @@ import { defineConfig } from "vitest/config";
 export default defineConfig({
   test: {
     environment: "node",
+    // Filters the benign "WebSocket error during close" unhandled rejection from zenoh-ts's
+    // fire-and-forget Session.close() (see tests/setup.ts); re-throws anything else.
+    setupFiles: ["./tests/setup.ts"],
     testTimeout: 30_000,
     hookTimeout: 60_000,
     fileParallelism: false,
