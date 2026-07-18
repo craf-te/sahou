@@ -8,6 +8,7 @@ import type { CoreRuntime } from "./core.js";
 import { loadCore } from "./core-node.js";
 import { SahouNode, toRejected, type VitalsSeed } from "./engine.js";
 import { linkUnavailable, openSessionWithTimeout } from "./session.js";
+import { SAHOU_VERSION } from "./version.js";
 
 export { SahouNode } from "./engine.js";
 export type { Json, NodePlan, RejectHandler, VitalsSeed } from "./engine.js";
@@ -28,24 +29,6 @@ export interface ConnectOptions {
 }
 
 const moduleDir = dirname(fileURLToPath(import.meta.url));
-
-/** Version from the nearest package.json at/above `dir` (undefined when unreadable — omitted, not faked). */
-function nearestPkgVersion(dir: string): string | undefined {
-  for (let d = dir; ; ) {
-    const p = join(d, "package.json");
-    if (existsSync(p)) {
-      try {
-        const v = (JSON.parse(readFileSync(p, "utf-8")) as { version?: unknown }).version;
-        if (typeof v === "string") return v;
-      } catch {
-        return undefined;
-      }
-    }
-    const parent = dirname(d);
-    if (parent === d) return undefined;
-    d = parent;
-  }
-}
 
 /** zenoh-ts version via a node_modules walk-up from this module. Plain fs on purpose:
  *  the package exports no version and hides its package.json behind `exports`, and
@@ -150,6 +133,6 @@ export async function connect(descriptor: string | object, opts: ConnectOptions)
   const seed: VitalsSeed | undefined =
     opts.vitals === false
       ? undefined
-      : { sahou: nearestPkgVersion(moduleDir) ?? "unknown", zenoh: zenohTsVersion(), transport: "ws-link" };
+      : { sahou: SAHOU_VERSION, zenoh: zenohTsVersion(), transport: "ws-link" };
   return SahouNode.create(core, session, descJson, opts.node, seed);
 }
