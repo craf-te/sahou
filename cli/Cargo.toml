@@ -37,6 +37,10 @@ rust-embed = { version = "8", optional = true }
 notify = { version = "8", optional = true }
 serde_json = "1"
 libc = "0.2"
+# Pinned to the same version zenoh-plugin-remote-api pulls in (via tokio-tungstenite), so this
+# doesn't introduce a duplicate tungstenite version in the tree. Default features are already
+# minimal (just the plain handshake codec; no TLS), which is all a ws:// client probe needs.
+tungstenite = "0.27.0"
 
 [features]
 default = ["gui"]

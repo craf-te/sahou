@@ -199,10 +199,38 @@ fn probe_loopback() -> bool {
     .unwrap_or(false)
 }
 
-/// TCP reachability of the link WS port (informational; not started is not a rejection = the engine spawns it automatically).
+/// WebSocket-handshake reachability of the link WS port (informational; not started is not a
+/// rejection = the engine spawns it automatically).
+///
+/// This completes a real WS handshake (and closes cleanly) rather than opening a raw TCP
+/// connection and dropping it mid-handshake. That matters for two reasons: (a) a dropped raw TCP
+/// connection makes zenoh_plugin_remote_api log an ERROR ("Handshake not finished") on an
+/// otherwise-healthy link — a diagnostic tool has no business causing that; (b) it makes the
+/// check honest — a non-WS process squatting the port now fails the handshake and correctly
+/// reports as not running, instead of a bare TCP connect falsely reporting "link WS running".
 fn probe_link_ws(port: u16) -> bool {
     let addr = SocketAddr::from((Ipv4Addr::LOCALHOST, port));
-    TcpStream::connect_timeout(&addr, Duration::from_millis(300)).is_ok()
+    let Ok(stream) = TcpStream::connect_timeout(&addr, Duration::from_millis(300)) else {
+        return false;
+    };
+    // Bound the handshake and the shutdown drain below so this probe can never hang.
+    let timeout = Some(Duration::from_millis(700));
+    if stream.set_read_timeout(timeout).is_err() || stream.set_write_timeout(timeout).is_err() {
+        return false;
+    }
+    let Ok((mut ws, _response)) = tungstenite::client(format!("ws://127.0.0.1:{port}/"), stream)
+    else {
+        return false;
+    };
+    // Best-effort clean shutdown: the probe already succeeded (the handshake completed), so
+    // ignore every error from here on and just try not to leave the peer hanging mid-close.
+    let _ = ws.close(None);
+    for _ in 0..16 {
+        if ws.read().is_err() {
+            break;
+        }
+    }
+    true
 }
 
 /// The default gateway IP (Windows = PowerShell Get-NetRoute / macOS = route / Linux = ip route).
@@ -370,6 +398,55 @@ pub fn run(args: DoctorArgs) -> Result<(), Vec<Diag>> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use std::net::TcpListener;
+    use std::thread;
+    use std::time::Instant;
+
+    #[test]
+    fn probe_link_ws_true_against_a_real_ws_server() {
+        let listener = TcpListener::bind("127.0.0.1:0").unwrap();
+        let port = listener.local_addr().unwrap().port();
+        let server = thread::spawn(move || {
+            if let Ok((stream, _)) = listener.accept() {
+                if let Ok(mut ws) = tungstenite::accept(stream) {
+                    // Drain until the client's close completes (or the connection drops).
+                    while ws.read().is_ok() {}
+                }
+            }
+        });
+        assert!(probe_link_ws(port));
+        server.join().unwrap();
+    }
+
+    #[test]
+    fn probe_link_ws_false_against_a_silent_tcp_listener_and_returns_within_timeouts() {
+        let listener = TcpListener::bind("127.0.0.1:0").unwrap();
+        let port = listener.local_addr().unwrap().port();
+        let server = thread::spawn(move || {
+            // Accept the connection but never speak — the probe must give up on its own
+            // via its read/write timeouts rather than hang.
+            if let Ok((stream, _)) = listener.accept() {
+                thread::sleep(Duration::from_secs(2));
+                drop(stream);
+            }
+        });
+        let start = Instant::now();
+        assert!(!probe_link_ws(port));
+        assert!(
+            start.elapsed() < Duration::from_secs(2),
+            "probe must return before the silent peer gives up, took {:?}",
+            start.elapsed()
+        );
+        server.join().unwrap();
+    }
+
+    #[test]
+    fn probe_link_ws_false_on_closed_port() {
+        let listener = TcpListener::bind("127.0.0.1:0").unwrap();
+        let port = listener.local_addr().unwrap().port();
+        drop(listener); // free the port; nothing is listening on it anymore
+        assert!(!probe_link_ws(port));
+    }
 
     // Verbatim log captured on real hardware in 013-1 (scout egress failure when launching unsigned Rust over ssh; ground truth).
     const TCC_LOG: &str = "2026-07-08T00:00:00Z ERROR zenoh::net::runtime::orchestrator: \
