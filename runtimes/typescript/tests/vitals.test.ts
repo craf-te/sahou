@@ -2,12 +2,12 @@
 // a vitals queryable at <ns>/@sahou/vitals/<node>; the payload is built by the core.
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
-import { Duration, ReplyError, Sample, Session } from "@eclipse-zenoh/zenoh-ts";
+import { Session } from "@eclipse-zenoh/zenoh-ts";
 import { afterEach, describe, expect, it } from "vitest";
 import type { CoreRuntime } from "../src/core.js";
 import { loadCore } from "../src/core-node.js";
 import { SahouNode, connect } from "../src/node.js";
-import { rawSession, spawnLink, waitFor, type LinkHandle } from "./helpers.js";
+import { fetchOne, rawSession, spawnLink, tokenVisible, waitFor, type LinkHandle } from "./helpers.js";
 
 const fixture = (name: string) =>
   readFileSync(fileURLToPath(new URL(`../../python/tests/fixtures/${name}`, import.meta.url)), "utf-8");
@@ -23,25 +23,6 @@ function withCore<T>(fn: (rt: CoreRuntime) => T): T {
   } finally {
     rt.free();
   }
-}
-
-async function fetchOne(session: Session, key: string): Promise<string | null> {
-  const rx = await session.get(key, { timeout: Duration.milliseconds.of(1000) });
-  if (!rx) return null;
-  for await (const reply of rx) {
-    const r = reply.result();
-    if (!(r instanceof ReplyError)) return (r as Sample).payload().toString();
-  }
-  return null;
-}
-
-async function tokenVisible(session: Session, key: string): Promise<boolean> {
-  const rx = await session.liveliness().get(key, { timeout: Duration.milliseconds.of(1000) });
-  if (!rx) return false;
-  for await (const reply of rx) {
-    if (!(reply.result() instanceof ReplyError)) return true;
-  }
-  return false;
 }
 
 let link: LinkHandle | undefined;

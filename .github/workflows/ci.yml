@@ -52,3 +52,8 @@ jobs:
         working-directory: runtimes/typescript
       - run: npx vitest run
         working-directory: runtimes/typescript
+      # Real-browser vitals e2e (browser entry through a real link, in headless Chromium)
+      - run: npx playwright install --with-deps chromium
+        working-directory: runtimes/typescript
+      - run: npm run test:e2e
+        working-directory: runtimes/typescript
