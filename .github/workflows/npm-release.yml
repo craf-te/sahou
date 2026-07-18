@@ -3,6 +3,10 @@
 # Decoupled from the CLI release: fires on its own `npm-vX.Y.Z` tag so a TS-only
 # fix doesn't rebuild the CLI/crates/PyPI, with a manual dispatch fallback.
 #
+# `publish` is gated on `test`, which runs the same reusable TS suite
+# (ts-tests.yml) as ci.yml — unit + cross-language + real-browser e2e — so a
+# tagged commit can't reach npm without passing it.
+#
 # Requires the `NPM_TOKEN` repository secret (an npm automation/granular token with
 # publish rights for the `sahou` package).
 name: npm-release
@@ -18,7 +22,13 @@ permissions:
   id-token: write # for npm publish --provenance
 
 jobs:
+  # Full TS suite (build + unit + cross-language + real-browser e2e); publish
+  # is gated on this passing on the tagged commit.
+  test:
+    uses: ./.github/workflows/ts-tests.yml
+
   publish:
+    needs: test
     runs-on: ubuntu-latest
     defaults:
       run:
