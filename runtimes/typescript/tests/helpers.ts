@@ -1,7 +1,7 @@
 import { ChildProcess, spawn } from "node:child_process";
 import net from "node:net";
 import { fileURLToPath } from "node:url";
-import { Config, Session } from "@eclipse-zenoh/zenoh-ts";
+import { Config, Duration, ReplyError, Sample, Session } from "@eclipse-zenoh/zenoh-ts";
 import type { Json, SahouNode } from "../src/engine.js";
 
 const exe = process.platform === "win32" ? "sahou.exe" : "sahou";
@@ -108,6 +108,27 @@ export async function pump(node: SahouNode, conn: string, payload: Json, receive
 /** A raw zenoh-ts session that bypasses validation (for receive-boundary tests; raw bypass). */
 export function rawSession(port: number): Promise<Session> {
   return Session.open(new Config(`ws://127.0.0.1:${port}`));
+}
+
+/** Fetch a single reply payload from a queryable (null if none). Shared by the vitals suites (node + browser e2e). */
+export async function fetchOne(session: Session, key: string): Promise<string | null> {
+  const rx = await session.get(key, { timeout: Duration.milliseconds.of(1000) });
+  if (!rx) return null;
+  for await (const reply of rx) {
+    const r = reply.result();
+    if (!(r instanceof ReplyError)) return (r as Sample).payload().toString();
+  }
+  return null;
+}
+
+/** Whether a liveliness token exists at `key`, from this observer's vantage. Shared by the vitals suites. */
+export async function tokenVisible(session: Session, key: string): Promise<boolean> {
+  const rx = await session.liveliness().get(key, { timeout: Duration.milliseconds.of(1000) });
+  if (!rx) return false;
+  for await (const reply of rx) {
+    if (!(reply.result() instanceof ReplyError)) return true;
+  }
+  return false;
 }
 
 /** Repeat put from a raw session until delivery (absorbs silent drops before the route converges; symmetric with pytest's pump_raw). */

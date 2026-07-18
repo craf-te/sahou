@@ -4,25 +4,48 @@
   "description": "Sahou runtime — schema-first typed messaging for creative installations (on Zenoh)",
   "type": "module",
   "license": "Apache-2.0",
-  "repository": { "type": "git", "url": "https://github.com/craf-te/sahou" },
-  "homepage": "https://github.com/craf-te/sahou#readme",
-  "keywords": ["schema", "messaging", "zenoh", "lan", "runtime"],
-  "exports": {
-    ".": { "types": "./dist/node.d.ts", "default": "./dist/node.js" },
-    "./browser": { "types": "./dist/browser.d.ts", "default": "./dist/browser.js" }
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/craf-te/sahou"
   },
-  "files": ["dist", "core"],
+  "homepage": "https://github.com/craf-te/sahou#readme",
+  "keywords": [
+    "schema",
+    "messaging",
+    "zenoh",
+    "lan",
+    "runtime"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/node.d.ts",
+      "default": "./dist/node.js"
+    },
+    "./browser": {
+      "types": "./dist/browser.d.ts",
+      "default": "./dist/browser.js"
+    }
+  },
+  "files": [
+    "dist",
+    "core"
+  ],
   "scripts": {
     "build:core": "wasm-pack build ../../core --release --target nodejs --out-dir ../runtimes/typescript/core/node -- --features wasm && wasm-pack build ../../core --release --target web --out-dir ../runtimes/typescript/core/browser -- --features wasm && rm -f core/node/.gitignore core/browser/.gitignore",
     "build": "tsc -p tsconfig.json",
-    "test": "vitest run"
+    "build:e2e": "vite build --config tests-e2e/vite.config.ts",
+    "test": "vitest run",
+    "test:e2e": "npm run build:e2e && vitest run --config vitest.e2e.config.ts"
   },
   "dependencies": {
     "@eclipse-zenoh/zenoh-ts": "^1.9.0"
   },
   "devDependencies": {
     "@types/node": "^24",
+    "playwright": "^1.61.1",
     "typescript": "^5.6",
+    "vite": "^7.3.6",
+    "vite-plugin-wasm": "^3.6.0",
     "vitest": "^3"
   }
 }

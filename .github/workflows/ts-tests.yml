@@ -1,0 +1,50 @@
+# Reusable workflow: the full TypeScript runtime test suite (wasm core build,
+# unit + cross-language vitest, real-browser e2e). Called from both ci.yml
+# (the `node` job, on every push/PR) and npm-release.yml (to gate `npm
+# publish` on the same suite) — one source of steps so ci and release can't
+# drift apart, which is exactly the failure mode that let this suite go
+# unrun before #6.
+name: ts-tests
+
+on:
+  workflow_call:
+
+permissions:
+  contents: read
+
+jobs:
+  ts-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@1.88.0
+        with:
+          targets: wasm32-unknown-unknown
+      - uses: Swatinem/rust-cache@v2
+      - uses: taiki-e/install-action@v2
+        with:
+          tool: wasm-pack
+      - uses: astral-sh/setup-uv@v5
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: runtimes/typescript/package-lock.json
+      # The TS integration tests spawn this binary as the link
+      - run: cargo build -p sahou-cli
+      # …and the cross-language tests drive the Python runtime through uv
+      - run: uv sync
+        working-directory: runtimes/python
+      - run: npm ci
+        working-directory: runtimes/typescript
+      - run: npm run build:core
+        working-directory: runtimes/typescript
+      - run: npm run build
+        working-directory: runtimes/typescript
+      - run: npx vitest run
+        working-directory: runtimes/typescript
+      # Real-browser vitals e2e (browser entry through a real link, in headless Chromium)
+      - run: npx playwright install --with-deps chromium
+        working-directory: runtimes/typescript
+      - run: npm run test:e2e
+        working-directory: runtimes/typescript
