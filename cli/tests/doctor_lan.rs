@@ -99,11 +99,11 @@ fn doctor_lan_roll_call_reports_present_missing_and_duplicates() {
     let stdout = String::from_utf8_lossy(&out.stdout);
     let stderr = String::from_utf8_lossy(&out.stderr);
     assert!(
-        stdout.contains("[OK] sensor"),
+        stdout.contains("✓ sensor"),
         "sensor should be present:\n{stdout}\n{stderr}"
     );
     assert!(
-        stdout.contains("generation=match"),
+        stdout.contains("generation match"),
         "generation should match:\n{stdout}"
     );
     assert!(
@@ -111,7 +111,7 @@ fn doctor_lan_roll_call_reports_present_missing_and_duplicates() {
         "duplicate note missing:\n{stdout}"
     );
     assert!(
-        stdout.contains("[NG] visuals") && stdout.contains("[NG] archive"),
+        stdout.contains("✗ visuals") && stdout.contains("✗ archive"),
         "missing nodes should be NG:\n{stdout}"
     );
     assert!(
@@ -174,7 +174,7 @@ fn doctor_lan_without_descriptor_lists_discovered_nodes() {
         .unwrap();
     let stdout = String::from_utf8_lossy(&out.stdout);
     assert!(
-        stdout.contains("[OK] sensor"),
+        stdout.contains("✓ sensor"),
         "discovered node missing:\n{stdout}"
     );
     assert!(

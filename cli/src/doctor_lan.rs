@@ -10,6 +10,7 @@ use sahou_core::vitals::parse_vitals;
 use std::path::{Path, PathBuf};
 use std::time::{Duration, Instant};
 
+use crate::style::{self, Status};
 use zenoh::Wait;
 
 /// What the LAN sweeps collected. `vitals` keeps one entry PER reply — duplicates are the signal
@@ -42,13 +43,22 @@ pub enum Generation {
     Unknown,
 }
 
+/// Coloring class for per-node roll-call annotations.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum NoteKind {
+    /// a blocked handshake — rendered red
+    Blocking,
+    /// duplicate instances / unreadable vitals — rendered yellow
+    Warn,
+}
+
 #[derive(Debug)]
 pub struct NodeRow {
     pub node: String,
     pub present: Option<Presence>,
     pub sahou_version: Option<String>,
     pub generation: Generation,
-    pub notes: Vec<String>,
+    pub notes: Vec<(NoteKind, String)>,
 }
 
 /// Join "who should be here" (the descriptor's nodes) against "who is here" (the sweep).
@@ -73,9 +83,12 @@ pub fn roll_call(desc: &Descriptor, sweep: &LanSweep) -> Vec<NodeRow> {
             };
             let mut notes = Vec::new();
             if replies.len() > 1 {
-                notes.push(format!(
-                    "{} instances answered vitals (double-started node?)",
-                    replies.len()
+                notes.push((
+                    NoteKind::Warn,
+                    format!(
+                        "{} instances answered vitals (double-started node?)",
+                        replies.len()
+                    ),
                 ));
             }
             let mut sahou_version = None;
@@ -102,14 +115,17 @@ pub fn roll_call(desc: &Descriptor, sweep: &LanSweep) -> Vec<NodeRow> {
                         for (conn, senders) in &v.handshake {
                             for (sender_hash, verdict) in senders {
                                 if verdict == "blocked" {
-                                    notes.push(format!("blocking sender {sender_hash} on {conn}"));
+                                    notes.push((
+                                        NoteKind::Blocking,
+                                        format!("blocking sender {sender_hash} on {conn}"),
+                                    ));
                                 }
                             }
                         }
                     }
                     Err(diags) => {
                         for d in diags {
-                            notes.push(format!("[{}] {}", d.code, d.message));
+                            notes.push((NoteKind::Warn, format!("[{}] {}", d.code, d.message)));
                         }
                     }
                 }
@@ -125,47 +141,69 @@ pub fn roll_call(desc: &Descriptor, sweep: &LanSweep) -> Vec<NodeRow> {
         .collect()
 }
 
-/// Render the roll call in doctor's report_line aesthetics ([OK]/[NG]).
+/// Render the roll call: `✓/✗ node  sahou <ver>  generation …` with `↳` note
+/// lines. Node column width = the longest node name (min 8).
 pub fn render_roll_call(rows: &[NodeRow]) -> String {
+    let w = rows.iter().map(|r| r.node.len()).max().unwrap_or(0).max(8);
     let mut out = String::new();
     for r in rows {
-        let line = match &r.present {
+        match &r.present {
             Some(src) => {
                 let gen = match &r.generation {
-                    Generation::Match => "generation=match".to_string(),
-                    Generation::Drift(conns) => format!("generation=DRIFT({conns})"),
-                    Generation::Unknown => "generation=unknown".to_string(),
+                    Generation::Match => style::paint(style::META, "generation match"),
+                    Generation::Drift(conns) => {
+                        style::paint(style::WARN, format!("generation drift: {conns}"))
+                    }
+                    Generation::Unknown => style::paint(style::WARN.dimmed(), "generation unknown"),
                 };
-                let via = match src {
-                    Presence::Token => "",
-                    Presence::VitalsReply => " (presence via vitals reply; no liveliness token)",
-                };
-                format!(
-                    "  [OK] {:<12} sahou={}  {}{}",
+                out.push_str(&format!(
+                    "  {} {:<w$}  sahou {:<8} {gen}\n",
+                    Status::Ok.glyph(),
                     r.node,
                     r.sahou_version.as_deref().unwrap_or("?"),
-                    gen,
-                    via
-                )
+                ));
+                if matches!(src, Presence::VitalsReply) {
+                    out.push_str(&format!(
+                        "      {}\n",
+                        style::paint(
+                            style::META,
+                            "↳ presence via vitals reply (no liveliness token)"
+                        )
+                    ));
+                }
             }
-            None => format!(
-                "  [NG] {:<12} no vitals (not started / unreachable from here)",
-                r.node
-            ),
-        };
-        out.push_str(&line);
-        out.push('\n');
-        for n in &r.notes {
-            out.push_str(&format!("       - {n}\n"));
+            None => out.push_str(&format!(
+                "  {} {:<w$}  no vitals — not started / unreachable from here\n",
+                Status::Bad.glyph(),
+                r.node,
+            )),
+        }
+        for (kind, n) in &r.notes {
+            let s = match kind {
+                NoteKind::Blocking => style::BAD,
+                NoteKind::Warn => style::WARN,
+            };
+            out.push_str(&format!("      {}\n", style::paint(s, format!("↳ {n}"))));
         }
     }
     out
 }
 
-/// Spec §4.5 vantage honesty: every LAN report names its vantage and snapshot nature.
-pub fn vantage_line(descriptor_desc: &str, lan_secs: u64) -> String {
-    format!(
-        "note: a snapshot over the last {lan_secs}s from this binary's vantage, judged against {descriptor_desc}. Absence can be convergence lag; green here does not guarantee green elsewhere."
+/// Spec §4.5 vantage honesty, part 1: the heading names what the report is
+/// judged against and the snapshot window.
+pub fn lan_heading(descriptor_desc: &str, lan_secs: u64) -> String {
+    style::heading(
+        "mesh roll call",
+        &format!("· vs {descriptor_desc} · {lan_secs}s snapshot"),
+    )
+}
+
+/// Spec §4.5 vantage honesty, part 2: the trailing dim disclaimer.
+pub fn disclaimer() -> String {
+    style::labeled_block(
+        "note",
+        style::META,
+        &["a snapshot from this binary's vantage; absence can be convergence lag; green here does not guarantee green elsewhere".into()],
     )
 }
 
@@ -177,15 +215,29 @@ pub fn classify_probe(
     multicast_found: usize,
     direct_found: Option<usize>,
     local_ok: bool,
-) -> String {
+) -> Vec<String> {
     match (multicast_found, direct_found) {
-        (0, Some(d)) if d > 0 => format!(
-            "multicast discovery found nothing, but the direct connection reached {d} node key(s) — multicast-only filtering confirmed (IGMP snooping/querier class). Remedy: fix the switch's IGMP settings, or distribute explicit-connect endpoints."
-        ),
-        (0, Some(_)) => "neither multicast nor the direct connection reached anyone — full isolation (AP client isolation / VLAN) or the remote is not running. Next: run doctor on the remote machine (both-side evidence needed).".to_string(),
-        (0, None) if local_ok => "this binary is healthy but no sahou node is visible. Suspicion-ranked: 1. the remote sahou is not started  2. the AP/hub blocks client-to-client traffic  3. multicast-only pruning (IGMP)  4. different VLAN/subnet. To narrow it down: rerun with --connect tcp/<remote-ip>:7447 for a direct-path probe.".to_string(),
-        (0, None) => "no sahou node is visible — and this binary's own egress probe failed (see the local diagnosis above). Fix the local issue first; the LAN sweep cannot be trusted until this binary can reach the LAN.".to_string(),
-        (m, _) => format!("{m} node key(s) visible via multicast."),
+        (0, Some(d)) if d > 0 => vec![
+            format!("multicast discovery found nothing, but the direct connection reached {d} node key(s) — multicast-only filtering confirmed (IGMP snooping/querier class)."),
+            "Remedy: fix the switch's IGMP settings, or distribute explicit-connect endpoints.".into(),
+        ],
+        (0, Some(_)) => vec![
+            "neither multicast nor the direct connection reached anyone — full isolation (AP client isolation / VLAN) or the remote is not running.".into(),
+            "Next: run doctor on the remote machine (both-side evidence needed).".into(),
+        ],
+        (0, None) if local_ok => vec![
+            "this binary is healthy but no sahou node is visible. Suspicion-ranked:".into(),
+            "1. the remote sahou is not started".into(),
+            "2. the AP/hub blocks client-to-client traffic".into(),
+            "3. multicast-only pruning (IGMP)".into(),
+            "4. different VLAN/subnet".into(),
+            "To narrow it down: rerun with --connect tcp/<remote-ip>:7447 for a direct-path probe.".into(),
+        ],
+        (0, None) => vec![
+            "no sahou node is visible — and this binary's own egress probe failed (see the local diagnosis above).".into(),
+            "Fix the local issue first; the LAN sweep cannot be trusted until this binary can reach the LAN.".into(),
+        ],
+        (m, _) => vec![format!("{m} node key(s) visible via multicast.")],
     }
 }
 
@@ -302,7 +354,8 @@ fn sweep(session: &zenoh::Session, selector: &str, grace_secs: u64) -> LanSweep 
 /// The --lan stage. Roll call with a descriptor; discovery-only without one; a differential
 /// second pass when --connect is given.
 pub fn run_lan(args: &crate::doctor::DoctorArgs, local_ok: bool) -> Result<(), Vec<Diag>> {
-    println!("\nsahou doctor --lan — mesh stage");
+    anstream::println!();
+    // heading printed per-branch below (roll call vs discovery)
     let cwd = std::env::current_dir().map_err(|e| {
         vec![Diag::new(
             "doctor_lan_error",
@@ -319,9 +372,9 @@ pub fn run_lan(args: &crate::doctor::DoctorArgs, local_ok: bool) -> Result<(), V
             let selector = format!("{}/@sahou/vitals/*", desc.namespace);
             let s = sweep(&session, &selector, args.lan_secs);
             let rows = roll_call(&desc, &s);
-            println!(
+            anstream::println!(
                 "{}",
-                vantage_line(
+                lan_heading(
                     &format!(
                         "{} ({} connections)",
                         path.display(),
@@ -330,7 +383,7 @@ pub fn run_lan(args: &crate::doctor::DoctorArgs, local_ok: bool) -> Result<(), V
                     args.lan_secs
                 )
             );
-            print!("{}", render_roll_call(&rows));
+            anstream::print!("{}", render_roll_call(&rows));
             let missing: Vec<String> = rows
                 .iter()
                 .filter(|r| r.present.is_none())
@@ -360,7 +413,14 @@ pub fn run_lan(args: &crate::doctor::DoctorArgs, local_ok: bool) -> Result<(), V
                         Err(_) => 0,
                     }
                 });
-                println!("{}", classify_probe(0, direct, local_ok));
+                anstream::print!(
+                    "{}",
+                    style::labeled_block(
+                        "next",
+                        style::ACTION,
+                        &classify_probe(0, direct, local_ok)
+                    )
+                );
             } else if args.connect.is_some() {
                 // multicast-health check: pass A above already includes --connect, so a
                 // successful roll call here can be silently dependent on the explicit
@@ -374,17 +434,44 @@ pub fn run_lan(args: &crate::doctor::DoctorArgs, local_ok: bool) -> Result<(), V
                         .filter(|r| r.present.is_some())
                         .count();
                     if n == 0 {
-                        println!(
-                            "warning: the roll call succeeded only via the explicit endpoint:"
+                        anstream::println!(
+                            "{} {}",
+                            Status::Warn.glyph(),
+                            style::paint(
+                                style::WARN,
+                                "the roll call succeeded only via the explicit endpoint:"
+                            )
                         );
-                        println!("{}", classify_probe(0, Some(found), local_ok));
+                        anstream::print!(
+                            "{}",
+                            style::labeled_block(
+                                "next",
+                                style::ACTION,
+                                &classify_probe(0, Some(found), local_ok)
+                            )
+                        );
                     }
                     let _ = s2.close().wait();
                 }
             }
             if missing.is_empty() {
+                anstream::print!("{}", disclaimer());
                 Ok(())
             } else {
+                anstream::println!(
+                    "\n{} {}",
+                    Status::Bad.glyph(),
+                    style::paint(
+                        style::HEAD,
+                        format!(
+                            "{} of {} expected node(s) not visible from here: {}",
+                            missing.len(),
+                            rows.len(),
+                            missing.join(", ")
+                        )
+                    )
+                );
+                anstream::print!("{}", disclaimer());
                 Err(vec![Diag::new(
                     "doctor_lan_missing_nodes",
                     "nodes",
@@ -400,12 +487,21 @@ pub fn run_lan(args: &crate::doctor::DoctorArgs, local_ok: bool) -> Result<(), V
         DescriptorSource::None => {
             // discovery-only: list every sahou node visible, across namespaces (verified selector)
             let s = sweep(&session, "**/@sahou/vitals/**", args.lan_secs);
-            println!(
+            anstream::println!(
                 "{}",
-                vantage_line("no descriptor (discovery-only)", args.lan_secs)
+                style::heading(
+                    "mesh discovery",
+                    &format!(
+                        "· no descriptor (discovery-only) · {}s snapshot",
+                        args.lan_secs
+                    )
+                )
             );
             if s.token_keys.is_empty() && s.vitals.is_empty() {
-                println!("{}", classify_probe(0, None, local_ok));
+                anstream::print!(
+                    "{}",
+                    style::labeled_block("next", style::ACTION, &classify_probe(0, None, local_ok))
+                );
             } else {
                 let mut keys: Vec<&String> = s.token_keys.iter().collect();
                 for (k, _) in &s.vitals {
@@ -417,13 +513,22 @@ pub fn run_lan(args: &crate::doctor::DoctorArgs, local_ok: bool) -> Result<(), V
                 keys.dedup();
                 for k in keys {
                     if let Some((ns, _)) = k.split_once("/@sahou/vitals/") {
-                        println!(
-                            "  [OK] {:<12} (namespace {ns})",
-                            vitals_node(k).unwrap_or("?")
+                        anstream::println!(
+                            "  {} {:<12} {}",
+                            Status::Ok.glyph(),
+                            vitals_node(k).unwrap_or("?"),
+                            style::paint(style::META, format!("namespace {ns}"))
                         );
                     }
                 }
-                println!("hint: pass --descriptor <gen/descriptor.json> to see who is MISSING, not just who is here.");
+                anstream::print!(
+                    "{}",
+                    style::labeled_block(
+                        "hint",
+                        style::ACTION,
+                        &["pass --descriptor <gen/descriptor.json> to see who is MISSING, not just who is here.".into()]
+                    )
+                );
             }
             let _ = session.close().wait();
             Ok(())
@@ -442,6 +547,10 @@ mod tests {
 
     const DEMO: &str = include_str!("../../examples/demo/schema.sahou.yaml");
     const INFO: &str = r#"{"lang":"rust","sahou":"0.0.2","transport":"native"}"#;
+
+    fn plain(s: &str) -> String {
+        anstream::adapter::strip_str(s).to_string()
+    }
 
     fn demo_desc() -> sahou_core::ir::Descriptor {
         let c = parse_contract(&DEMO.replace("\r\n", "\n")).unwrap();
@@ -519,7 +628,10 @@ mod tests {
         let rows = roll_call(&desc, &sweep);
         let sensor = rows.iter().find(|r| r.node == "sensor").unwrap();
         assert!(
-            sensor.notes.iter().any(|n| n.contains("2 instances")),
+            sensor
+                .notes
+                .iter()
+                .any(|(k, n)| *k == NoteKind::Warn && n.contains("2 instances")),
             "{:?}",
             sensor.notes
         );
@@ -539,9 +651,9 @@ mod tests {
         let v = rows.iter().find(|r| r.node == "visuals").unwrap();
         assert!(matches!(v.present, Some(Presence::VitalsReply)));
         assert!(
-            v.notes
-                .iter()
-                .any(|n| n.contains("blocking") && n.contains("touch")),
+            v.notes.iter().any(|(k, n)| *k == NoteKind::Blocking
+                && n.contains("blocking")
+                && n.contains("touch")),
             "{:?}",
             v.notes
         );
@@ -562,45 +674,78 @@ mod tests {
             sensor
                 .notes
                 .iter()
-                .any(|n| n.contains("vitals_format_unsupported")),
+                .any(|(k, n)| *k == NoteKind::Warn && n.contains("vitals_format_unsupported")),
             "{:?}",
             sensor.notes
         );
     }
 
     #[test]
-    fn render_marks_missing_with_ng_and_present_with_ok() {
+    fn render_marks_missing_with_cross_and_present_with_check() {
         let desc = demo_desc();
-        let out = render_roll_call(&roll_call(&desc, &sweep_with(&desc, &["sensor"])));
-        assert!(out.contains("[OK] sensor"), "{out}");
-        assert!(out.contains("[NG] visuals"), "{out}");
-        assert!(out.contains("not started / unreachable from here"), "{out}");
+        let out = plain(&render_roll_call(&roll_call(
+            &desc,
+            &sweep_with(&desc, &["sensor"]),
+        )));
+        assert!(out.contains("✓ sensor"), "{out}");
+        assert!(out.contains("sahou 0.0.2"), "{out}");
+        assert!(out.contains("generation match"), "{out}");
+        assert!(out.contains("✗ visuals"), "{out}");
+        assert!(
+            out.contains("no vitals — not started / unreachable from here"),
+            "{out}"
+        );
     }
 
     #[test]
-    fn vantage_line_names_snapshot_window_and_descriptor() {
-        let l = vantage_line("gen/descriptor.json (4 connections)", 5);
-        assert!(l.contains("snapshot"), "{l}");
-        assert!(l.contains("5s"), "{l}");
-        assert!(l.contains("gen/descriptor.json"), "{l}");
-        assert!(l.contains("this binary's vantage"), "{l}");
+    fn render_puts_fallback_presence_and_notes_on_indented_lines() {
+        let desc = demo_desc();
+        let info = r#"{"lang":"rust","sahou":"0.0.2","transport":"native","handshake":{"touch":{"deadbeef00000000":"blocked"}}}"#;
+        let k = vitals_key(&desc, "visuals");
+        let sweep = LanSweep {
+            token_keys: vec![],
+            vitals: vec![(k, vitals_payload(&desc, "visuals", info).unwrap())],
+        };
+        let out = plain(&render_roll_call(&roll_call(&desc, &sweep)));
+        assert!(
+            out.contains("↳ presence via vitals reply (no liveliness token)"),
+            "{out}"
+        );
+        assert!(
+            out.contains("↳ blocking sender deadbeef00000000 on touch"),
+            "{out}"
+        );
+    }
+
+    #[test]
+    fn lan_heading_and_disclaimer_keep_vantage_honesty() {
+        let h = plain(&lan_heading("gen/descriptor.json (4 connections)", 5));
+        assert!(h.contains("mesh roll call"), "{h}");
+        assert!(h.contains("vs gen/descriptor.json (4 connections)"), "{h}");
+        assert!(h.contains("5s snapshot"), "{h}");
+        let d = plain(&disclaimer());
+        assert!(d.contains("this binary's vantage"), "{d}");
+        assert!(
+            d.contains("green here does not guarantee green elsewhere"),
+            "{d}"
+        );
     }
 
     #[test]
     fn classify_probe_localizes_the_fault() {
-        let igmp = classify_probe(0, Some(2), true);
+        let igmp = classify_probe(0, Some(2), true).join("\n");
         assert!(igmp.contains("multicast-only filtering"), "{igmp}");
-        let dark = classify_probe(0, Some(0), true);
+        let dark = classify_probe(0, Some(0), true).join("\n");
         assert!(dark.contains("remote machine"), "{dark}");
-        let unknown = classify_probe(0, None, true);
+        let unknown = classify_probe(0, None, true).join("\n");
         assert!(unknown.contains("--connect"), "{unknown}");
         assert!(unknown.contains("1."), "{unknown}"); // suspicion-ranked list
-        let fine = classify_probe(3, None, true);
+        let fine = classify_probe(3, None, true).join("\n");
         assert!(
             fine.contains("3 node key(s) visible via multicast"),
             "{fine}"
         );
-        let blocked = classify_probe(0, None, false);
+        let blocked = classify_probe(0, None, false).join("\n");
         assert!(!blocked.contains("healthy"), "{blocked}");
         assert!(blocked.contains("Fix the local issue first"), "{blocked}");
     }
