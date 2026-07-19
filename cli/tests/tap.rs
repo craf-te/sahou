@@ -156,13 +156,14 @@ fn tap_watch_prints_accept_and_core_reject_then_exits_by_count() {
         "exit != 0:\n{stdout}\n{}",
         String::from_utf8_lossy(&out.stderr)
     );
+    assert!(stdout.contains(" OK "), "accept line is missing:\n{stdout}");
     assert!(
-        stdout.contains(&format!("OK {key}")),
-        "accept line is missing:\n{stdout}"
+        stdout.contains(&format!("→ {key}")),
+        "the header key mapping is missing:\n{stdout}"
     );
     // The core payload.rs diagnostic path convention uses a "$." prefix (the brief uses shorthand, so match the actual)
     assert!(
-        stdout.contains("[type_mismatch] @$.x"),
+        stdout.contains("type_mismatch @$.x"),
         "the core receive-boundary rejection is missing:\n{stdout}"
     );
     session.close().wait().unwrap();
@@ -251,11 +252,11 @@ fn tap_watch_explains_hash_mismatch_via_contract_queryable() {
         String::from_utf8_lossy(&out.stderr)
     );
     assert!(
-        stdout.contains("[hash_mismatch]"),
+        stdout.contains("hash_mismatch — sender contract generation differs"),
         "the mismatch line is missing:\n{stdout}"
     );
     assert!(
-        stdout.contains("[handshake:blocked]"),
+        stdout.contains("handshake: blocked"),
         "the why-NO explanation is missing:\n{stdout}"
     );
     assert!(
