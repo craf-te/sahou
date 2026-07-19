@@ -130,12 +130,12 @@ fn fix_steps(os: &str) -> Vec<String> {
     }
 }
 
-/// Assemble the diagnosis (pure function). Ok(healthy summary) / Err(structured
-/// failure). The caller renders the failure AND converts it to the compact
-/// {code, path, title} Diag for the exit path.
-pub fn diagnose(r: &ProbeReport) -> Result<Healthy, Failure> {
+/// Assemble the diagnosis (pure function). Ok(healthy summary) / Err(boxed
+/// structured failure). The caller renders the failure AND converts it to the
+/// compact {code, path, title} Diag for the exit path.
+pub fn diagnose(r: &ProbeReport) -> Result<Healthy, Box<Failure>> {
     if !r.loopback {
-        return Err(Failure {
+        return Err(Box::new(Failure {
             code: "doctor_loopback",
             path: "probes.loopback",
             verdict: "broken",
@@ -143,7 +143,7 @@ pub fn diagnose(r: &ProbeReport) -> Result<Healthy, Failure> {
             cause: vec!["the most basic local send/recv failed before any LAN probing".into()],
             fix: vec!["check the network stack / security software".into()],
             captured: None,
-        });
+        }));
     }
     match &r.egress {
         Egress::Ok => Ok(Healthy {
@@ -174,7 +174,7 @@ pub fn diagnose(r: &ProbeReport) -> Result<Healthy, Failure> {
                 "windows" => "most likely: Windows Defender Firewall is blocking this binary".into(),
                 _ => "most likely: a firewall or NIC configuration is blocking multicast".into(),
             });
-            Err(Failure {
+            Err(Box::new(Failure {
                 code: "doctor_permission_blocked",
                 path: "probes.egress",
                 verdict: "blocked",
@@ -182,9 +182,9 @@ pub fn diagnose(r: &ProbeReport) -> Result<Healthy, Failure> {
                 cause,
                 fix: fix_steps(r.os),
                 captured: Some(line.clone()),
-            })
+            }))
         }
-        Egress::NicError(line) => Err(Failure {
+        Egress::NicError(line) => Err(Box::new(Failure {
             code: "doctor_nic_error",
             path: "probes.egress",
             verdict: "misconfigured",
@@ -195,7 +195,7 @@ pub fn diagnose(r: &ProbeReport) -> Result<Healthy, Failure> {
             cause: vec![],
             fix: vec!["point --iface at a real LAN NIC".into()],
             captured: Some(line.clone()),
-        }),
+        })),
         Egress::OtherError(line) => {
             let mut cause = Vec::new();
             if r.ping == Some(false) {
@@ -203,7 +203,7 @@ pub fn diagnose(r: &ProbeReport) -> Result<Healthy, Failure> {
                     "ping to the gateway also failed = suspected network/NIC-level outage".into(),
                 );
             }
-            Err(Failure {
+            Err(Box::new(Failure {
                 code: "doctor_egress_error",
                 path: "probes.egress",
                 verdict: "error",
@@ -211,7 +211,7 @@ pub fn diagnose(r: &ProbeReport) -> Result<Healthy, Failure> {
                 cause,
                 fix: vec!["check the captured line below".into()],
                 captured: Some(line.clone()),
-            })
+            }))
         }
     }
 }
@@ -502,7 +502,7 @@ pub fn run(args: DoctorArgs) -> Result<(), Vec<Diag>> {
         Ok(h) => anstream::println!("{}", render_healthy(h)),
         Err(f) => anstream::print!("{}", render_failure(f)),
     }
-    let to_diags = |f: Failure| vec![Diag::new(f.code, f.path, f.title)];
+    let to_diags = |f: Box<Failure>| vec![Diag::new(f.code, f.path, f.title)];
     if args.lan {
         let local_ok = local.is_ok();
         let lan = crate::doctor_lan::run_lan(&args, local_ok);
