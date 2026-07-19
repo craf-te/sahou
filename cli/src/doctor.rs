@@ -7,6 +7,7 @@ use std::net::{Ipv4Addr, SocketAddr, TcpStream, UdpSocket};
 use std::sync::{Arc, Mutex};
 use std::time::Duration;
 
+use crate::style::{self, Status};
 use clap::Args;
 use sahou_core::diag::Diag;
 
@@ -90,70 +91,167 @@ pub struct ProbeReport {
     pub iface_desc: String,
 }
 
-fn permission_remedy(os: &str) -> &'static str {
+/// The healthy summary (rendered as one green line + dim detail).
+#[derive(Debug)]
+pub struct Healthy {
+    pub title: &'static str,
+    pub detail: String,
+}
+
+/// A structured failure report: rendered as verdict — title, then
+/// cause / fix / captured blocks. `fix` entries are unnumbered; the renderer
+/// numbers them. The machine-readable Diag uses (code, path, title) only.
+#[derive(Debug)]
+pub struct Failure {
+    pub code: &'static str,
+    pub path: &'static str,
+    pub verdict: &'static str,
+    pub title: String,
+    pub cause: Vec<String>,
+    pub fix: Vec<String>,
+    pub captured: Option<String>,
+}
+
+/// Remedy steps ordered cheapest-first (settings toggle before launch context
+/// before code signing).
+fn fix_steps(os: &str) -> Vec<String> {
     match os {
-        "macos" => "Most likely cause: no macOS \"Local Network\" permission (TCC), or an unsigned binary. Remedy: (a) use a distribution signed with a Developer ID + the multicast entitlement (b) allow it in System Settings > Privacy & Security > Local Network (c) launch from Terminal (an authorized context) rather than ssh/headless",
-        "windows" => "Allow sahou.exe inbound/outbound (UDP 7446 multicast / TCP 7447) in Windows Defender Firewall",
-        _ => "Check the firewall (UDP 7446 multicast / TCP 7447) and NIC settings",
+        "macos" => vec![
+            "allow it in System Settings › Privacy & Security › Local Network".into(),
+            "launch from Terminal (an authorized context) rather than ssh/headless".into(),
+            "use a distribution signed with a Developer ID + the multicast entitlement".into(),
+        ],
+        "windows" => vec![
+            "allow sahou.exe inbound/outbound (UDP 7446 multicast / TCP 7447) in Windows Defender Firewall".into(),
+        ],
+        _ => vec![
+            "check the firewall (UDP 7446 multicast / TCP 7447) and NIC settings".into(),
+        ],
     }
 }
 
-/// Assemble the diagnosis (pure function). Ok(healthy summary) / Err(cause-specific rejection + remedy).
-/// The rejection uses the consistent {code, path, message} shape, so main's print_diags renders it as-is.
-pub fn diagnose(r: &ProbeReport) -> Result<String, Vec<Diag>> {
+/// Assemble the diagnosis (pure function). Ok(healthy summary) / Err(boxed
+/// structured failure). The caller renders the failure AND converts it to the
+/// compact {code, path, title} Diag for the exit path.
+pub fn diagnose(r: &ProbeReport) -> Result<Healthy, Box<Failure>> {
     if !r.loopback {
-        return Err(vec![Diag::new(
-            "doctor_loopback",
-            "probes.loopback",
-            "loopback UDP does not work (socket layer is broken; unexpected). Check the network stack / security software",
-        )]);
+        return Err(Box::new(Failure {
+            code: "doctor_loopback",
+            path: "probes.loopback",
+            verdict: "broken",
+            title: "loopback UDP does not work (socket layer is broken; unexpected)".into(),
+            cause: vec!["the most basic local send/recv failed before any LAN probing".into()],
+            fix: vec!["check the network stack / security software".into()],
+            captured: None,
+        }));
     }
     match &r.egress {
-        Egress::Ok => {
-            let link = if r.link_ws {
-                "link WS running".to_string()
-            } else {
-                "link WS not started (not required, since the engine spawns it automatically)".to_string()
-            };
-            Ok(format!(
-                "healthy — this binary can speak zenoh over the LAN (scout egress OK / discovered peers={} / {link})",
-                r.peers
-            ))
-        }
+        Egress::Ok => Ok(Healthy {
+            title: "healthy — this binary can speak zenoh over the LAN",
+            detail: format!(
+                "scout egress OK · peers discovered: {} · link WS {}",
+                r.peers,
+                if r.link_ws {
+                    "running"
+                } else {
+                    "not started (the engine spawns it)"
+                }
+            ),
+        }),
         Egress::PermissionBlocked(line) => {
-            let net = match r.ping {
-                Some(true) => "ping works = the network is healthy, yet only this binary cannot send on the LAN. ",
-                _ => "",
-            };
-            Err(vec![Diag::new(
-                "doctor_permission_blocked",
-                "probes.egress",
-                format!(
-                    "this binary cannot send a zenoh scout to the LAN. {net}{}. [captured] {line}",
-                    permission_remedy(r.os)
-                ),
-            )])
+            let mut cause = Vec::new();
+            if r.ping == Some(true) {
+                cause.push(
+                    "ping works = the network is healthy, yet only this binary cannot send on the LAN"
+                        .into(),
+                );
+            }
+            cause.push(match r.os {
+                "macos" => {
+                    "most likely: no macOS \"Local Network\" permission (TCC), or an unsigned binary"
+                        .into()
+                }
+                "windows" => "most likely: Windows Defender Firewall is blocking this binary".into(),
+                _ => "most likely: a firewall or NIC configuration is blocking multicast".into(),
+            });
+            Err(Box::new(Failure {
+                code: "doctor_permission_blocked",
+                path: "probes.egress",
+                verdict: "blocked",
+                title: "this binary cannot send a zenoh scout to the LAN".into(),
+                cause,
+                fix: fix_steps(r.os),
+                captured: Some(line.clone()),
+            }))
         }
-        Egress::NicError(line) => Err(vec![Diag::new(
-            "doctor_nic_error",
-            "probes.egress",
-            format!(
-                "the specified NIC ({}) cannot be used (the scout interface was not found). Point --iface at a real LAN NIC. [captured] {line}",
+        Egress::NicError(line) => Err(Box::new(Failure {
+            code: "doctor_nic_error",
+            path: "probes.egress",
+            verdict: "misconfigured",
+            title: format!(
+                "the specified NIC ({}) cannot be used (the scout interface was not found)",
                 r.iface_desc
             ),
-        )]),
+            cause: vec![],
+            fix: vec!["point --iface at a real LAN NIC".into()],
+            captured: Some(line.clone()),
+        })),
         Egress::OtherError(line) => {
-            let net = match r.ping {
-                Some(false) => "ping to the gateway also failed = suspected network/NIC-level outage. ",
-                _ => "",
-            };
-            Err(vec![Diag::new(
-                "doctor_egress_error",
-                "probes.egress",
-                format!("error during zenoh scout egress. {net}Check the causing line. [captured] {line}"),
-            )])
+            let mut cause = Vec::new();
+            if r.ping == Some(false) {
+                cause.push(
+                    "ping to the gateway also failed = suspected network/NIC-level outage".into(),
+                );
+            }
+            Err(Box::new(Failure {
+                code: "doctor_egress_error",
+                path: "probes.egress",
+                verdict: "error",
+                title: "error during zenoh scout egress".into(),
+                cause,
+                fix: vec!["check the captured line below".into()],
+                captured: Some(line.clone()),
+            }))
         }
     }
+}
+
+pub fn render_healthy(h: &Healthy) -> String {
+    format!(
+        "{} {} {}",
+        Status::Ok.glyph(),
+        style::paint(style::OK, h.title),
+        style::paint(style::META, format!("({})", h.detail))
+    )
+}
+
+pub fn render_failure(f: &Failure) -> String {
+    let mut out = format!(
+        "{} {} — {}\n",
+        Status::Bad.glyph(),
+        style::paint(style::BAD.bold(), f.verdict),
+        style::paint(style::HEAD, &f.title)
+    );
+    if !f.cause.is_empty() {
+        out.push_str(&style::labeled_block("cause", style::META, &f.cause));
+    }
+    if !f.fix.is_empty() {
+        let numbered: Vec<String> = f
+            .fix
+            .iter()
+            .enumerate()
+            .map(|(i, s)| format!("{}. {s}", i + 1))
+            .collect();
+        out.push_str(&style::labeled_block("fix", style::ACTION, &numbered));
+    }
+    if let Some(c) = &f.captured {
+        out.push_str(&style::labeled_block(
+            "captured",
+            style::META,
+            &[style::paint(style::META, c)],
+        ));
+    }
+    out
 }
 
 /// Capture writer that accumulates zenoh WARN/ERROR logs. Rather than relying on specific strings,
@@ -322,53 +420,72 @@ fn zenoh_scout_egress(iface: Option<&str>, window_secs: u64) -> (Egress, usize) 
     (classify_egress(&log), peers)
 }
 
-fn report_line(name: &str, ok: Option<bool>, note: &str) {
-    let mark = match ok {
-        Some(true) => "OK",
-        Some(false) => "NG",
-        None => "--",
-    };
-    println!("  [{mark}] {name:<20} {note}");
+fn report_line(name: &str, status: Status, note: &str) {
+    anstream::println!("  {} {:<12} {}", status.glyph(), name, note);
 }
 
 pub fn run(args: DoctorArgs) -> Result<(), Vec<Diag>> {
-    println!(
-        "sahou doctor — environment preflight diagnostics (os={} iface={})",
-        std::env::consts::OS,
-        args.iface.as_deref().unwrap_or("auto")
+    anstream::println!(
+        "{}",
+        style::heading(
+            "sahou doctor · environment preflight",
+            &format!(
+                "· os {} · iface {}",
+                std::env::consts::OS,
+                args.iface.as_deref().unwrap_or("auto")
+            ),
+        )
     );
+    anstream::println!();
     let loopback = probe_loopback();
-    report_line("loopback UDP", Some(loopback), "socket layer sanity");
+    report_line(
+        "loopback UDP",
+        if loopback { Status::Ok } else { Status::Bad },
+        "socket layer sanity",
+    );
     let gw = default_gateway();
     let ping = match &gw {
         Some(g) => {
             let ok = system_ping(g);
-            report_line("LAN reachability (ping)", Some(ok), &format!("gateway={g}"));
+            report_line(
+                "LAN ping",
+                if ok { Status::Ok } else { Status::Bad },
+                &format!("gateway {g}"),
+            );
             Some(ok)
         }
         None => {
             report_line(
-                "LAN reachability (ping)",
-                None,
+                "LAN ping",
+                Status::Skip,
                 "default gateway unknown (skipped)",
             );
             None
         }
     };
     let (egress, peers) = zenoh_scout_egress(args.iface.as_deref(), args.scout_secs);
+    let scout_ok = matches!(egress, Egress::Ok);
     report_line(
-        "zenoh scout egress",
-        Some(matches!(egress, Egress::Ok)),
-        &format!("this binary's LAN egress / discovered peers={peers}"),
+        "zenoh scout",
+        if scout_ok { Status::Ok } else { Status::Bad },
+        &format!(
+            "LAN egress {} · peers discovered: {peers}",
+            if scout_ok { "OK" } else { "failed" }
+        ),
     );
     let link_ws = probe_link_ws(args.link_port);
     report_line(
         "link WS",
-        Some(link_ws),
-        &format!(
-            ":{} (informational; the engine spawns it automatically even if not started)",
-            args.link_port
-        ),
+        if link_ws { Status::Ok } else { Status::Skip },
+        &if link_ws {
+            format!(":{} running", args.link_port)
+        } else {
+            format!(
+                ":{} not running {}",
+                args.link_port,
+                style::paint(style::META, "(informational — the engine spawns it)")
+            )
+        },
     );
     let r = ProbeReport {
         loopback,
@@ -380,19 +497,22 @@ pub fn run(args: DoctorArgs) -> Result<(), Vec<Diag>> {
         iface_desc: args.iface.clone().unwrap_or_else(|| "auto".into()),
     };
     let local = diagnose(&r);
-    if let Ok(summary) = &local {
-        println!("\n{summary}");
+    anstream::println!();
+    match &local {
+        Ok(h) => anstream::println!("{}", render_healthy(h)),
+        Err(f) => anstream::print!("{}", render_failure(f)),
     }
+    let to_diags = |f: Box<Failure>| vec![Diag::new(f.code, f.path, f.title)];
     if args.lan {
         let local_ok = local.is_ok();
         let lan = crate::doctor_lan::run_lan(&args, local_ok);
         // the local diagnosis stays authoritative for its own failures; LAN failures also exit 1
         return match (local, lan) {
-            (Err(d), _) => Err(d),
+            (Err(f), _) => Err(to_diags(f)),
             (Ok(_), r) => r,
         };
     }
-    local.map(|_| ())
+    local.map(|_| ()).map_err(to_diags)
 }
 
 #[cfg(test)]
@@ -401,6 +521,10 @@ mod tests {
     use std::net::TcpListener;
     use std::thread;
     use std::time::Instant;
+
+    fn plain(s: &str) -> String {
+        anstream::adapter::strip_str(s).to_string()
+    }
 
     #[test]
     fn probe_link_ws_true_against_a_real_ws_server() {
@@ -497,54 +621,96 @@ mod tests {
 
     #[test]
     fn healthy_when_egress_ok() {
-        let summary = diagnose(&report(Egress::Ok, "windows")).unwrap();
-        assert!(summary.contains("healthy"));
+        let h = diagnose(&report(Egress::Ok, "windows")).unwrap();
+        assert!(h.title.contains("healthy"), "{}", h.title);
+        assert!(h.detail.contains("peers discovered: 0"), "{}", h.detail);
     }
 
     #[test]
     fn loopback_failure_is_terminal_no() {
         let mut r = report(Egress::Ok, "windows");
         r.loopback = false;
-        let diags = diagnose(&r).unwrap_err();
-        assert_eq!(diags[0].code, "doctor_loopback");
+        let f = diagnose(&r).unwrap_err();
+        assert_eq!(f.code, "doctor_loopback");
+        assert_eq!(f.path, "probes.loopback");
     }
 
     #[test]
-    fn permission_blocked_has_os_specific_remedy() {
+    fn permission_blocked_fixes_are_cheapest_first_and_os_specific() {
         let mac = diagnose(&report(Egress::PermissionBlocked("line".into()), "macos")).unwrap_err();
-        assert_eq!(mac[0].code, "doctor_permission_blocked");
+        assert_eq!(mac.code, "doctor_permission_blocked");
+        assert_eq!(mac.verdict, "blocked");
+        // cheapest remedy first: settings toggle, then launch context, then signing
+        assert!(mac.fix[0].contains("System Settings"), "{:?}", mac.fix);
+        assert!(mac.fix[1].contains("Terminal"), "{:?}", mac.fix);
+        assert!(mac.fix[2].contains("Developer ID"), "{:?}", mac.fix);
         assert!(
-            mac[0].message.contains("Local Network"),
-            "{}",
-            mac[0].message
+            mac.fix.iter().any(|s| s.contains("Local Network")),
+            "{:?}",
+            mac.fix
         );
+        // ping-OK triangulation lands in cause
         assert!(
-            mac[0].message.contains("the network is healthy"),
-            "ping-OK triangulation wording: {}",
-            mac[0].message
+            mac.cause
+                .iter()
+                .any(|s| s.contains("the network is healthy")),
+            "{:?}",
+            mac.cause
         );
+        assert_eq!(mac.captured.as_deref(), Some("line"));
         let win =
             diagnose(&report(Egress::PermissionBlocked("line".into()), "windows")).unwrap_err();
-        assert!(win[0].message.contains("Firewall"), "{}", win[0].message);
+        assert!(
+            win.fix.iter().any(|s| s.contains("Firewall")),
+            "{:?}",
+            win.fix
+        );
     }
 
     #[test]
     fn nic_error_points_to_iface_fix() {
-        let diags = diagnose(&report(Egress::NicError("line".into()), "windows")).unwrap_err();
-        assert_eq!(diags[0].code, "doctor_nic_error");
-        assert!(diags[0].message.contains("--iface"), "{}", diags[0].message);
+        let f = diagnose(&report(Egress::NicError("line".into()), "windows")).unwrap_err();
+        assert_eq!(f.code, "doctor_nic_error");
+        assert!(f.fix.iter().any(|s| s.contains("--iface")), "{:?}", f.fix);
     }
 
     #[test]
     fn other_error_mentions_network_break_when_ping_fails() {
         let mut r = report(Egress::OtherError("line".into()), "windows");
         r.ping = Some(false);
-        let diags = diagnose(&r).unwrap_err();
-        assert_eq!(diags[0].code, "doctor_egress_error");
+        let f = diagnose(&r).unwrap_err();
+        assert_eq!(f.code, "doctor_egress_error");
         assert!(
-            diags[0].message.contains("network/NIC"),
-            "{}",
-            diags[0].message
+            f.cause.iter().any(|s| s.contains("network/NIC")),
+            "{:?}",
+            f.cause
         );
+    }
+
+    #[test]
+    fn render_failure_orders_cause_fix_captured() {
+        let f = diagnose(&report(
+            Egress::PermissionBlocked("ERR line".into()),
+            "macos",
+        ))
+        .unwrap_err();
+        let p = plain(&render_failure(&f));
+        assert!(p.starts_with("✗ blocked — "), "{p}");
+        assert!(p.contains("  fix       1. "), "{p}");
+        let (c, x, cap) = (
+            p.find("cause").unwrap(),
+            p.find("fix").unwrap(),
+            p.find("captured").unwrap(),
+        );
+        assert!(c < x && x < cap, "{p}");
+        assert!(p.contains("ERR line"), "{p}");
+    }
+
+    #[test]
+    fn render_healthy_is_one_green_line_with_dim_detail() {
+        let h = diagnose(&report(Egress::Ok, "macos")).unwrap();
+        let p = plain(&render_healthy(&h));
+        assert!(p.starts_with("✓ healthy — "), "{p}");
+        assert!(p.contains("peers discovered: 0"), "{p}");
     }
 }
