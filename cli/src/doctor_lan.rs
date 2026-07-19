@@ -303,6 +303,12 @@ pub fn resolve_descriptor(
     Ok(DescriptorSource::None)
 }
 
+/// Print `classify_probe` guidance under the cyan `next` label (shared by the
+/// three guidance sites in `run_lan`).
+fn print_next(lines: &[String]) {
+    anstream::print!("{}", style::labeled_block("next", style::ACTION, lines));
+}
+
 /// Collect liveliness tokens + ALL vitals replies for one selector, polling inside a grace
 /// window (a fresh observer's first liveliness get can be empty pre-convergence; verified).
 fn sweep(session: &zenoh::Session, selector: &str, grace_secs: u64) -> LanSweep {
@@ -413,14 +419,7 @@ pub fn run_lan(args: &crate::doctor::DoctorArgs, local_ok: bool) -> Result<(), V
                         Err(_) => 0,
                     }
                 });
-                anstream::print!(
-                    "{}",
-                    style::labeled_block(
-                        "next",
-                        style::ACTION,
-                        &classify_probe(0, direct, local_ok)
-                    )
-                );
+                print_next(&classify_probe(0, direct, local_ok));
             } else if args.connect.is_some() {
                 // multicast-health check: pass A above already includes --connect, so a
                 // successful roll call here can be silently dependent on the explicit
@@ -442,14 +441,7 @@ pub fn run_lan(args: &crate::doctor::DoctorArgs, local_ok: bool) -> Result<(), V
                                 "the roll call succeeded only via the explicit endpoint:"
                             )
                         );
-                        anstream::print!(
-                            "{}",
-                            style::labeled_block(
-                                "next",
-                                style::ACTION,
-                                &classify_probe(0, Some(found), local_ok)
-                            )
-                        );
+                        print_next(&classify_probe(0, Some(found), local_ok));
                     }
                     let _ = s2.close().wait();
                 }
@@ -498,10 +490,7 @@ pub fn run_lan(args: &crate::doctor::DoctorArgs, local_ok: bool) -> Result<(), V
                 )
             );
             if s.token_keys.is_empty() && s.vitals.is_empty() {
-                anstream::print!(
-                    "{}",
-                    style::labeled_block("next", style::ACTION, &classify_probe(0, None, local_ok))
-                );
+                print_next(&classify_probe(0, None, local_ok));
             } else {
                 let mut keys: Vec<&String> = s.token_keys.iter().collect();
                 for (k, _) in &s.vitals {
