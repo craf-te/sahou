@@ -143,7 +143,12 @@ fn io_err(path: &std::path::Path, e: std::io::Error) -> Vec<Diag> {
 
 fn print_diags(diags: &[Diag]) {
     for d in diags {
-        println!("[{}] @{}: {}", d.code, d.path, d.message);
+        anstream::println!(
+            "{} {}: {}",
+            style::paint(style::BAD, format!("[{}]", d.code)),
+            style::paint(style::META, format!("@{}", d.path)),
+            d.message
+        );
     }
 }
 
