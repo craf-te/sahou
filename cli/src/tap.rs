@@ -525,6 +525,7 @@ pub fn format_event(conn: &str, w: usize, seq: u64, outcome: &rt::AcceptOutcome)
     match outcome {
         rt::AcceptOutcome::Accept { payload } => format!("{}{payload}", lead(true)),
         rt::AcceptOutcome::Reject { diags } => {
+            // The core guarantees Reject carries >= 1 diag; unwrap_or_default is defensive only.
             let mut ds = diags.iter().map(styled_diag);
             let mut out = format!("{}{}", lead(false), ds.next().unwrap_or_default());
             let indent = content_indent(w);

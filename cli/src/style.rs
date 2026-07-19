@@ -47,20 +47,24 @@ pub fn heading(title: &str, meta: &str) -> String {
     format!("{} {}", paint(HEAD, title), paint(META, meta))
 }
 
+/// Label column width for `labeled_block`. Labels longer than this shift the
+/// first line's content past the continuation column — keep labels ≤ 9 chars
+/// ("captured" is the current longest).
+const LABEL_W: usize = 9;
+
 /// A hanging-indent block:
-/// `  <label padded to 9> first-line` + continuation lines aligned to the
-/// text column (12). The label column fits the longest label ("captured").
-/// The returned string ends with '\n'.
+/// `  <label padded to LABEL_W> first-line` + continuation lines aligned to
+/// the text column. The returned string ends with '\n'.
 pub fn labeled_block(label: &str, style: Style, lines: &[String]) -> String {
     let mut out = String::new();
     for (i, line) in lines.iter().enumerate() {
         if i == 0 {
             out.push_str(&format!(
                 "  {} {line}\n",
-                paint(style, format!("{label:<9}"))
+                paint(style, format!("{label:<LABEL_W$}"))
             ));
         } else {
-            out.push_str(&format!("  {:<9} {line}\n", ""));
+            out.push_str(&format!("  {:<LABEL_W$} {line}\n", ""));
         }
     }
     out
