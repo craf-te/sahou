@@ -186,6 +186,10 @@ fn doctor_lan_without_descriptor_lists_discovered_nodes() {
         "the missing-descriptor hint should be printed:\n{stdout}"
     );
     assert!(
+        stdout.contains("this binary's vantage"),
+        "vantage disclaimer missing:\n{stdout}"
+    );
+    assert!(
         out.status.success(),
         "discovery-only mode always exits 0:\n{stdout}"
     );

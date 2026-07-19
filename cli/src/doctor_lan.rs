@@ -530,6 +530,7 @@ pub fn run_lan(args: &crate::doctor::DoctorArgs, local_ok: bool) -> Result<(), V
                     )
                 );
             }
+            anstream::print!("{}", disclaimer());
             let _ = session.close().wait();
             Ok(())
         }
