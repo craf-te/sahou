@@ -12,12 +12,7 @@ fn doctor_runs_all_probes_and_exits_zero_or_one() {
         "exit other than healthy(0)/NO(1): {code}"
     );
     let stdout = String::from_utf8_lossy(&out.stdout);
-    for label in [
-        "loopback UDP",
-        "LAN reachability",
-        "zenoh scout egress",
-        "link WS",
-    ] {
+    for label in ["loopback UDP", "LAN ping", "zenoh scout", "link WS"] {
         assert!(
             stdout.contains(label),
             "probe line '{label}' is missing:\n{stdout}"
