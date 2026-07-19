@@ -9,6 +9,7 @@ mod gui;
 mod init;
 mod link;
 mod reference;
+mod style;
 mod tap;
 
 use clap::{Parser, Subcommand};

@@ -41,6 +41,10 @@ libc = "0.2"
 # doesn't introduce a duplicate tungstenite version in the tree. Default features are already
 # minimal (just the plain handshake codec; no TLS), which is all a ws:// client probe needs.
 tungstenite = "0.27.0"
+# Terminal styling. Both are already in the tree via clap's `color` feature;
+# anstream strips styles automatically on non-TTY output and under NO_COLOR.
+anstream = "1"
+anstyle = "1"
 
 [features]
 default = ["gui"]

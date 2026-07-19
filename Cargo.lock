@@ -3039,6 +3039,8 @@ version = "0.0.0"
 name = "sahou-cli"
 version = "0.0.2"
 dependencies = [
+ "anstream",
+ "anstyle",
  "assert_cmd",
  "clap",
  "libc",
